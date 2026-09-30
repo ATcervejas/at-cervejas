@@ -113,15 +113,6 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- LINK DO GOOGLE MAPS NO TOPO COM BOTÃO VALIDAR -->
-<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
-  <label style="color: var(--gold); font-size: 13px;">🔗 Link do Google Maps (Opcional)</label>
-  <div style="display: flex; gap: 8px; margin-top: 6px;">
-    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps..." style="border-color: var(--gold); flex: 1;">
-    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
-  </div>
-</div>
-
 <!-- Código Postal (Obrigatório) -->
 <div class="field">
   <label>📮 Código Postal *</label>
@@ -163,7 +154,16 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- Morada de Instalação (Obrigatória) -->
+<!-- LINK DO GOOGLE MAPS APÓS O MAPA -->
+<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
+  <label style="color: var(--gold); font-size: 13px;">🔗 Link do Google Maps (Opcional)</label>
+  <div style="display: flex; gap: 8px; margin-top: 6px;">
+    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps..." style="border-color: var(--gold); flex: 1;">
+    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
+  </div>
+</div>
+
+<!-- Morada de Instalação (Obrigatória e Capitalizada) -->
 <div class="field full">
   <label>Morada de instalação *</label>
   <input required name="morada" id="input-morada" placeholder="Morada completa...">
@@ -180,14 +180,14 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Contacto (Telemóvel) *</label>
   <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-contacto" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="O seu nome completo"></div>
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -842,6 +842,16 @@ function fecharZoom() {
     });
   }
 
+  // Capitalizar Morada de Instalação (primeira letra de cada palavra em maiúscula)
+  if (inputMorada) {
+    inputMorada.addEventListener('input', function(e) {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
+
   function obterLocalidadePorCP(cp) {
     if (!cp || cp.length < 4) return '';
     const prefixo = parseInt(cp.substring(0, 4), 10);
@@ -951,7 +961,7 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
+        alert('⚠️️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
@@ -1163,7 +1173,7 @@ function fecharZoom() {
       if (btnToggleRefrigeradorEvento) {
         btnToggleRefrigeradorEvento.style.background = '#f8f9fa';
         btnToggleRefrigeradorEvento.style.borderColor = 'var(--gold)';
-        btnToggleRefrigeradorEvento.innerHTML = '❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
+        btnToggleRefrigeradorEvento.innerHTML = '❄️️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
       }
     }
 
@@ -1302,7 +1312,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const inputNomeEvento = document.getElementById('input-nome-evento');
   if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
     alert('⚠️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
-    if (inputNomeEvento) inputNomeEvento.focus();
+    if (inputNomeEvento) inputNomeevento.focus();
     return;
   }
 
