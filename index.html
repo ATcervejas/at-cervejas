@@ -113,6 +113,15 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
+<!-- Link de Partilha do Google Maps no Topo -->
+<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px; margin-top: 5px; margin-bottom: 5px;">
+  <label style="color: var(--gold); font-size: 13px;">🔗 Link de Partilha do Google Maps (Opcional)</label>
+  <div style="display: flex; gap: 8px; margin-top: 6px;">
+    <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="border-color: var(--gold); flex: 1;">
+    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Atualizar Mapa</button>
+  </div>
+</div>
+
 <!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
 <div class="field">
   <label>📮 Código Postal *</label>
@@ -154,12 +163,6 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- Link do Google Maps Opcional -->
-<div class="field full" style="background: #fffdf9; border: 1px dashed var(--gold); padding: 12px; border-radius: 8px;">
-  <label style="color: var(--gold);">🔗 Link de Partilha do Google Maps (Opcional)</label>
-  <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
-</div>
-
 <div class="field full">
   <label>Morada de instalação *</label>
   <input required name="morada" id="input-morada" placeholder="Morada completa...">
@@ -183,7 +186,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -751,6 +754,8 @@ function fecharZoom() {
   const inputLocalidade = document.getElementById('input-localidade');
   const inputCP = document.getElementById('input-cp');
   const btnPesquisarCP = document.getElementById('btn-pesquisar-cp');
+  const btnProcessarLink = document.getElementById('btn-processar-link');
+  const inputLinkMaps = document.getElementById('input-link-maps');
   const mapaFrame = document.getElementById('mapa-frame');
   const mapContainer = document.getElementById('map-container');
   const caixaConfirmacao = document.getElementById('caixa-confirmacao');
@@ -863,6 +868,18 @@ function fecharZoom() {
         e.preventDefault();
         processarCodigoPostal();
       }
+    });
+  }
+
+  if (btnProcessarLink && inputLinkMaps) {
+    btnProcessarLink.addEventListener('click', function() {
+      const linkVal = inputLinkMaps.value.trim();
+      if (!linkVal) {
+        alert('⚠️ Por favor, cole primeiro um link do Google Maps.');
+        inputLinkMaps.focus();
+        return;
+      }
+      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
     });
   }
 
@@ -1069,7 +1086,7 @@ function fecharZoom() {
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
   const inputCodCliente = document.getElementById('input-codigo-cliente');
   if (!inputCodCliente || !inputCodCliente.value.trim()) {
-    alert('⚠️ O campo "Código de cliente" é obrigatório e tem de ser preenchido!');
+    alert('⚠️️ O campo "Código de cliente" é obrigatório e tem de ser preenchido!');
     if (inputCodCliente) inputCodCliente.focus();
     return;
   }
