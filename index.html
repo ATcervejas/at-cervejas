@@ -761,18 +761,47 @@ function fecharZoom() {
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
 
-  const baseLocalidadesCP = {
-    "2900": "Setúbal",
-    "2910": "Setúbal",
-    "2925": "Azeitão",
-    "2950": "Palmela",
-    "2952": "Palmela",
-    "2870": "Montijo",
-    "2830": "Barreiro",
-    "2810": "Almada",
-    "1000": "Lisboa",
-    "4000": "Porto"
-  };
+  // Função inteligente para detetar a localidade de Portugal inteiro e Ilhas através dos prefixos do Código Postal
+  function obterLocalidadePorCP(cp) {
+    if (!cp || cp.length < 4) return '';
+    const prefixo = parseInt(cp.substring(0, 4), 10);
+    
+    if (prefixo >= 1000 && prefixo <= 1999) return "Lisboa";
+    if (prefixo >= 2000 && prefixo <= 2040) return "Santarém";
+    if (prefixo >= 2050 && prefixo <= 2070) return "Cartaxo / Azambuja";
+    if (prefixo >= 2100 && prefixo <= 2130) return "Coruche / Benavente";
+    if (prefixo >= 2200 && prefixo <= 2230) return "Abrantes";
+    if (prefixo >= 2300 && prefixo <= 2350) return "Tomar / Torres Novas";
+    if (prefixo >= 2400 && prefixo <= 2490) return "Leiria / Fátima";
+    if (prefixo >= 2500 && prefixo <= 2560) return "Caldas da Rainha / Peniche / Torres Vedras";
+    if (prefixo >= 2600 && prefixo <= 2670) return "Vila Franca de Xira / Loures";
+    if (prefixo >= 2700 && prefixo <= 2790) return "Amadora / Sintra / Cascais";
+    if (prefixo >= 2800 && prefixo <= 2840) return "Almada / Seixal / Barreiro";
+    if (prefixo >= 2850 && prefixo <= 2855) return "Setúbal (Margem Sul)";
+    if (prefixo >= 2870 && prefixo <= 2875) return "Montijo";
+    if (prefixo >= 2890 && prefixo <= 2895) return "Alcochete";
+    if (prefixo >= 2900 && prefixo <= 2910) return "Setúbal";
+    if (prefixo >= 2925 && prefixo <= 2925) return "Azeitão";
+    if (prefixo >= 2950 && prefixo <= 2955) return "Palmela";
+    if (prefixo >= 3000 && prefixo <= 3060) return "Coimbra";
+    if (prefixo >= 3500 && prefixo <= 3530) return "Viseu";
+    if (prefixo >= 3800 && prefixo <= 3860) return "Aveiro";
+    if (prefixo >= 4000 && prefixo <= 4490) return "Porto";
+    if (prefixo >= 4700 && prefixo <= 4760) return "Braga / Barcelos";
+    if (prefixo >= 4800 && prefixo <= 4850) return "Guimarães";
+    if (prefixo >= 5000 && prefixo <= 5050) return "Vila Real";
+    if (prefixo >= 5300 && prefixo <= 5370) return "Bragança";
+    if (prefixo >= 6000 && prefixo <= 6060) return "Castelo Branco";
+    if (prefixo >= 6300 && prefixo <= 6350) return "Guarda";
+    if (prefixo >= 7000 && prefixo <= 7005) return "Évora";
+    if (prefixo >= 7300 && prefixo <= 7350) return "Portalegre";
+    if (prefixo >= 7800 && prefixo <= 7830) return "Beja";
+    if (prefixo >= 8000 && prefixo <= 8700) return "Faro / Algarve";
+    if (prefixo >= 9000 && prefixo <= 9380) return "Funchal (Madeira)";
+    if (prefixo >= 9500 && prefixo <= 9980) return "Ponta Delgada / Açores";
+    
+    return "";
+  }
 
   function processarCodigoPostal() {
     const cp = inputCP ? inputCP.value.trim() : '';
@@ -789,9 +818,9 @@ function fecharZoom() {
     }
 
     if (cp.length >= 4) {
-      const prefixo = cp.substring(0, 4);
-      if (baseLocalidadesCP[prefixo] && inputLocalidade) {
-        inputLocalidade.value = baseLocalidadesCP[prefixo];
+      const localidadeSugerida = obterLocalidadePorCP(cp);
+      if (localidadeSugerida && inputLocalidade) {
+        inputLocalidade.value = localidadeSugerida;
       }
     }
 
@@ -816,11 +845,10 @@ function fecharZoom() {
       if (val.length > 4) val = val.substring(0, 4) + '-' + val.substring(4, 7);
       e.target.value = val;
 
-      // Preenche automaticamente a localidade ao digitar os primeiros 4 dígitos
       if (val.length >= 4) {
-        const prefixo = val.substring(0, 4);
-        if (baseLocalidadesCP[prefixo] && inputLocalidade) {
-          inputLocalidade.value = baseLocalidadesCP[prefixo];
+        const localidadeSugerida = obterLocalidadePorCP(val);
+        if (localidadeSugerida && inputLocalidade) {
+          inputLocalidade.value = localidadeSugerida;
         }
       }
     });
@@ -839,7 +867,7 @@ function fecharZoom() {
     });
   }
 
-  // AUTOCOMPLETE DO ESTABELECIMENTO VIA NOMINATIM (Focado por Código Postal)
+  // AUTOCOMPLETE RIGOROSO PARA TODO O PAÍS E ILHAS (Restrito à zona do Código Postal)
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function() {
       let start = this.selectionStart;
@@ -849,6 +877,7 @@ function fecharZoom() {
 
       let query = this.value.trim();
       let codigoPostal = inputCP ? inputCP.value.trim() : '';
+      let localidadeAtual = inputLocalidade ? inputLocalidade.value.trim() : '';
       let sugestoesBox = document.getElementById('sugestoesEspacos');
       
       if (query.length < 3) {
@@ -856,7 +885,8 @@ function fecharZoom() {
         return;
       }
 
-      let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Portugal`;
+      let zonaFiltro = codigoPostal || localidadeAtual || 'Portugal';
+      let termoPesquisa = `${query} ${zonaFiltro}`;
       let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
 
       fetch(url)
