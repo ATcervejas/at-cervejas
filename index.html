@@ -11,43 +11,6 @@
 .wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
 main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
 
-/* Caixa de resultados da pesquisa por nome do estabelecimento */
-#resultados-pesquisa-est {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid var(--gold);
-    border-top: none;
-    z-index: 1000;
-    max-height: 240px;
-    overflow-y: auto;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    border-radius: 0 0 10px 10px;
-    display: none;
-}
-.est-resultado-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 13px;
-    transition: background 0.15s;
-}
-.est-resultado-item:hover {
-    background-color: #fffdf9;
-    color: var(--gold);
-}
-.est-resultado-item strong {
-    display: block;
-    font-size: 14px;
-    color: var(--ink);
-}
-.est-resultado-item span {
-    font-size: 11px;
-    color: var(--muted);
-}
-
 .cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
 .choice{position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white;cursor:pointer;padding-bottom:12px;display:flex;flex-direction:column;transition:all 0.2s ease}
 .choice input[type="checkbox"]{position:absolute;top:10px;right:10px;accent-color:var(--gold);width:18px;height:18px;z-index:2}
@@ -134,14 +97,10 @@ input.invalid{border-color:#d9534f}
   <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
 </div>
 
-<!-- Nome do Estabelecimento com Botão OK e Lista de Validação -->
+<!-- Nome do Estabelecimento (Livre e capitalizado automaticamente) -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <div style="display: flex; gap: 8px;">
-    <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Taberna..." autocomplete="off" style="border:2px solid var(--gold); flex: 1;">
-    <button type="button" id="btn-pesquisar-est" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
-  </div>
-  <div id="resultados-pesquisa-est"></div>
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Café Central..." autocomplete="off" style="border:2px solid var(--gold);">
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -549,20 +508,6 @@ let refItemCounter = 1;
 let eventoForcarColunas = false;
 let eventoForcarRefrigerador = false;
 
-// Base de dados de exemplo de estabelecimentos (Podes adicionar quantos quiseres aqui)
-const estabelecimentosDB = [
-  { nome: "Taberna do Bacalhau", morada: "Rua Principal 12", localidade: "Palmela", cp: "2950-100" },
-  { nome: "Taberna da Praça", morada: "Praça de Touros 4", localidade: "Setúbal", cp: "2900-500" },
-  { nome: "Café Central Azeitão", morada: "Largo da Matriz 8", localidade: "Azeitão", cp: "2925-400" },
-  { nome: "Restaurante O Farnel", morada: "Av. dos Penedos 15", localidade: "Palmela", cp: "2950-205" },
-  { nome: "Cervejaria Arrábida", morada: "Av. Luísa Todi 110", localidade: "Setúbal", cp: "2900-461" },
-  { nome: "Bar do Miradouro", morada: "Miradouro de São Pedro", localidade: "Palmela", cp: "2950-080" },
-  { nome: "Café Central Lisboa", morada: "Rua Áurea 45", localidade: "Lisboa", cp: "1100-050" },
-  { nome: "Tasquinha do Porto", morada: "Rua de Santa Catarina 120", localidade: "Porto", cp: "4000-450" },
-  { nome: "Café Funchalense", morada: "Av. Arriaga 15", localidade: "Funchal", cp: "9000-060" },
-  { nome: "Restaurante Ilha Verde", morada: "Rua Infante Dom Henrique 10", localidade: "Ponta Delgada", cp: "9500-150" }
-];
-
 function adicionarNovoRefrigerador() {
   refItemCounter++;
   const container = document.getElementById('container-refrigeradores-lista');
@@ -838,9 +783,6 @@ function fecharZoom() {
 
 (function() {
   const inputEstabelecimento = document.getElementById('input-estabelecimento');
-  const btnPesquisarEst = document.getElementById('btn-pesquisar-est');
-  const resultadosBoxEst = document.getElementById('resultados-pesquisa-est');
-
   const inputMorada = document.getElementById('input-morada');
   const inputLocalidade = document.getElementById('input-localidade');
   const inputCP = document.getElementById('input-cp');
@@ -878,66 +820,6 @@ function fecharZoom() {
       this.setSelectionRange(start, end);
     });
   }
-
-  // Função para pesquisar estabelecimento ao clicar no botão "OK"
-  function pesquisarEstabelecimento() {
-    const termo = inputEstabelecimento.value.trim().toLowerCase();
-    resultadosBoxEst.innerHTML = '';
-    
-    if (termo.length < 2) {
-      alert('⚠️ Escreva pelo menos 2 letras do nome do estabelecimento antes de clicar em OK.');
-      inputEstabelecimento.focus();
-      return;
-    }
-
-    const matches = estabelecimentosDB.filter(item => item.nome.toLowerCase().includes(termo));
-
-    if (matches.length === 0) {
-      resultadosBoxEst.innerHTML = `<div class="est-resultado-item"><strong>Nenhum registo encontrado</strong><span>Pode continuar o preenchimento manual.</span></div>`;
-      resultadosBoxEst.style.display = 'block';
-      return;
-    }
-
-    matches.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'est-resultado-item';
-      div.innerHTML = `<strong>${item.nome}</strong><span>📍 ${item.morada}, ${item.localidade} (${item.cp})</span>`;
-      
-      div.addEventListener('click', function() {
-        inputEstabelecimento.value = item.nome;
-        if (inputMorada) inputMorada.value = item.morada;
-        if (inputLocalidade) inputLocalidade.value = item.localidade;
-        if (inputCP) inputCP.value = item.cp;
-
-        resultadosBoxEst.style.display = 'none';
-        processarCodigoPostal();
-      });
-
-      resultadosBoxEst.appendChild(div);
-    });
-
-    resultadosBoxEst.style.display = 'block';
-  }
-
-  if (btnPesquisarEst) {
-    btnPesquisarEst.addEventListener('click', pesquisarEstabelecimento);
-  }
-
-  if (inputEstabelecimento) {
-    inputEstabelecimento.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        pesquisarEstabelecimento();
-      }
-    });
-  }
-
-  // Fechar lista de resultados ao clicar fora
-  document.addEventListener('click', function(e) {
-    if (resultadosBoxEst && !inputEstabelecimento.contains(e.target) && !resultadosBoxEst.contains(e.target) && !btnPesquisarEst.contains(e.target)) {
-      resultadosBoxEst.style.display = 'none';
-    }
-  });
 
   if (inputMorada) {
     inputMorada.addEventListener('input', function(e) {
@@ -1418,7 +1300,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const mostrarMetrosRefBar = (operacao === 'Nova instalação' || (operacao === 'Evento' && eventoForcarRefrigerador));
   if (mostrarMetrosRefBar) {
     const mRefBarVal = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
-    if (mRefBarrVal) {
+    if (mRefBarVal) {
       metrosRefBarrilTxt = `• Metros do refrigerador ao barril: ${mRefBarVal}\n`;
     }
   }
