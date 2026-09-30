@@ -115,11 +115,12 @@ input.invalid{border-color:#d9534f}
 
 <!-- LINK DO GOOGLE MAPS NO TOPO COM BOTÃO VALIDAR -->
 <div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
-  <label style="color: var(--gold); font-size: 13px;">🔗 Link de Partilha do Google Maps (Opcional)</label>
+  <label style="color: var(--gold); font-size: 13px;">🔗 Link do Google Maps (Opcional)</label>
   <div style="display: flex; gap: 8px; margin-top: 6px;">
-    <input type="text" id="input-link-maps" placeholder="Ex: https://maps.app.goo.gl/... ou https://share.google/..." style="border-color: var(--gold); flex: 1;">
+    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps (ex: https://www.google.com/maps/...)" style="border-color: var(--gold); flex: 1;">
     <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
   </div>
+  <small style="color: var(--muted); font-size: 11px; display: block; margin-top: 4px;">Dica: Se usar o link completo do Google Maps, o sistema tenta extrair o nome e a localização automaticamente.</small>
 </div>
 
 <!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
@@ -186,7 +187,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -871,7 +872,7 @@ function fecharZoom() {
     });
   }
 
-  // BOTÃO VALIDAR
+  // BOTÃO VALIDAR: Tenta extrair o nome do local se for um link longo do Google Maps (/place/Nome+Do+Local/)
   if (btnProcessarLink && inputLinkMaps) {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
@@ -881,12 +882,23 @@ function fecharZoom() {
         return;
       }
 
-      let estab = inputEstabelecimento ? inputEstabelecimento.value.trim() : '';
-      let cp = inputCP ? inputCP.value.trim() : '';
-      let queryBusca = estab && cp ? `${estab}, ${cp}, Portugal` : (cp ? `${cp}, Portugal` : 'Portugal');
-      
-      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(queryBusca) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-      alert('✅ Link validado com sucesso! O mapa foi atualizado.');
+      // Se for link longo com /place/Nome/
+      if (linkVal.includes('/place/')) {
+        try {
+          let partes = linkVal.split('/place/')[1].split('/')[0];
+          let nomeExtraido = decodeURIComponent(partes.replace(/\+/g, ' '));
+          if (inputEstabelecimento) {
+            inputEstabelecimento.value = nomeExtraido;
+            // Dispara o input para acionar o autocomplete e atualizar o mapa
+            inputEstabelecimento.dispatchEvent(new Event('input'));
+          }
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
+      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
+      alert('✅ Link validado e mapa atualizado!');
       mapContainer.style.borderColor = '#28a745';
     });
   }
@@ -1134,12 +1146,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
   const obs = document.querySelector('textarea[name="observacoes"]').value || 'Nenhuma';
 
-  // CAPTURA DIRETA E EXATA DO LINK DO GOOGLE MAPS INSERIDO PELO UTILIZADOR
   const inputLinkElem = document.getElementById('input-link-maps');
   const linkManualMaps = inputLinkElem ? inputLinkElem.value.trim() : '';
   const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
-  
-  // Se houver um link inserido, usa-o obrigatoriamente; caso contrário, gera a pesquisa por texto
   const linkGoogleMaps = linkManualMaps !== '' ? linkManualMaps : `https://www.google.com/maps/search/?api=1&query=${queryMapa}`;
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
