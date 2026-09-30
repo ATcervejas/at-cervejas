@@ -122,7 +122,7 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
+<!-- Código Postal (Obrigatório) -->
 <div class="field">
   <label>📮 Código Postal *</label>
   <div style="display: flex; gap: 8px;">
@@ -163,6 +163,7 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
+<!-- Morada de Instalação (Obrigatória) -->
 <div class="field full">
   <label>Morada de instalação *</label>
   <input required name="morada" id="input-morada" placeholder="Morada completa...">
@@ -204,18 +205,18 @@ input.invalid{border-color:#d9534f}
     <option value="Evento">Evento</option>
   </select>
 </div>
-<!-- Campo extra para o Nome do Evento (aparece só se escolher Evento) -->
+<!-- Campo extra para o Nome do Evento (primeira letra maiúscula) -->
 <div class="field" id="field-nome-evento" style="display:none;">
   <label>Nome do Evento *</label>
   <input type="text" name="nome_evento" id="input-nome-evento" placeholder="Ex: Festa das Vindimas">
 </div>
 <div class="field" id="field-data-pretendida">
-  <label id="label-data-pretendida">Data pretendida</label>
-  <input type="date" name="data_pretendida" id="input-data-pretendida">
+  <label id="label-data-pretendida">Data pretendida *</label>
+  <input type="date" required name="data_pretendida" id="input-data-pretendida">
 </div>
 <div class="field" id="field-data-levantamento">
   <label id="label-data-levantamento">Data de levantamento *</label>
-  <input type="date" name="data_levantamento" id="input-data-levantamento">
+  <input type="date" required name="data_levantamento" id="input-data-levantamento">
 </div>
 </div></div>
 
@@ -829,6 +830,17 @@ function fecharZoom() {
 
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
+  const inputNomeEvento = document.getElementById('input-nome-evento');
+
+  // Capitalizar Nome do Evento (primeira letra de cada palavra em maiúscula)
+  if (inputNomeEvento) {
+    inputNomeEvento.addEventListener('input', function(e) {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
 
   function obterLocalidadePorCP(cp) {
     if (!cp || cp.length < 4) return '';
@@ -939,7 +951,7 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
+        alert('⚠️️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
@@ -1059,7 +1071,6 @@ function fecharZoom() {
 
   const selectOperacao = document.getElementById('select-operacao');
   const fieldNomeEvento = document.getElementById('field-nome-evento');
-  const inputNomeEvento = document.getElementById('input-nome-evento');
   const fieldDataPretendida = document.getElementById('field-data-pretendida');
   const labelDataPretendida = document.getElementById('label-data-pretendida');
   const fieldDataLevantamento = document.getElementById('field-data-levantamento');
@@ -1169,7 +1180,7 @@ function fecharZoom() {
       fieldDataLevantamento.style.display = 'flex';
     } else {
       fieldDataPretendida.style.display = 'flex';
-      labelDataPretendida.textContent = 'Data pretendida';
+      labelDataPretendida.textContent = 'Data pretendida *';
       fieldDataLevantamento.style.display = 'flex';
     }
 
@@ -1241,6 +1252,20 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
+  const inputCP = document.getElementById('input-cp');
+  if (!inputCP || !inputCP.value.trim()) {
+    alert('⚠️ O campo "Código Postal" é obrigatório e tem de ser preenchido!');
+    if (inputCP) inputCP.focus();
+    return;
+  }
+
+  const inputMorada = document.getElementById('input-morada');
+  if (!inputMorada || !inputMorada.value.trim()) {
+    alert('⚠️ O campo "Morada de instalação" é obrigatório e tem de ser preenchido!');
+    if (inputMorada) inputMorada.focus();
+    return;
+  }
+
   const inputLocalidade = document.getElementById('input-localidade');
   if (!inputLocalidade || !inputLocalidade.value.trim()) {
     alert('⚠️ O campo "Localidade" é obrigatório e tem de ser preenchido!');
@@ -1250,6 +1275,29 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const selectOperacao = document.getElementById('select-operacao');
   const operacao = selectOperacao.value || 'N/D';
+  if (!operacao || operacao === '') {
+    alert('⚠️ O campo "Operação" é obrigatório e tem de ser selecionado!');
+    selectOperacao.focus();
+    return;
+  }
+
+  const inputDataPretendida = document.getElementById('input-data-pretendida');
+  const inputDataLevantamento = document.getElementById('input-data-levantamento');
+  
+  if (operacao === 'Nova instalação' || operacao === 'Evento') {
+    if (!inputDataPretendida || !inputDataPretendida.value.trim()) {
+      alert('⚠️ O campo da data da instalação / pretendida é obrigatório!');
+      if (inputDataPretendida) inputDataPretendida.focus();
+      return;
+    }
+  }
+  if (operacao === 'Levantamento' || operacao === 'Evento') {
+    if (!inputDataLevantamento || !inputDataLevantamento.value.trim()) {
+      alert('⚠️ O campo da data de levantamento é obrigatório!');
+      if (inputDataLevantamento) inputDataLevantamento.focus();
+      return;
+    }
+  }
 
   const inputNomeEvento = document.getElementById('input-nome-evento');
   if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
@@ -1275,20 +1323,20 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const codCliente = inputCodCliente.value.trim();
   const departamento = inputDepartamento.value.trim();
   const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
-  const morada = document.getElementById('input-morada').value || 'N/D';
-  const cp = document.getElementById('input-cp').value || '';
+  const moradaVal = inputMorada.value.trim();
+  const cpVal = inputCP.value.trim();
   const localidade = inputLocalidade.value.trim();
   const respLocal = document.getElementById('input-resp-local').value || 'N/D';
   const telLocal = document.getElementById('input-contacto').value || 'N/D';
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
-  const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
+  const dataPretendida = inputDataPretendida ? inputDataPretendida.value : 'N/D';
   const nomeEventoVal = inputNomeEvento ? inputNomeEvento.value.trim() : '';
   const obs = document.querySelector('textarea[name="observacoes"]').value || 'Nenhuma';
 
   const inputLinkElem = document.getElementById('input-link-maps');
   const linkManualMaps = inputLinkElem ? inputLinkElem.value.trim() : '';
-  const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
+  const queryMapa = encodeURIComponent(`${estabelecimento}, ${moradaVal}, ${cpVal} ${localidade} Portugal`);
   const linkGoogleMaps = linkManualMaps !== '' ? linkManualMaps : `https://www.google.com/maps/search/?api=1&query=${queryMapa}`;
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
@@ -1334,7 +1382,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
     `• Departamento: ${departamento}\n` +
-    `• Morada: ${morada}, ${cp} ${localidade}\n` +
+    `• Morada: ${moradaVal}, ${cpVal} ${localidade}\n` +
     `• Link Google Maps: ${linkGoogleMaps}\n` +
     `• Responsável Local: ${respLocal} (${telLocal})\n` +
     `• Comercial / GD: ${comercial} (${telComercial})\n\n` +
