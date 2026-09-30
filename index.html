@@ -845,7 +845,8 @@ function fecharZoom() {
     });
   }
 
-  // Nome do espaço: Autocomplete otimizado usando Photon (Komoot) sem bloqueios de CORS
+  // Nome do espaço: Autocomplete seguro via Photon (Komoot) sem erros de CORS nem limites excedidos
+  let timeoutBusca = null;
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function(e) {
       let start = this.selectionStart;
@@ -860,56 +861,60 @@ function fecharZoom() {
       let codigoPostal = inputCP ? inputCP.value.trim() : '';
       let sugestoesBox = document.getElementById('sugestoesEspacos');
       
+      clearTimeout(timeoutBusca);
+
       if (query.length < 3) {
         sugestoesBox.innerHTML = '';
         return;
       }
 
-      let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Portugal`;
-      let url = `https://photon.komoot.io/api/?q=${encodeURIComponent(termoPesquisa)}&limit=5&lang=pt`;
+      timeoutBusca = setTimeout(() => {
+        let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Portugal`;
+        let url = `https://photon.komoot.io/api/?q=${encodeURIComponent(termoPesquisa)}&limit=5&lang=pt`;
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            sugestoesBox.innerHTML = '';
-            if (data && data.features) {
-                data.features.forEach(local => {
-                    let p = local.properties;
-                    if (p.country && p.country.toLowerCase() !== 'portugal' && !codigoPostal) return;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              sugestoesBox.innerHTML = '';
+              if (data && data.features) {
+                  data.features.forEach(local => {
+                      let p = local.properties;
+                      if (p.country && p.country.toLowerCase() !== 'portugal' && !codigoPostal) return;
 
-                    let nome = p.name || query;
-                    let rua = p.street ? `${p.street}${p.housenumber ? ', ' + p.housenumber : ''}` : '';
-                    let cidade = p.city || p.county || '';
-                    let displayText = [nome, rua, cidade, p.postcode].filter(Boolean).join(', ');
+                      let nome = p.name || query;
+                      let rua = p.street ? `${p.street}${p.housenumber ? ', ' + p.housenumber : ''}` : '';
+                      let cidade = p.city || p.county || '';
+                      let displayText = [nome, rua, cidade, p.postcode].filter(Boolean).join(', ');
 
-                    let item = document.createElement('div');
-                    item.className = 'sugestao-item';
-                    item.innerText = displayText;
-                    
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        
-                        let nomeEspaco = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-                        inputEstabelecimento.value = nomeEspaco;
-                        if (inputMorada && rua) {
-                            inputMorada.value = rua;
-                        }
-                        if (inputLocalidade && cidade) {
-                            inputLocalidade.value = cidade;
-                        }
-                        if (inputCP && p.postcode) {
-                            inputCP.value = p.postcode;
-                        }
+                      let item = document.createElement('div');
+                      item.className = 'sugestao-item';
+                      item.innerText = displayText;
+                      
+                      item.addEventListener('click', function(e) {
+                          e.preventDefault();
+                          
+                          let nomeEspaco = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+                          inputEstabelecimento.value = nomeEspaco;
+                          if (inputMorada && rua) {
+                              inputMorada.value = rua;
+                          }
+                          if (inputLocalidade && cidade) {
+                              inputLocalidade.value = cidade;
+                          }
+                          if (inputCP && p.postcode) {
+                              inputCP.value = p.postcode;
+                          }
 
-                        sugestoesBox.innerHTML = '';
-                        processarCodigoPostal();
-                    });
-                    
-                    sugestoesBox.appendChild(item);
-                });
-            }
-        })
-        .catch(err => console.error('Erro ao procurar moradas:', err));
+                          sugestoesBox.innerHTML = '';
+                          processarCodigoPostal();
+                      });
+                      
+                      sugestoesBox.appendChild(item);
+                  });
+              }
+          })
+          .catch(err => console.error('Erro ao procurar moradas:', err));
+      }, 300);
     });
   }
 
