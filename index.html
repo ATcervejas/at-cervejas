@@ -866,7 +866,7 @@ function fecharZoom() {
     });
   }
 
-  // AUTOCOMPLETE COM SEPARAÇÃO LIMPA: Nome vai para o estabelecimento, morada só com a rua/local
+  // AUTOCOMPLETE COM MORADA ULTRA-LIMPA: Apenas a rua e número (sem nome, sem concelho, sem CP, sem país)
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function() {
       let start = this.selectionStart;
@@ -900,21 +900,17 @@ function fecharZoom() {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // Divide o resultado da API: extrai o nome e a morada limpa
                     let partes = local.display_name.split(',');
                     let nomeEspaco = partes[0].trim();
-                    let moradaLimpa = partes.slice(1, -2).join(',').trim(); // Remove o nome e o país/código postal final se excessivo
                     
-                    if (!moradaLimpa) {
-                        moradaLimpa = partes.slice(1).join(',').trim();
-                    }
+                    // Pega apenas na primeira parte da morada (geralmente a rua/número), ignorando concelho, distrito, CP e país
+                    let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
 
                     inputEstabelecimento.value = nomeEspaco;
                     if (inputMorada) {
-                        inputMorada.value = moradaLimpa;
+                        inputMorada.value = ruaLimpa;
                     }
 
-                    // Preenche a localidade automaticamente com base no código postal ou extraído
                     if (codigoPostal.length >= 4) {
                         let locAuto = obterLocalidadePorCP(codigoPostal);
                         if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
