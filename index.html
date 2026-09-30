@@ -113,8 +113,8 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- Link de Partilha do Google Maps no Topo -->
-<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px; margin-top: 5px; margin-bottom: 5px;">
+<!-- LINK DO GOOGLE MAPS NO TOPO (AGORA POR CIMA DO CÓDIGO POSTAL) -->
+<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
   <label style="color: var(--gold); font-size: 13px;">🔗 Link de Partilha do Google Maps (Opcional)</label>
   <div style="display: flex; gap: 8px; margin-top: 6px;">
     <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="border-color: var(--gold); flex: 1;">
@@ -1086,7 +1086,7 @@ function fecharZoom() {
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
   const inputCodCliente = document.getElementById('input-codigo-cliente');
   if (!inputCodCliente || !inputCodCliente.value.trim()) {
-    alert('⚠️️ O campo "Código de cliente" é obrigatório e tem de ser preenchido!');
+    alert('⚠️ O campo "Código de cliente" é obrigatório e tem de ser preenchido!');
     if (inputCodCliente) inputCodCliente.focus();
     return;
   }
