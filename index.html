@@ -123,7 +123,7 @@ input.invalid{border-color:#d9534f}
   <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
 </div>
 
-<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) e Autocomplete Restrito ao CP -->
+<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) com Autocomplete Restrito ao CP -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
   <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Brasão antas..." autocomplete="off" style="border:2px solid var(--gold);">
@@ -179,14 +179,14 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Contacto (Telemóvel) *</label>
   <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-contacto" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="O seu nome completo"></div>
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -845,7 +845,7 @@ function fecharZoom() {
     });
   }
 
-  // Nome do espaço: apenas a primeira palavra com a letra inicial maiúscula
+  // Nome do espaço: apenas a primeira letra maiúscula e autocomplete restrito ao Código Postal validado
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function(e) {
       let start = this.selectionStart;
@@ -865,7 +865,7 @@ function fecharZoom() {
         return;
       }
 
-      // Restringe obrigatoriamente a pesquisa ao código postal introduzido
+      // Restringe obrigatoriamente a pesquisa ao código postal introduzido e validado
       let zonaFiltro = codigoPostal || 'Portugal';
       let termoPesquisa = `${query} ${zonaFiltro}`;
       let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
@@ -884,7 +884,6 @@ function fecharZoom() {
                     
                     let partes = local.display_name.split(',');
                     let nomeEspaco = partes[0].trim();
-                    // Capitaliza apenas a primeira palavra do nome sugerido
                     nomeEspaco = nomeEspaco.charAt(0).toUpperCase() + nomeEspaco.slice(1).toLowerCase();
                     let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
 
@@ -1306,7 +1305,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   
   if (operacao === 'Nova instalação' || operacao === 'Evento') {
     if (!inputDataPretendida || !inputDataPretendida.value.trim()) {
-      alert('⚠️ O campo da data da instalação / pretendida é obrigatório!');
+      alert('⚠️️ O campo da data da instalação / pretendida é obrigatório!');
       if (inputDataPretendida) inputDataPretendida.focus();
       return;
     }
@@ -1321,7 +1320,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputNomeEvento = document.getElementById('input-nome-evento');
   if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
-    alert('⚠️️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
+    alert('⚠️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
     if (inputNomeEvento) inputNomeEvento.focus();
     return;
   }
