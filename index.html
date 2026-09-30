@@ -117,10 +117,9 @@ input.invalid{border-color:#d9534f}
 <div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
   <label style="color: var(--gold); font-size: 13px;">🔗 Link do Google Maps (Opcional)</label>
   <div style="display: flex; gap: 8px; margin-top: 6px;">
-    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps (ex: https://www.google.com/maps/...)" style="border-color: var(--gold); flex: 1;">
+    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps..." style="border-color: var(--gold); flex: 1;">
     <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
   </div>
-  <small style="color: var(--muted); font-size: 11px; display: block; margin-top: 4px;">Dica: Se usar o link completo do Google Maps, o sistema tenta extrair o nome e a localização automaticamente.</small>
 </div>
 
 <!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
@@ -872,7 +871,6 @@ function fecharZoom() {
     });
   }
 
-  // BOTÃO VALIDAR: Tenta extrair o nome do local se for um link longo do Google Maps (/place/Nome+Do+Local/)
   if (btnProcessarLink && inputLinkMaps) {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
@@ -881,29 +879,12 @@ function fecharZoom() {
         inputLinkMaps.focus();
         return;
       }
-
-      // Se for link longo com /place/Nome/
-      if (linkVal.includes('/place/')) {
-        try {
-          let partes = linkVal.split('/place/')[1].split('/')[0];
-          let nomeExtraido = decodeURIComponent(partes.replace(/\+/g, ' '));
-          if (inputEstabelecimento) {
-            inputEstabelecimento.value = nomeExtraido;
-            // Dispara o input para acionar o autocomplete e atualizar o mapa
-            inputEstabelecimento.dispatchEvent(new Event('input'));
-          }
-        } catch(e) {
-          console.error(e);
-        }
-      }
-
       mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
       alert('✅ Link validado e mapa atualizado!');
       mapContainer.style.borderColor = '#28a745';
     });
   }
 
-  // AUTOCOMPLETE COM MORADA APENAS COM A RUA
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function() {
       let start = this.selectionStart;
@@ -962,7 +943,6 @@ function fecharZoom() {
     });
   }
 
-  // Fecha as sugestões se clicar fora
   document.addEventListener('click', function(e) {
     const box = document.getElementById('sugestoesEspacos');
     if (box && inputEstabelecimento && !inputEstabelecimento.contains(e.target) && !box.contains(e.target)) {
@@ -1176,11 +1156,11 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const metrosRefBarril = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D';
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
-  const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
+  const assunto = encodeURIComponent(`Novo Pedido de Instalação de Equipamentos de Cerveja - ${estabelecimento} (${departamento}) - ${codCliente}`);
   
   const corpo = encodeURIComponent(
     "Olá,\n\n" +
-    "Foi submetido um novo pedido de equipamentos através do portal AT Cervejas com os seguintes detalhes:\n\n" +
+    "Foi submetido um novo pedido de equipamentos através do Portal AT Cervejas, cujos detalhes se apresentam abaixo:\n\n" +
     "--- 1. DADOS DO CLIENTE ---\n" +
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
