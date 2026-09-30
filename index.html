@@ -87,20 +87,20 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- Código Postal (Obrigatório) -->
+<!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
 <div class="field">
   <label>📮 Código Postal *</label>
   <div style="display: flex; gap: 8px;">
-    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 4350-157)" maxlength="8" style="border:2px solid var(--gold);">
+    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 2952-025)" maxlength="8" style="border:2px solid var(--gold);">
     <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
   </div>
-  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
+  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 2952-025.</small>
 </div>
 
-<!-- Nome do Estabelecimento (Livre e capitalizado automaticamente) -->
+<!-- Nome do Estabelecimento (Livre e limpo) -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Café Central..." autocomplete="off" style="border:2px solid var(--gold);">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Marisqueira Modesto..." autocomplete="off" style="border:2px solid var(--gold);">
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -126,16 +126,12 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- Link do Google Maps -->
-<div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
-  <label style="color: var(--gold); font-size: 13px;">🔗 Link do Google Maps (Opcional)</label>
-  <div style="display: flex; gap: 8px; margin-top: 6px;">
-    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps..." style="border-color: var(--gold); flex: 1;">
-    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
-  </div>
+<!-- Link do Google Maps Opcional -->
+<div class="field full" style="background: #fffdf9; border: 1px dashed var(--gold); padding: 12px; border-radius: 8px;">
+  <label style="color: var(--gold);">🔗 Link de Partilha do Google Maps (Opcional)</label>
+  <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
 </div>
 
-<!-- Morada de Instalação (Capitalizada) -->
 <div class="field full">
   <label>Morada de instalação *</label>
   <input required name="morada" id="input-morada" placeholder="Morada completa...">
@@ -144,7 +140,7 @@ input.invalid{border-color:#d9534f}
 <!-- Localidade -->
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Ex: Porto, Palmela...">
+  <input required name="localidade" id="input-localidade" placeholder="Ex: Palmela, Setúbal...">
 </div>
 <div class="field"></div>
 
@@ -177,17 +173,13 @@ input.invalid{border-color:#d9534f}
     <option value="Evento">Evento</option>
   </select>
 </div>
-<div class="field" id="field-nome-evento" style="display:none;">
-  <label>Nome do Evento *</label>
-  <input type="text" name="nome_evento" id="input-nome-evento" placeholder="Ex: Festa das Vindimas">
-</div>
 <div class="field" id="field-data-pretendida">
-  <label id="label-data-pretendida">Data pretendida *</label>
-  <input type="date" required name="data_pretendida" id="input-data-pretendida">
+  <label id="label-data-pretendida">Data pretendida</label>
+  <input type="date" name="data_pretendida" id="input-data-pretendida">
 </div>
 <div class="field" id="field-data-levantamento">
   <label id="label-data-levantamento">Data de levantamento *</label>
-  <input type="date" required name="data_levantamento" id="input-data-levantamento">
+  <input type="date" name="data_levantamento" id="input-data-levantamento">
 </div>
 </div></div>
 
@@ -241,12 +233,7 @@ input.invalid{border-color:#d9534f}
   </label>
 </div>
 
-<div id="wrap-btn-mostrar-colunas" style="display:none; margin-bottom: 18px;">
-  <button type="button" id="btn-toggle-colunas-evento" style="background: #f8f9fa; border: 2px dashed var(--gold); color: var(--navy); font-weight: 700; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; transition: all 0.2s;">
-    🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas
-  </button>
-</div>
-
+<!-- Exibição de Colunas -->
 <div id="seccao-colunas">
   <label id="titulo-colunas">Selecione uma ou várias colunas pretendidas e o respetivo tipo de fixação *</label>
   
@@ -383,16 +370,10 @@ input.invalid{border-color:#d9534f}
 <!-- 4. Equipamentos -->
 <div class="panel"><h2>4. Equipamentos</h2><p class="sub">Especifique as caraterísticas técnicas do refrigerador e distâncias.</p>
 
-<div id="wrap-btn-mostrar-refrigerador" style="display:none; margin-bottom: 18px;">
-  <button type="button" id="btn-toggle-refrigerador-evento" style="background: #f8f9fa; border: 2px dashed var(--gold); color: var(--navy); font-weight: 700; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; transition: all 0.2s;">
-    ❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador
-  </button>
-</div>
-
 <div id="container-refrigeradores-lista">
   <div class="refrigerador-item-box" id="ref-item-1">
     <div class="grid">
-      <div class="field field-select-ref-container">
+      <div class="field">
         <label>Tipo de refrigerador *</label>
         <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
           <option value="">Selecionar</option>
@@ -431,7 +412,7 @@ input.invalid{border-color:#d9534f}
 
 </div>
 
-<!-- 5. Resumo Visual -->
+<!-- 5. Resumo Visual da Instalação Pretendida -->
 <div class="panel"><h2>5. Resumo Visual da Instalação Pretendida</h2><p class="sub">Estrutura em fluxo da instalação técnica selecionada.</p>
 
 <div class="resumo-flow">
@@ -505,8 +486,6 @@ input.invalid{border-color:#d9534f}
 
 <script>
 let refItemCounter = 1;
-let eventoForcarColunas = false;
-let eventoForcarRefrigerador = false;
 
 function adicionarNovoRefrigerador() {
   refItemCounter++;
@@ -518,7 +497,7 @@ function adicionarNovoRefrigerador() {
   div.innerHTML = `
     <button type="button" class="btn-remove-ref" onclick="removerRefrigerador('${div.id}')">✕ Remover</button>
     <div class="grid">
-      <div class="field field-select-ref-container">
+      <div class="field">
         <label>Tipo de refrigerador *</label>
         <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
           <option value="">Selecionar</option>
@@ -547,12 +526,6 @@ function adicionarNovoRefrigerador() {
     </div>
   `;
   container.appendChild(div);
-  
-  const operacaoVal = document.getElementById('select-operacao').value;
-  if (operacaoVal === 'Evento' && !eventoForcarRefrigerador) {
-    aplicarModoPortatilUnico(div);
-  }
-  
   atualizarResumoInstalacao();
 }
 
@@ -562,38 +535,6 @@ function removerRefrigerador(id) {
     elem.remove();
     atualizarResumoInstalacao();
   }
-}
-
-function aplicarModoPortatilUnico(box) {
-  const selectRef = box.querySelector('.select-ref-tipo');
-  selectRef.value = 'Refrigerador portátil';
-  const portatilWrap = box.querySelector('.field-ref-portatil-wrap');
-  const qtdWrap = box.querySelector('.field-ref-qtd-wrap');
-  portatilWrap.style.display = 'flex';
-  qtdWrap.style.display = 'flex';
-}
-
-function aplicarModoEventoRefrigeradores() {
-  const operacaoVal = document.getElementById('select-operacao').value;
-  const boxes = document.querySelectorAll('.refrigerador-item-box');
-  
-  boxes.forEach(box => {
-    const selectRef = box.querySelector('.select-ref-tipo');
-    const options = selectRef.querySelectorAll('option');
-    
-    if (operacaoVal === 'Evento' && !eventoForcarRefrigerador) {
-      aplicarModoPortatilUnico(box);
-      options.forEach(opt => {
-        if (opt.value && opt.value !== 'Refrigerador portátil') {
-          opt.style.display = 'none';
-        }
-      });
-    } else {
-      options.forEach(opt => {
-        opt.style.display = 'block';
-      });
-    }
-  });
 }
 
 function processarMudancaRefrigerador(selectElem) {
@@ -619,7 +560,6 @@ function processarMudancaRefrigerador(selectElem) {
 }
 
 function atualizarSelecaoCervejas() {
-  const operacaoVal = document.getElementById('select-operacao').value;
   const selecionadas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value);
   const seccaoColunas = document.getElementById('seccao-colunas');
   const wrapSubLeffe = document.getElementById('wrap-sub-leffe');
@@ -641,14 +581,10 @@ function atualizarSelecaoCervejas() {
     wrapSubLeffe.style.display = 'none';
   }
 
-  if (operacaoVal === 'Evento' && !eventoForcarColunas) {
+  if (qtd === 0) {
     seccaoColunas.style.display = 'none';
   } else {
-    if (qtd === 0) {
-      seccaoColunas.style.display = 'none';
-    } else {
-      seccaoColunas.style.display = 'block';
-    }
+    seccaoColunas.style.display = 'block';
   }
 
   colBud.style.display = selecionadas.includes('Budweiser') ? 'flex' : 'none';
@@ -678,8 +614,7 @@ function obterImagemRefrigerador(nome) {
 }
 
 function atualizarResumoInstalacao() {
-  const operacaoVal = document.getElementById('select-operacao').value;
-  const colunasChecadas = (operacaoVal === 'Evento' && !eventoForcarColunas) ? [] : Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+  const colunasChecadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
   const boxColunas = document.getElementById('box-colunas-content');
   
   if (colunasChecadas.length > 0) {
@@ -694,27 +629,28 @@ function atualizarResumoInstalacao() {
     boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
   }
 
-  const mostrarDistanciasCol = (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && eventoForcarColunas));
-  const mostrarDistanciasRef = (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && eventoForcarRefrigerador));
+  const operacaoVal = document.getElementById('select-operacao').value;
+  if (operacaoVal === 'Nova instalação') {
+    const mColRef = document.getElementById('input-metros-col-ref').value.trim();
+    const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
 
-  const boxMColRef = document.getElementById('resumo-box-m-col-ref');
-  const txtMColRef = document.getElementById('txt-resumo-m-col-ref');
-  const mColRef = document.getElementById('input-metros-col-ref').value.trim();
-  if (mostrarDistanciasCol && mColRef) {
-    txtMColRef.textContent = mColRef;
-    boxMColRef.style.display = 'flex';
-  } else {
-    boxMColRef.style.display = 'none';
-  }
+    const boxMColRef = document.getElementById('resumo-box-m-col-ref');
+    const txtMColRef = document.getElementById('txt-resumo-m-col-ref');
+    if (mColRef) {
+      txtMColRef.textContent = mColRef;
+      boxMColRef.style.display = 'flex';
+    } else {
+      boxMColRef.style.display = 'none';
+    }
 
-  const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
-  const txtMRefBar = document.getElementById('txt-resumo-m-ref-bar');
-  const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
-  if (mostrarDistanciasRef && mRefBar) {
-    txtMRefBar.textContent = mRefBar;
-    boxMRefBar.style.display = 'flex';
-  } else {
-    boxMRefBar.style.display = 'none';
+    const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+    const txtMRefBar = document.getElementById('txt-resumo-m-ref-bar');
+    if (mRefBar) {
+      txtMRefBar.textContent = mRefBar;
+      boxMRefBar.style.display = 'flex';
+    } else {
+      boxMRefBar.style.display = 'none';
+    }
   }
 
   const boxesRef = Array.from(document.querySelectorAll('.refrigerador-item-box'));
@@ -787,8 +723,6 @@ function fecharZoom() {
   const inputLocalidade = document.getElementById('input-localidade');
   const inputCP = document.getElementById('input-cp');
   const btnPesquisarCP = document.getElementById('btn-pesquisar-cp');
-  const btnProcessarLink = document.getElementById('btn-processar-link');
-  const inputLinkMaps = document.getElementById('input-link-maps');
   const mapaFrame = document.getElementById('mapa-frame');
   const mapContainer = document.getElementById('map-container');
   const caixaConfirmacao = document.getElementById('caixa-confirmacao');
@@ -798,71 +732,49 @@ function fecharZoom() {
 
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
-  const inputNomeEvento = document.getElementById('input-nome-evento');
-
-  if (inputNomeEvento) {
-    inputNomeEvento.addEventListener('input', function(e) {
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-      this.setSelectionRange(start, end);
-    });
-  }
-
-  if (inputEstabelecimento) {
-    inputEstabelecimento.addEventListener('input', function(e) {
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-      let val = this.value;
-      if (val.length > 0) {
-        this.value = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
-      }
-      this.setSelectionRange(start, end);
-    });
-  }
-
-  if (inputMorada) {
-    inputMorada.addEventListener('input', function(e) {
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-      this.setSelectionRange(start, end);
-    });
-  }
 
   function obterLocalidadePorCP(cp) {
     if (!cp || cp.length < 4) return '';
     const prefixo = parseInt(cp.substring(0, 4), 10);
     
-    if (prefixo >= 9500 && prefixo <= 9540) return "Ponta Delgada";
-    if (prefixo >= 9700 && prefixo <= 9760) return "Angra do Heroísmo (Terceira)";
-    if (prefixo >= 9800 && prefixo <= 9850) return "Velas (São Jorge)";
-    if (prefixo >= 9900 && prefixo <= 9940) return "Horta (Faial)";
-    if (prefixo >= 9000 && prefixo <= 9060) return "Funchal";
-    if (prefixo >= 9200 && prefixo <= 9220) return "Machico";
-    if (prefixo >= 9300 && prefixo <= 9325) return "Câmara de Lobos";
     if (prefixo >= 1000 && prefixo <= 1999) return "Lisboa";
     if (prefixo >= 2000 && prefixo <= 2040) return "Santarém";
+    if (prefixo >= 2050 && prefixo <= 2070) return "Cartaxo / Azambuja";
+    if (prefixo >= 2100 && prefixo <= 2130) return "Coruche / Benavente";
+    if (prefixo >= 2200 && prefixo <= 2230) return "Abrantes";
+    if (prefixo >= 2300 && prefixo <= 2350) return "Tomar / Torres Novas";
     if (prefixo >= 2400 && prefixo <= 2490) return "Leiria / Fátima";
+    if (prefixo >= 2500 && prefixo <= 2560) return "Caldas da Rainha / Peniche / Torres Vedras";
+    if (prefixo >= 2600 && prefixo <= 2670) return "Vila Franca de Xira / Loures";
     if (prefixo >= 2700 && prefixo <= 2790) return "Amadora / Sintra / Cascais";
     if (prefixo >= 2800 && prefixo <= 2840) return "Almada / Seixal / Barreiro";
     if (prefixo >= 2850 && prefixo <= 2855) return "Setúbal (Margem Sul)";
+    if (prefixo >= 2870 && prefixo <= 2875) return "Montijo";
+    if (prefixo >= 2890 && prefixo <= 2895) return "Alcochete";
     if (prefixo >= 2900 && prefixo <= 2910) return "Setúbal";
     if (prefixo >= 2925 && prefixo <= 2925) return "Azeitão";
     if (prefixo >= 2950 && prefixo <= 2955) return "Palmela";
     if (prefixo >= 3000 && prefixo <= 3060) return "Coimbra";
+    if (prefixo >= 3500 && prefixo <= 3530) return "Viseu";
     if (prefixo >= 3800 && prefixo <= 3860) return "Aveiro";
     if (prefixo >= 4000 && prefixo <= 4490) return "Porto";
     if (prefixo >= 4700 && prefixo <= 4760) return "Braga / Barcelos";
+    if (prefixo >= 4800 && prefixo <= 4850) return "Guimarães";
+    if (prefixo >= 5000 && prefixo <= 5050) return "Vila Real";
+    if (prefixo >= 5300 && prefixo <= 5370) return "Bragança";
+    if (prefixo >= 6000 && prefixo <= 6060) return "Castelo Branco";
+    if (prefixo >= 6300 && prefixo <= 6350) return "Guarda";
+    if (prefixo >= 7000 && prefixo <= 7005) return "Évora";
+    if (prefixo >= 7300 && prefixo <= 7350) return "Portalegre";
+    if (prefixo >= 7800 && prefixo <= 7830) return "Beja";
     if (prefixo >= 8000 && prefixo <= 8700) return "Faro / Algarve";
+    if (prefixo >= 9000 && prefixo <= 9380) return "Funchal (Madeira)";
+    if (prefixo >= 9500 && prefixo <= 9980) return "Ponta Delgada / Açores";
     
-    return "Portugal";
+    return "";
   }
 
   function processarCodigoPostal() {
-    const linkVal = inputLinkMaps ? inputLinkMaps.value.trim() : '';
-    if (linkVal) return;
-
     const cp = inputCP ? inputCP.value.trim() : '';
     const cpRegex = /^\d{4}-\d{3}$/;
     const avisoCP = document.getElementById('cp-aviso');
@@ -926,30 +838,18 @@ function fecharZoom() {
     });
   }
 
-  if (btnProcessarLink && inputLinkMaps) {
-    btnProcessarLink.addEventListener('click', function() {
-      let linkVal = inputLinkMaps.value.trim();
-      if (!linkVal) {
-        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
-        inputLinkMaps.focus();
-        return;
-      }
-
-      if (linkVal.includes('<iframe')) {
-        const match = linkVal.match(/src="([^"]+)"/);
-        if (match && match[1]) {
-          linkVal = match[1];
-        }
-      }
-
-      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-      alert('✅ Link do Google Maps aplicado ao mapa com sucesso!');
-      mapContainer.style.borderColor = '#28a745';
+  // Nome do Estabelecimento livre com maiúsculas automáticas
+  if (inputEstabelecimento) {
+    inputEstabelecimento.addEventListener('input', function() {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
     });
   }
 
   if (inputRespLocal) {
-    inputRespLocal.addEventListener('input', function(e) {
+    inputRespLocal.addEventListener('input', function() {
       let start = this.selectionStart;
       let end = this.selectionEnd;
       this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
@@ -958,7 +858,7 @@ function fecharZoom() {
   }
 
   if (inputRespComercial) {
-    inputRespComercial.addEventListener('input', function(e) {
+    inputRespComercial.addEventListener('input', function() {
       let start = this.selectionStart;
       let end = this.selectionEnd;
       this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
@@ -992,101 +892,26 @@ function fecharZoom() {
   }
 
   const selectOperacao = document.getElementById('select-operacao');
-  const fieldNomeEvento = document.getElementById('field-nome-evento');
   const fieldDataPretendida = document.getElementById('field-data-pretendida');
   const labelDataPretendida = document.getElementById('label-data-pretendida');
   const fieldDataLevantamento = document.getElementById('field-data-levantamento');
   
-  const wrapBtnMostrarColunas = document.getElementById('wrap-btn-mostrar-colunas');
-  const btnToggleColunasEvento = document.getElementById('btn-toggle-colunas-evento');
-  const wrapBtnMostrarRefrigerador = document.getElementById('wrap-btn-mostrar-refrigerador');
-  const btnToggleRefrigeradorEvento = document.getElementById('btn-toggle-refrigerador-evento');
-
   const wrapMetrosColRef = document.getElementById('wrap-metros-col-ref');
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
-
-  if (btnToggleColunasEvento) {
-    btnToggleColunasEvento.addEventListener('click', function() {
-      eventoForcarColunas = !eventoForcarColunas;
-      if (eventoForcarColunas) {
-        this.style.background = '#e8f5e9';
-        this.style.borderColor = '#28a745';
-        this.innerHTML = '✅ Colunas atidas (clique para ocultar)';
-        if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
-      } else {
-        this.style.background = '#f8f9fa';
-        this.style.borderColor = 'var(--gold)';
-        this.innerHTML = '🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas';
-        if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
-      }
-      atualizarSelecaoCervejas();
-      atualizarResumoInstalacao();
-    });
-  }
-
-  if (btnToggleRefrigeradorEvento) {
-    btnToggleRefrigeradorEvento.addEventListener('click', function() {
-      eventoForcarRefrigerador = !eventoForcarRefrigerador;
-      if (eventoForcarRefrigerador) {
-        this.style.background = '#e8f5e9';
-        this.style.borderColor = '#28a745';
-        this.innerHTML = '✅ Refrigeradores ativados (clique para ocultar)';
-        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
-      } else {
-        this.style.background = '#f8f9fa';
-        this.style.borderColor = 'var(--gold)';
-        this.innerHTML = '❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
-        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-      }
-      aplicarModoEventoRefrigeradores();
-      atualizarResumoInstalacao();
-    });
-  }
+  const resumoBoxMColRef = document.getElementById('resumo-box-m-col-ref');
+  const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
 
   function atualizarExibicaoDatas() {
     const valor = selectOperacao ? selectOperacao.value : '';
     
     if (valor === 'Nova instalação') {
-      if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'none';
-      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'none';
       if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
       if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
-    } else if (valor === 'Evento') {
-      if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'block';
-      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'block';
-
-      if (!eventoForcarColunas) {
-        if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
-      }
-      if (!eventoForcarRefrigerador) {
-        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-      }
     } else {
-      if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'none';
-      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'none';
       if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
       if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-    }
-
-    if (valor === 'Evento') {
-      fieldNomeEvento.style.display = 'flex';
-      inputNomeEvento.setAttribute('required', 'true');
-    } else {
-      fieldNomeEvento.style.display = 'none';
-      inputNomeEvento.removeAttribute('required');
-      inputNomeEvento.value = '';
-      eventoForcarColunas = false;
-      eventoForcarRefrigerador = false;
-      if (btnToggleColunasEvento) {
-        btnToggleColunasEvento.style.background = '#f8f9fa';
-        btnToggleColunasEvento.style.borderColor = 'var(--gold)';
-        btnToggleColunasEvento.innerHTML = '🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas';
-      }
-      if (btnToggleRefrigeradorEvento) {
-        btnToggleRefrigeradorEvento.style.background = '#f8f9fa';
-        btnToggleRefrigeradorEvento.style.borderColor = 'var(--gold)';
-        btnToggleRefrigeradorEvento.innerHTML = '❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
-      }
+      if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
+      if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
     }
 
     if (valor === 'Nova instalação') {
@@ -1102,12 +927,9 @@ function fecharZoom() {
       fieldDataLevantamento.style.display = 'flex';
     } else {
       fieldDataPretendida.style.display = 'flex';
-      labelDataPretendida.textContent = 'Data pretendida *';
+      labelDataPretendida.textContent = 'Data pretendida';
       fieldDataLevantamento.style.display = 'flex';
     }
-
-    aplicarModoEventoRefrigeradores();
-    atualizarSelecaoCervejas();
   }
 
   if (selectOperacao) {
@@ -1174,60 +996,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
-  const inputCP = document.getElementById('input-cp');
-  if (!inputCP || !inputCP.value.trim()) {
-    alert('⚠️ O campo "Código Postal" é obrigatório e tem de ser preenchido!');
-    if (inputCP) inputCP.focus();
-    return;
-  }
-
-  const inputMorada = document.getElementById('input-morada');
-  if (!inputMorada || !inputMorada.value.trim()) {
-    alert('⚠️ O campo "Morada de instalação" é obrigatório e tem de ser preenchido!');
-    if (inputMorada) inputMorada.focus();
-    return;
-  }
-
-  const inputLocalidade = document.getElementById('input-localidade');
-  if (!inputLocalidade || !inputLocalidade.value.trim()) {
-    alert('⚠️ O campo "Localidade" é obrigatório e tem de ser preenchido!');
-    if (inputLocalidade) inputLocalidade.focus();
-    return;
-  }
-
-  const selectOperacao = document.getElementById('select-operacao');
-  const operacao = selectOperacao.value || 'N/D';
-  if (!operacao || operacao === '') {
-    alert('⚠️ O campo "Operação" é obrigatório e tem de ser selecionado!');
-    selectOperacao.focus();
-    return;
-  }
-
-  const inputDataPretendida = document.getElementById('input-data-pretendida');
-  const inputDataLevantamento = document.getElementById('input-data-levantamento');
-  
-  if (operacao === 'Nova instalação' || operacao === 'Evento') {
-    if (!inputDataPretendida || !inputDataPretendida.value.trim()) {
-      alert('⚠️ O campo da data da instalação / pretendida é obrigatório!');
-      if (inputDataPretendida) inputDataPretendida.focus();
-      return;
-    }
-  }
-  if (operacao === 'Levantamento' || operacao === 'Evento') {
-    if (!inputDataLevantamento || !inputDataLevantamento.value.trim()) {
-      alert('⚠️ O campo da data de levantamento é obrigatório!');
-      if (inputDataLevantamento) inputDataLevantamento.focus();
-      return;
-    }
-  }
-
-  const inputNomeEvento = document.getElementById('input-nome-evento');
-  if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
-    alert('⚠️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
-    if (inputNomeEvento) inputNomeEvento.focus();
-    return;
-  }
-
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
     alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
@@ -1245,44 +1013,30 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const codCliente = inputCodCliente.value.trim();
   const departamento = inputDepartamento.value.trim();
   const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
-  const moradaVal = inputMorada.value.trim();
-  const cpVal = inputCP.value.trim();
-  const localidade = inputLocalidade.value.trim();
+  const morada = document.getElementById('input-morada').value || 'N/D';
+  const cp = document.getElementById('input-cp').value || '';
+  const localidade = document.getElementById('input-localidade').value || 'N/D';
   const respLocal = document.getElementById('input-resp-local').value || 'N/D';
   const telLocal = document.getElementById('input-contacto').value || 'N/D';
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
-  const dataPretendida = inputDataPretendida ? inputDataPretendida.value : 'N/D';
-  const nomeEventoVal = inputNomeEvento ? inputNomeEvento.value.trim() : '';
+  const operacao = document.getElementById('select-operacao').value || 'N/D';
+  const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
   const obs = document.querySelector('textarea[name="observacoes"]').value || 'Nenhuma';
 
-  const inputLinkElem = document.getElementById('input-link-maps');
-  const linkManualMaps = inputLinkElem ? inputLinkElem.value.trim() : '';
-  const queryMapa = encodeURIComponent(`${estabelecimento}, ${moradaVal}, ${cpVal} ${localidade} Portugal`);
+  const linkManualMaps = document.getElementById('input-link-maps') ? document.getElementById('input-link-maps').value.trim() : '';
+  const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
   const linkGoogleMaps = linkManualMaps !== '' ? linkManualMaps : `https://www.google.com/maps/search/?api=1&query=${queryMapa}`;
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  let colunasTxt = '';
-  let metrosColunaRefTxt = '';
-  if (operacao === 'Evento' && !eventoForcarColunas) {
-    colunasTxt = '• Colunas: N/A (Refrigerador portátil / Evento)';
-  } else {
-    const colunasSelecionadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
-    if (colunasSelecionadas.length > 0) {
-      colunasTxt = colunasSelecionadas.map(c => {
-        const choiceBox = c.closest('.choice');
-        const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
-        return `- ${c.value} (Fixação: ${fixacao})`;
-      }).join('\n');
-    } else {
-      colunasTxt = 'Nenhuma coluna selecionada';
-    }
-    const mColRefVal = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
-    if (mColRefVal) {
-      metrosColunaRefTxt = `• Metros da coluna ao refrigerador: ${mColRefVal}\n`;
-    }
-  }
+  const colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
+    const choiceBox = c.closest('.choice');
+    const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
+    return `- ${c.value} (Fixação: ${fixacao})`;
+  }).join('\n') || 'Nenhuma coluna selecionada';
+
+  const metrosColunaRef = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value : 'N/D';
 
   let refrigeradoresTxt = '';
   document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
@@ -1296,51 +1050,32 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = 'Nenhum refrigerador selecionado';
 
-  let metrosRefBarrilTxt = '';
-  const mostrarMetrosRefBar = (operacao === 'Nova instalação' || (operacao === 'Evento' && eventoForcarRefrigerador));
-  if (mostrarMetrosRefBar) {
-    const mRefBarVal = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
-    if (mRefBarVal) {
-      metrosRefBarrilTxt = `• Metros do refrigerador ao barril: ${mRefBarVal}\n`;
-    }
-  }
-
-  let fraseIntro = "";
-  if (operacao === 'Levantamento') {
-    fraseIntro = "Foi submetido um novo pedido de Levantamento através do Portal AT Cervejas, cujos detalhes se apresentam abaixo:";
-  } else if (operacao === 'Evento') {
-    fraseIntro = `Foi submetido um novo pedido de equipamentos para o Evento ${nomeEventoVal} através do Portal AT Cervejas, cujos detalhes se apresentam abaixo:`;
-  } else {
-    fraseIntro = "Foi submetido um novo pedido de equipamentos através do Portal AT Cervejas, cujos detalhes se apresentam abaixo:";
-  }
+  const metrosRefBarril = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D';
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
-  const assunto = encodeURIComponent(`Novo Pedido de Instalação de Equipamentos de Cerveja - ${estabelecimento} (${departamento}) - ${codCliente}`);
+  const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
   
   const corpo = encodeURIComponent(
     "Olá,\n\n" +
-    `${fraseIntro}\n\n` +
+    "Foi submetido um novo pedido de equipamentos através do portal AT Cervejas com os seguintes detalhes:\n\n" +
     "--- 1. DADOS DO CLIENTE ---\n" +
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
     `• Departamento: ${departamento}\n` +
-    `• Morada: ${moradaVal}, ${cpVal} ${localidade}\n` +
+    `• Morada: ${morada}, ${cp} ${localidade}\n` +
     `• Link Google Maps: ${linkGoogleMaps}\n` +
     `• Responsável Local: ${respLocal} (${telLocal})\n` +
     `• Comercial / GD: ${comercial} (${telComercial})\n\n` +
     "--- 2. TIPO DE PEDIDO ---\n" +
     `• Operação: ${operacao}\n` +
-    (operacao === 'Evento' ? `• Nome do Evento: ${nomeEventoVal}\n` : '') +
     `• Data pretendida: ${dataPretendida}\n\n` +
     "--- 3. CERVEJA E COLUNAS ---\n" +
     `• Marcas pretendidas: ${cervejas}\n` +
-    `${colunasTxt}\n` +
-    (metrosColunaRefTxt ? `${metrosColunaRefTxt}` : '') +
-    "\n" +
+    `${colunas}\n` +
+    `• Metros da coluna ao refrigerador: ${metrosColunaRef}\n\n` +
     "--- 4. REFRIGERADORES E EQUIPAMENTOS ---\n" +
     `${refrigeradoresTxt}` +
-    (metrosRefBarrilTxt ? `${metrosRefBarrilTxt}` : '') +
-    "\n" +
+    `• Metros do refrigerador ao barril: ${metrosRefBarril}\n\n` +
     "--- 5. OBSERVAÇÕES ---\n" +
     `${obs}\n\n` +
     "Com os melhores cumprimentos,\n" +
