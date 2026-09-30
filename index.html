@@ -887,6 +887,10 @@ function fecharZoom() {
   }
 
   function processarCodigoPostal() {
+    // Se houver um link manual inserido, não mexe no mapa automaticamente para não sobrepor
+    const linkVal = inputLinkMaps ? inputLinkMaps.value.trim() : '';
+    if (linkVal) return;
+
     const cp = inputCP ? inputCP.value.trim() : '';
     const cpRegex = /^\d{4}-\d{3}$/;
     const avisoCP = document.getElementById('cp-aviso');
@@ -950,21 +954,36 @@ function fecharZoom() {
     });
   }
 
+  // Validação segura do link do Google Maps (apenas atualiza o iframe do mapa sem alterar campos já preenchidos)
   if (btnProcessarLink && inputLinkMaps) {
     btnProcessarLink.addEventListener('click', function() {
-      const linkVal = inputLinkMaps.value.trim();
+      let linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
         alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
-      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-      alert('✅ Link validado e mapa atualizado!');
+
+      // Se o utilizador colou um iframe completo, extrai apenas o URL do src
+      if (linkVal.includes('<iframe')) {
+        const match = linkVal.match(/src="([^"]+)"/);
+        if (match && match[1]) {
+          linkVal = match[1];
+        }
+      }
+
+      // Se for um link normal de partilha do Google Maps, tenta extrair coordenadas ou termo de pesquisa para o embed
+      if (linkVal.startsWith('http')) {
+        mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
+      } else {
+        mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
+      }
+
+      alert('✅ Link do Google Maps aplicado ao mapa com sucesso!');
       mapContainer.style.borderColor = '#28a745';
     });
   }
 
-  // AUTOCOMPLETE INTELIGENTE AO ESCREVER O NOME DO ESPAÇO
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function() {
       let query = this.value.trim();
@@ -997,13 +1016,11 @@ function fecharZoom() {
                     let nomeEspaco = partes[0].trim();
                     let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
 
-                    // Preenche automaticamente o nome do espaço e a morada limpa
                     inputEstabelecimento.value = nomeEspaco;
                     if (inputMorada) {
                         inputMorada.value = ruaLimpa;
                     }
 
-                    // Se houver código postal definido, garante a localidade
                     if (codigoPostal.length >= 4) {
                         let locAuto = obterLocalidadePorCP(codigoPostal);
                         if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
@@ -1302,7 +1319,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputNomeEvento = document.getElementById('input-nome-evento');
   if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
-    alert('⚠️️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
+    alert('⚠️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
     if (inputNomeEvento) inputNomeEvento.focus();
     return;
   }
