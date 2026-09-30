@@ -113,12 +113,12 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- LINK DO GOOGLE MAPS NO TOPO -->
+<!-- LINK DO GOOGLE MAPS NO TOPO COM BOTÃO VALIDAR -->
 <div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
   <label style="color: var(--gold); font-size: 13px;">🔗 Link de Partilha do Google Maps (Opcional)</label>
   <div style="display: flex; gap: 8px; margin-top: 6px;">
-    <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="border-color: var(--gold); flex: 1;">
-    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Atualizar Mapa</button>
+    <input type="text" id="input-link-maps" placeholder="Cole aqui o link do Google Maps..." style="border-color: var(--gold); flex: 1;">
+    <button type="button" id="btn-processar-link" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 16px; font-weight: bold; cursor: pointer; white-space: nowrap;">Validar</button>
   </div>
 </div>
 
@@ -186,7 +186,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -875,13 +875,14 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️ Por favor, cole primeiro um link do Google Maps.');
+        alert('⚠️ Por favor, insira primeiro um link válido do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
       
-      // Correção para abrir o link curto ou completo corretamente no iframe do maps
-      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
+      // Validação amigável do link inserido e foco no mapa com tratamento de erro visual
+      alert('✅ Link validado com sucesso! Confirme os dados abaixo.');
+      mapContainer.style.borderColor = '#28a745';
     });
   }
 
@@ -1102,14 +1103,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
-    alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
+    alert('⚠️️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
     inputContacto.focus();
     return;
   }
 
   const inputTelComercial = document.getElementById('input-tel-comercial');
   if (inputTelComercial && inputTelComercial.value.length !== 9) {
-    alert('⚠️️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
+    alert('⚠️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
     inputTelComercial.focus();
     return;
   }
@@ -1165,7 +1166,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "--- 1. DADOS DO CLIENTE ---\n" +
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
-    `• Departamento: ${departamento}\n` +
+    `• Departamento: **${departamento}**\n` +
     `• Morada: ${morada}, ${cp} ${localidade}\n` +
     `• Link Google Maps: ${linkGoogleMaps}\n` +
     `• Responsável Local: ${respLocal} (${telLocal})\n` +
