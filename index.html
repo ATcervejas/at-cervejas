@@ -1,0 +1,1041 @@
+cat << 'EOF' > index.html
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AT Cervejas | Pedido de Equipamentos</title>
+<style>
+:root{--navy:#101b27;--gold:#b78a45;--ink:#172332;--muted:#6d7783;--line:#e5e8ec;--soft:#f6f8fa}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#f5f6f8}
+.hero{background:linear-gradient(110deg,rgba(8,17,27,.97),rgba(8,17,27,.72)),url('image23.png') center/cover;color:white;padding:48px 22px 42px}
+.wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
+main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
+
+.cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.choice{position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white;cursor:pointer;padding-bottom:12px;display:flex;flex-direction:column;transition:all 0.2s ease}
+.choice input[type="checkbox"]{position:absolute;top:10px;right:10px;accent-color:var(--gold);width:18px;height:18px;z-index:2}
+.choice .img-wrapper{position:relative;width:100%;height:110px;background:#ffffff;display:flex;align-items:center;justify-content:center;padding:10px}
+.choice .img-wrapper img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.zoom-btn{position:absolute;top:8px;left:8px;background:rgba(16,27,39,0.75);color:white;border:0;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:background 0.2s;z-index:3}
+.zoom-btn:hover{background:var(--gold)}
+.choice .title-choice{padding:8px 8px 2px;font-size:13px;font-weight:700;text-align:center}
+.choice .subchoice-wrap{padding:0 8px;margin-top:6px}
+.choice .subchoice-wrap select{padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid #d9dfe6;background:#fffdfa}
+.choice .fixacao-wrap{padding:0 10px;margin-top:auto}
+.choice select{padding:6px 8px;font-size:12px;border-radius:6px}
+.choice:has(input:checked){border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(183,138,69,.15);background:#fffdf9}
+
+.badge-stock{display:block;font-size:11px;color:#d9534f;font-weight:700;text-align:center;margin-top:4px}
+
+.refrigerador-item-box{background:#fdfdfd;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;position:relative}
+.btn-remove-ref{position:absolute;top:10px;right:10px;background:#dc3545;color:white;border:0;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-weight:bold}
+.btn-add-ref{background:#f8f9fa;border:2px dashed var(--gold);color:var(--navy);font-weight:700;padding:10px;border-radius:10px;cursor:pointer;width:100%;margin-top:6px;transition:all 0.2s}
+.btn-add-ref:hover{background:#fffdf9}
+
+.resumo-flow{display:grid;grid-template-columns:repeat(5, minmax(0, 1fr));gap:10px;margin-top:15px;align-items:stretch}
+.resumo-card-box{border:2px solid var(--line);border-radius:12px;background:#fff;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+.resumo-card-box .tag-step{font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:0.5px;color:var(--gold);margin-bottom:6px}
+.resumo-card-box .img-thumb{width:100%;height:70px;object-fit:contain;margin-bottom:4px}
+.resumo-card-box .desc-label{font-size:11px;font-weight:700;color:var(--ink)}
+.resumo-card-box .badge-qtd{background:var(--navy);color:white;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;margin-top:3px}
+
+.barril-container{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:100%;height:100%;position:relative;padding-top:6px}
+.barril-logos-wrap{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:4px;max-height:45px;overflow:hidden}
+.barril-logos-wrap img{height:28px;object-fit:contain}
+.barril-img-main{height:65px;object-fit:contain;margin-bottom:4px}
+
+#seccao-colunas{display:none;margin-top:20px;padding-top:18px;border-top:1px dashed var(--line)}
+
+.modal-zoom{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.modal-zoom img{max-width:90%;max-height:85vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+.modal-close{position:absolute;top:20px;right:25px;color:white;font-size:32px;font-weight:bold;cursor:pointer;user-select:none}
+
+.side{position:sticky;top:20px;align-self:start}.summary{background:var(--navy);color:white;border-radius:18px;padding:24px}.summary h3{margin:0 0 14px;font-size:20px}.summary p{color:#dbe3eb;font-size:14px;line-height:1.55}.summary ul{padding-left:18px;color:#dbe3eb;font-size:14px;line-height:1.8}.notice{background:#edf7f1;color:#245b3c;border-radius:12px;padding:14px;font-size:13px;margin-top:15px}.button{border:0;background:var(--gold);color:white;padding:15px 18px;border-radius:11px;font-weight:800;font-size:15px;cursor:pointer;width:100%;margin-top:18px}.button:hover{filter:brightness(.95)}.small{font-size:12px;color:var(--muted);line-height:1.5}.footer{background:var(--navy);color:#dbe3eb;padding:28px 22px;text-align:center;font-size:13px}
+.error-msg{color:#d9534f;display:none;font-size:12px;font-weight:bold;margin-top:2px}
+input.invalid{border-color:#d9534f}
+
+.confirm-box{background:#f8f9fa;border:1px solid #d9dfe6;border-radius:8px;padding:12px;margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.confirm-box p{margin:0;font-size:13px;font-weight:600}
+.btn-confirm-group{display:flex;gap:8px}
+.btn-confirm{border:0;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-yes{background:#28a745;color:white}
+.btn-no{background:#dc3545;color:white}
+@media(max-width:980px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.resumo-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}.side{position:static}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.cards,.resumo-flow{grid-template-columns:1fr}.panel{padding:19px}.hero{padding-top:30px}.hero-top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="wrap">
+<div class="hero-top"><div class="brand">AT CERVEJAS</div><div class="eyebrow">Formulário online</div></div>
+<h1>Pedido de Equipamentos de Cerveja</h1>
+<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
+<div class="benefits"><span>Processo simples</span><span>Equipamentos com imagem</span><span>Pedido organizado</span></div>
+</div>
+</header>
+<main><div class="wrap layout">
+<section>
+<form id="pedido">
+<div class="panel"><h2>1. Dados do cliente</h2><p class="sub">Identificação do estabelecimento e dos responsáveis.</p>
+<div class="grid">
+<div class="field">
+  <label>Código de cliente *</label>
+  <input required name="codigo_cliente" id="input-codigo-cliente" placeholder="Código do cliente">
+</div>
+<div class="field">
+  <label>Departamento de fornecimento *</label>
+  <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
+</div>
+
+<!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
+<div class="field">
+  <label>📮 Código Postal *</label>
+  <div style="display: flex; gap: 8px;">
+    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 2952-025)" maxlength="8" style="border:2px solid var(--gold);">
+    <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
+  </div>
+  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 2952-025.</small>
+</div>
+
+<!-- Nome do Estabelecimento com Maiúsculas Automáticas -->
+<div class="field">
+  <label>🏢 Nome do espaço / estabelecimento *</label>
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Marisqueira Modesto..." style="border:2px solid var(--gold);">
+</div>
+
+<!-- Mapa Dinâmico & Confirmação -->
+<div class="field full map-field" style="margin-top: 5px; margin-bottom: 10px;">
+  <div id="map-container" style="width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border: 1px solid #ccc;">
+    <iframe 
+      id="mapa-frame"
+      src="https://maps.google.com/maps?q=Portugal&t=&z=7&ie=UTF8&iwloc=&output=embed" 
+      width="100%" 
+      height="280" 
+      style="border:0; display: block;" 
+      allowfullscreen="" 
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <div class="confirm-box" id="caixa-confirmacao">
+    <p id="texto-confirmacao">📍 Confirme o local selecionado no mapa:</p>
+    <div class="btn-confirm-group">
+      <button type="button" class="btn-confirm btn-yes" id="btn-morada-sim">Sim, é este o local</button>
+      <button type="button" class="btn-confirm btn-no" id="btn-morada-nao">Não, ajustar dados</button>
+    </div>
+  </div>
+</div>
+
+<!-- Link do Google Maps Opcional -->
+<div class="field full" style="background: #fffdf9; border: 1px dashed var(--gold); padding: 12px; border-radius: 8px;">
+  <label style="color: var(--gold);">🔗 Link de Partilha do Google Maps (Opcional)</label>
+  <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
+</div>
+
+<div class="field full">
+  <label>Morada de instalação *</label>
+  <input required name="morada" id="input-morada" placeholder="Morada completa...">
+</div>
+
+<!-- Localidade -->
+<div class="field">
+  <label>🌍 Localidade *</label>
+  <input required name="localidade" id="input-localidade" placeholder="Ex: Palmela, Setúbal...">
+</div>
+<div class="field"></div>
+
+<div class="field"><label>Responsável no local *</label><input required name="responsavel_local" id="input-resp-local" placeholder="Nome do responsável"></div>
+<div class="field">
+  <label>Contacto (Telemóvel) *</label>
+  <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
+  <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+</div>
+
+<div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="O seu nome completo"></div>
+<div class="field">
+  <label>Telemóvel do comercial *</label>
+  <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+</div>
+
+<div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
+</div></div>
+
+<!-- 2. Tipo de pedido -->
+<div class="panel"><h2>2. Tipo de pedido</h2><p class="sub">Selecione a operação pretendida.</p>
+<div class="grid">
+<div class="field">
+  <label>Operação *</label>
+  <select required name="operacao" id="select-operacao">
+    <option value="">Selecionar</option>
+    <option value="Nova instalação">Nova instalação</option>
+    <option value="Levantamento">Levantamento</option>
+    <option value="Evento">Evento</option>
+  </select>
+</div>
+<div class="field" id="field-data-pretendida">
+  <label id="label-data-pretendida">Data pretendida</label>
+  <input type="date" name="data_pretendida" id="input-data-pretendida">
+</div>
+<div class="field" id="field-data-levantamento">
+  <label id="label-data-levantamento">Data de levantamento *</label>
+  <input type="date" name="data_levantamento" id="input-data-levantamento">
+</div>
+</div></div>
+
+<!-- 3. Cerveja e Colunas -->
+<div class="panel"><h2>3. Cerveja e Colunas</h2><p class="sub">Selecione uma ou mais marcas de cerveja para consultar e selecionar as colunas pretendidas.</p>
+
+<label>Selecione as marcas de cerveja pretendidas *</label>
+<div class="cards" style="margin:12px 0 18px">
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Budweiser" class="chk-cerveja" data-logo="logobud.png" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper"><img src="logobud.png" alt="Budweiser"></div>
+    <div class="title-choice">Budweiser</div>
+  </label>
+
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Stella Artois" class="chk-cerveja" data-logo="logostella.png" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper"><img src="logostella.png" alt="Stella Artois"></div>
+    <div class="title-choice">Stella Artois</div>
+  </label>
+
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Franziskaner" class="chk-cerveja" data-logo="logofranziskaner.png" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper"><img src="logofranziskaner.png" alt="Franziskaner"></div>
+    <div class="title-choice">Franziskaner</div>
+  </label>
+
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Beck's" class="chk-cerveja" data-logo="logobecks.png" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper"><img src="logobecks.png" alt="Beck's"></div>
+    <div class="title-choice">Beck's</div>
+  </label>
+
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Leffe" id="chk-leffe" class="chk-cerveja" data-logo="image3.png" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper"><img src="image3.png" alt="Leffe"></div>
+    <div class="title-choice">Leffe</div>
+    <div class="subchoice-wrap" id="wrap-sub-leffe" style="display:none;">
+      <select name="variedade_leffe" id="select-variedade-leffe" onclick="event.stopPropagation()">
+        <option value="">Variedade...</option>
+        <option value="Brune">Brune</option>
+        <option value="Blonde">Blonde</option>
+        <option value="Ambas">Ambas</option>
+      </select>
+    </div>
+  </label>
+
+  <label class="choice">
+    <input type="checkbox" name="marca" value="Outra" id="chk-outra" class="chk-cerveja" data-logo="" onchange="atualizarSelecaoCervejas()">
+    <div class="img-wrapper" style="font-size:32px;">🍺</div>
+    <div class="title-choice">OUTRA</div>
+  </label>
+</div>
+
+<!-- Exibição de Colunas -->
+<div id="seccao-colunas">
+  <label id="titulo-colunas">Selecione uma ou várias colunas pretendidas e o respetivo tipo de fixação *</label>
+  
+  <div class="cards" id="lista-colunas-dinamicas" style="margin-top:12px;">
+    
+    <label class="choice item-coluna" id="coluna-bud" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna BUD" data-img="image2.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('image2.png', event)">🔍</button>
+        <img src="image2.png" alt="Coluna BUD">
+      </div>
+      <div class="title-choice">Coluna BUD</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_bud" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-stella" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Original Stella Artois" data-img="image1.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('image1.png', event)">🔍</button>
+        <img src="image1.png" alt="Coluna Stella Artois">
+      </div>
+      <div class="title-choice">Coluna Stella Artois</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_stella" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-franziskaner" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Franziskaner" data-img="colunafranziskaner.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('colunafranziskaner.png', event)">🔍</button>
+        <img src="colunafranziskaner.png" alt="Coluna Franziskaner">
+      </div>
+      <div class="title-choice">Coluna Franziskaner</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_franziskaner" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-becks" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Beck's" data-img="colunabecks.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('colunabecks.png', event)">🔍</button>
+        <img src="colunabecks.png" alt="Coluna Beck's">
+      </div>
+      <div class="title-choice">Coluna Beck's</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_becks" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-flute" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna FLUTE" data-img="fluteleffe.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('fluteleffe.png', event)">🔍</button>
+        <img src="fluteleffe.png" alt="Coluna FLUTE">
+      </div>
+      <div class="title-choice">Coluna FLUTE</div>
+      <span class="badge-stock">⚠️ Consultar stock</span>
+      <div class="fixacao-wrap" style="margin-top:6px;">
+        <select name="fixacao_flute" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-kioto1" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Kioto 1 Saída" data-img="kioto1.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('kioto1.png', event)">🔍</button>
+        <img src="kioto1.png" alt="Coluna Kioto 1 Saída">
+      </div>
+      <div class="title-choice">Coluna Kioto 1 Saída</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_kioto1" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-kioto2" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Kioto 2 Saídas" data-img="kioto2.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('kioto2.png', event)">🔍</button>
+        <img src="kioto2.png" alt="Coluna Kioto 2 Saídas">
+      </div>
+      <div class="title-choice">Coluna Kioto 2 Saídas</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_kioto2" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+
+    <label class="choice item-coluna" id="coluna-kioto3" style="display:none;">
+      <input type="checkbox" name="coluna_selecionada" value="Coluna Kioto 3 Saídas" data-img="kioto3.png" onchange="atualizarResumoInstalacao()">
+      <div class="img-wrapper">
+        <button type="button" class="zoom-btn" title="Ampliar imagem" onclick="abrirZoom('kioto3.png', event)">🔍</button>
+        <img src="kioto3.png" alt="Coluna Kioto 3 Saídas">
+      </div>
+      <div class="title-choice">Coluna Kioto 3 Saídas</div>
+      <div class="fixacao-wrap">
+        <select name="fixacao_kioto3" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
+          <option value="Grampo">Grampo</option>
+          <option value="Fuso">Fuso</option>
+        </select>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div class="field" id="wrap-metros-col-ref" style="margin-top: 18px; display:none;">
+  <label>Metros da coluna ao refrigerador</label>
+  <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="Ex: 3 metros" oninput="atualizarResumoInstalacao()">
+</div>
+
+</div>
+
+<!-- 4. Equipamentos -->
+<div class="panel"><h2>4. Equipamentos</h2><p class="sub">Especifique as caraterísticas técnicas do refrigerador e distâncias.</p>
+
+<div id="container-refrigeradores-lista">
+  <div class="refrigerador-item-box" id="ref-item-1">
+    <div class="grid">
+      <div class="field">
+        <label>Tipo de refrigerador *</label>
+        <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
+          <option value="">Selecionar</option>
+          <option value="V60">V60</option>
+          <option value="V100">V100</option>
+          <option value="V200">V200</option>
+          <option value="Refrigerador portátil">Refrigerador portátil</option>
+          <option value="Não aplicável">Não aplicável</option>
+        </select>
+      </div>
+
+      <div class="field field-ref-portatil-wrap" style="display:none;">
+        <label>Modelo de refrigerador portátil *</label>
+        <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
+          <option value="">Selecionar modelo portátil...</option>
+          <option value="V60 portátil">V60 portátil</option>
+          <option value="V100 portátil">V100 portátil</option>
+          <option value="V200 portátil - 2 Saídas">V200 portátil - 2 Saídas</option>
+        </select>
+      </div>
+
+      <div class="field field-ref-qtd-wrap">
+        <label>Quantidade *</label>
+        <input type="number" min="1" value="1" name="refrigerador_qtd[]" class="input-ref-qtd" oninput="atualizarResumoInstalacao()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<button type="button" class="btn-add-ref" onclick="adicionarNovoRefrigerador()">+ Adicionar outro refrigerador</button>
+
+<div class="field" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none;">
+  <label>Metros do refrigerador ao barril</label>
+  <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="Ex: 2 metros" oninput="atualizarResumoInstalacao()">
+</div>
+
+</div>
+
+<!-- 5. Resumo Visual da Instalação Pretendida -->
+<div class="panel"><h2>5. Resumo Visual da Instalação Pretendida</h2><p class="sub">Estrutura em fluxo da instalação técnica selecionada.</p>
+
+<div class="resumo-flow">
+  <div class="resumo-card-box">
+    <span class="tag-step">1. Colunas</span>
+    <div id="box-colunas-content" style="width:100%;">
+      <p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>
+    </div>
+  </div>
+
+  <div class="resumo-card-box" id="resumo-box-m-col-ref" style="display:none;">
+    <span class="tag-step">2. Distância</span>
+    <div style="font-size: 20px; margin: 10px 0;">📏</div>
+    <div class="desc-label" id="txt-resumo-m-col-ref" style="font-size:11px; color:var(--gold);">--</div>
+    <span class="tag-step" style="font-size:8px; margin-top:2px;">Coluna ➔ Ref.</span>
+  </div>
+
+  <div class="resumo-card-box">
+    <span class="tag-step">3. Refrigerador</span>
+    <div id="box-refrigerador-content" style="width:100%;">
+      <p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>
+    </div>
+  </div>
+
+  <div class="resumo-card-box" id="resumo-box-m-ref-bar" style="display:none;">
+    <span class="tag-step">4. Distância</span>
+    <div style="font-size: 20px; margin: 10px 0;">📏</div>
+    <div class="desc-label" id="txt-resumo-m-ref-bar" style="font-size:11px; color:var(--gold);">--</div>
+    <span class="tag-step" style="font-size:8px; margin-top:2px;">Ref. ➔ Barril</span>
+  </div>
+
+  <div class="resumo-card-box">
+    <span class="tag-step">5. Barril</span>
+    <div class="barril-container">
+      <div class="barril-logos-wrap" id="box-barril-logos"></div>
+      <img src="barril.png" class="barril-img-main" alt="Barril de Cerveja" id="img-barril-resumo">
+      <div class="desc-label" style="font-weight:800; color:var(--gold); font-size:10px;">BARRIL</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- 6. Informações adicionais -->
+<div class="panel"><h2>6. Informações adicionais</h2><p class="sub">Indique detalhes importantes para a preparação e entrega.</p>
+<div class="grid">
+<div class="field full"><label>Equipamentos / referências adicionais</label><textarea name="referencias"></textarea></div>
+<div class="field full"><label>Notas técnicas e observações</label><textarea name="notas" placeholder="Observações adicionais (opcional)..."></textarea></div>
+</div>
+</div>
+
+<div class="panel text-center">
+  <button class="button" type="button" id="btnSubmeterPedido" style="margin-top:10px; width:100%;">
+    Submeter Pedido e Abrir E-mail
+  </button>
+  <p class="small" id="status-envio" style="margin-top:10px; font-weight:bold; color:var(--navy);"></p>
+</div>
+
+</form>
+</section>
+<aside class="side">
+<div class="summary"><h3>O seu pedido</h3><p>Preencha o formulário para reunir os dados num único pedido, com os equipamentos e respetivas especificações.</p><ul><li>Dados do estabelecimento</li><li>Tipo de operação</li><li>Colunas e refrigeradores</li><li>Resumo visual por cartões</li><li>Registo automático e e-mail</li></ul><div class="notice">O objetivo é reduzir erros e enviar o resumo estruturado de forma automática para o Outlook.</div></div>
+</aside>
+</div></main>
+<footer class="footer">AT Cervejas · Formulário interno de pedidos de equipamentos</footer>
+
+<div class="modal-zoom" id="modal-zoom" onclick="fecharZoom()">
+  <span class="modal-close">&times;</span>
+  <img id="img-zoom" src="" alt="Zoom Equipamento">
+</div>
+
+<script>
+let refItemCounter = 1;
+
+function adicionarNovoRefrigerador() {
+  refItemCounter++;
+  const container = document.getElementById('container-refrigeradores-lista');
+  
+  const div = document.createElement('div');
+  div.className = 'refrigerador-item-box';
+  div.id = 'ref-item-' + refItemCounter;
+  div.innerHTML = `
+    <button type="button" class="btn-remove-ref" onclick="removerRefrigerador('${div.id}')">✕ Remover</button>
+    <div class="grid">
+      <div class="field">
+        <label>Tipo de refrigerador *</label>
+        <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
+          <option value="">Selecionar</option>
+          <option value="V60">V60</option>
+          <option value="V100">V100</option>
+          <option value="V200">V200</option>
+          <option value="Refrigerador portátil">Refrigerador portátil</option>
+          <option value="Não aplicável">Não aplicável</option>
+        </select>
+      </div>
+
+      <div class="field field-ref-portatil-wrap" style="display:none;">
+        <label>Modelo de refrigerador portátil *</label>
+        <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
+          <option value="">Selecionar modelo portátil...</option>
+          <option value="V60 portátil">V60 portátil</option>
+          <option value="V100 portátil">V100 portátil</option>
+          <option value="V200 portátil - 2 Saídas">V200 portátil - 2 Saídas</option>
+        </select>
+      </div>
+
+      <div class="field field-ref-qtd-wrap">
+        <label>Quantidade *</label>
+        <input type="number" min="1" value="1" name="refrigerador_qtd[]" class="input-ref-qtd" oninput="atualizarResumoInstalacao()">
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+  atualizarResumoInstalacao();
+}
+
+function removerRefrigerador(id) {
+  const elem = document.getElementById(id);
+  if (elem) {
+    elem.remove();
+    atualizarResumoInstalacao();
+  }
+}
+
+function processarMudancaRefrigerador(selectElem) {
+  const box = selectElem.closest('.refrigerador-item-box');
+  const portatilWrap = box.querySelector('.field-ref-portatil-wrap');
+  const qtdWrap = box.querySelector('.field-ref-qtd-wrap');
+  const val = selectElem.value;
+
+  if (val === 'Refrigerador portátil') {
+    portatilWrap.style.display = 'flex';
+    qtdWrap.style.display = 'flex';
+  } else if (['V60', 'V100', 'V200'].includes(val)) {
+    portatilWrap.style.display = 'none';
+    qtdWrap.style.display = 'flex';
+    box.querySelector('.select-ref-portatil').value = '';
+  } else {
+    portatilWrap.style.display = 'none';
+    qtdWrap.style.display = 'none';
+    box.querySelector('.select-ref-portatil').value = '';
+  }
+
+  atualizarResumoInstalacao();
+}
+
+function atualizarSelecaoCervejas() {
+  const selecionadas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value);
+  const seccaoColunas = document.getElementById('seccao-colunas');
+  const wrapSubLeffe = document.getElementById('wrap-sub-leffe');
+  
+  const colBud = document.getElementById('coluna-bud');
+  const colStella = document.getElementById('coluna-stella');
+  const colFranziskaner = document.getElementById('coluna-franziskaner');
+  const colBecks = document.getElementById('coluna-becks');
+  const colFlute = document.getElementById('coluna-flute');
+  const colKioto1 = document.getElementById('coluna-kioto1');
+  const colKioto2 = document.getElementById('coluna-kioto2');
+  const colKioto3 = document.getElementById('coluna-kioto3');
+
+  const qtd = selecionadas.length;
+
+  if (selecionadas.includes('Leffe')) {
+    wrapSubLeffe.style.display = 'block';
+  } else {
+    wrapSubLeffe.style.display = 'none';
+  }
+
+  if (qtd === 0) {
+    seccaoColunas.style.display = 'none';
+  } else {
+    seccaoColunas.style.display = 'block';
+  }
+
+  colBud.style.display = selecionadas.includes('Budweiser') ? 'flex' : 'none';
+  colStella.style.display = selecionadas.includes('Stella Artois') ? 'flex' : 'none';
+  colFranziskaner.style.display = selecionadas.includes('Franziskaner') ? 'flex' : 'none';
+  colBecks.style.display = selecionadas.includes("Beck's") ? 'flex' : 'none';
+  colFlute.style.display = selecionadas.includes('Leffe') ? 'flex' : 'none';
+
+  if (selecionadas.includes('Outra')) {
+    colKioto1.style.display = 'flex';
+    colKioto2.style.display = 'flex';
+    colKioto3.style.display = 'flex';
+  } else {
+    colKioto1.style.display = (qtd >= 1) ? 'flex' : 'none';
+    colKioto2.style.display = (qtd >= 2) ? 'flex' : 'none';
+    colKioto3.style.display = (qtd >= 3) ? 'flex' : 'none';
+  }
+
+  atualizarResumoInstalacao();
+}
+
+function obterImagemRefrigerador(nome) {
+  if (['V60', 'V100', 'V200'].includes(nome)) return 'refrigerador.png';
+  if (['V60 portátil', 'V100 portátil'].includes(nome)) return 'refrigeradorportatil1.png';
+  if (nome === 'V200 portátil - 2 Saídas') return 'refrigeradorportatil2.png';
+  return '';
+}
+
+function atualizarResumoInstalacao() {
+  const colunasChecadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+  const boxColunas = document.getElementById('box-colunas-content');
+  
+  if (colunasChecadas.length > 0) {
+    boxColunas.innerHTML = colunasChecadas.map(c => {
+      const imgPath = c.getAttribute('data-img');
+      const choiceBox = c.closest('.choice');
+      const selectFix = choiceBox.querySelector('.select-fixacao');
+      const fixacaoVal = selectFix ? selectFix.value : 'Grampo';
+      return `<img src="${imgPath}" class="img-thumb" alt="${c.value}"><div class="desc-label">${c.value}</div><span style="font-size:10px; color:var(--gold); font-weight:bold;">Fixação: ${fixacaoVal}</span>`;
+    }).join('<hr style="border:0;border-top:1px solid #f0f0f0;margin:4px 0;">');
+  } else {
+    boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
+  }
+
+  const operacaoVal = document.getElementById('select-operacao').value;
+  if (operacaoVal === 'Nova instalação') {
+    const mColRef = document.getElementById('input-metros-col-ref').value.trim();
+    const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
+
+    const boxMColRef = document.getElementById('resumo-box-m-col-ref');
+    const txtMColRef = document.getElementById('txt-resumo-m-col-ref');
+    if (mColRef) {
+      txtMColRef.textContent = mColRef;
+      boxMColRef.style.display = 'flex';
+    } else {
+      boxMColRef.style.display = 'none';
+    }
+
+    const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+    const txtMRefBar = document.getElementById('txt-resumo-m-ref-bar');
+    if (mRefBar) {
+      txtMRefBar.textContent = mRefBar;
+      boxMRefBar.style.display = 'flex';
+    } else {
+      boxMRefBar.style.display = 'none';
+    }
+  }
+
+  const boxesRef = Array.from(document.querySelectorAll('.refrigerador-item-box'));
+  const boxRefrigeradorContent = document.getElementById('box-refrigerador-content');
+  let refHtml = '';
+
+  boxesRef.forEach(box => {
+    const tipo = box.querySelector('.select-ref-tipo').value;
+    const portatil = box.querySelector('.select-ref-portatil').value;
+    const qtd = box.querySelector('.input-ref-qtd').value || 1;
+
+    let modeloFinal = '';
+    if (tipo === 'Refrigerador portátil') {
+      modeloFinal = portatil;
+    } else if (['V60', 'V100', 'V200'].includes(tipo)) {
+      modeloFinal = tipo;
+    }
+
+    if (modeloFinal) {
+      const imgPath = obterImagemRefrigerador(modeloFinal);
+      refHtml += `
+        <div style="margin-bottom:6px;">
+          <img src="${imgPath}" class="img-thumb" alt="${modeloFinal}">
+          <div class="desc-label">${modeloFinal}</div>
+          <span class="badge-qtd">${qtd} Uni.</span>
+        </div>
+      `;
+    }
+  });
+
+  if (refHtml) {
+    boxRefrigeradorContent.innerHTML = refHtml;
+  } else {
+    boxRefrigeradorContent.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
+  }
+
+  const cervejasChecadas = Array.from(document.querySelectorAll('.chk-cerveja:checked'));
+  const boxBarrilLogos = document.getElementById('box-barril-logos');
+  
+  if (cervejasChecadas.length > 0) {
+    boxBarrilLogos.innerHTML = cervejasChecadas.map(c => {
+      const logoPath = c.getAttribute('data-logo');
+      if (logoPath) {
+        return `<img src="${logoPath}" alt="${c.value}">`;
+      } else {
+        return `<span style="font-size:16px;">🍺</span>`;
+      }
+    }).join('');
+  } else {
+    boxBarrilLogos.innerHTML = '';
+  }
+}
+
+function abrirZoom(src, event) {
+  if (event) event.stopPropagation();
+  if (!src) return;
+  const modal = document.getElementById('modal-zoom');
+  const img = document.getElementById('img-zoom');
+  img.src = src;
+  modal.style.display = 'flex';
+}
+
+function fecharZoom() {
+  document.getElementById('modal-zoom').style.display = 'none';
+}
+
+(function() {
+  const inputEstabelecimento = document.getElementById('input-estabelecimento');
+  const inputMorada = document.getElementById('input-morada');
+  const inputLocalidade = document.getElementById('input-localidade');
+  const inputCP = document.getElementById('input-cp');
+  const btnPesquisarCP = document.getElementById('btn-pesquisar-cp');
+  const mapaFrame = document.getElementById('mapa-frame');
+  const mapContainer = document.getElementById('map-container');
+  const caixaConfirmacao = document.getElementById('caixa-confirmacao');
+  const textoConfirmacao = document.getElementById('texto-confirmacao');
+  const btnSim = document.getElementById('btn-morada-sim');
+  const btnNao = document.getElementById('btn-morada-nao');
+
+  const inputRespLocal = document.getElementById('input-resp-local');
+  const inputRespComercial = document.getElementById('input-resp-comercial');
+
+  const baseLocalidadesCP = {
+    "2900": "Setúbal",
+    "2910": "Setúbal",
+    "2925": "Azeitão",
+    "2950": "Palmela",
+    "2952": "Palmela",
+    "2870": "Montijo",
+    "2830": "Barreiro",
+    "2810": "Almada",
+    "1000": "Lisboa",
+    "4000": "Porto"
+  };
+
+  function processarCodigoPostal() {
+    const cp = inputCP ? inputCP.value.trim() : '';
+    const cpRegex = /^\d{4}-\d{3}$/;
+    const avisoCP = document.getElementById('cp-aviso');
+
+    if (cp.length > 0 && !cpRegex.test(cp)) {
+      if(avisoCP) avisoCP.style.display = 'block';
+      inputCP.classList.add('invalid');
+      return;
+    } else {
+      if(avisoCP) avisoCP.style.display = 'none';
+      inputCP.classList.remove('invalid');
+    }
+
+    if (cp.length >= 4) {
+      const prefixo = cp.substring(0, 4);
+      if (baseLocalidadesCP[prefixo] && inputLocalidade) {
+        inputLocalidade.value = baseLocalidadesCP[prefixo];
+      }
+    }
+
+    const estab = inputEstabelecimento ? inputEstabelecimento.value.trim() : '';
+    let query = '';
+    if (estab && cp) {
+      query = `${estab}, ${cp}, Portugal`;
+    } else if (cp) {
+      query = `${cp}, Portugal`;
+    } else if (estab) {
+      query = `${estab}, Portugal`;
+    }
+
+    if (query.length > 3) {
+      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(query) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
+    }
+  }
+
+  if (inputCP) {
+    inputCP.addEventListener('input', function(e) {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 4) val = val.substring(0, 4) + '-' + val.substring(4, 7);
+      e.target.value = val;
+    });
+  }
+
+  if (btnPesquisarCP) {
+    btnPesquisarCP.addEventListener('click', processarCodigoPostal);
+  }
+
+  if (inputCP) {
+    inputCP.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        processarCodigoPostal();
+      }
+    });
+  }
+
+  if (inputEstabelecimento) {
+    inputEstabelecimento.addEventListener('input', function() {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
+
+  if (inputRespLocal) {
+    inputRespLocal.addEventListener('input', function() {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
+
+  if (inputRespComercial) {
+    inputRespComercial.addEventListener('input', function() {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
+
+  if (btnSim) {
+    btnSim.addEventListener('click', function() {
+      mapContainer.style.borderColor = '#28a745';
+      caixaConfirmacao.style.background = '#e8f5e9';
+      textoConfirmacao.textContent = '📍 Localização confirmada!';
+      
+      const estabVal = inputEstabelecimento ? inputEstabelecimento.value : '';
+      if (inputMorada && !inputMorada.value && estabVal) {
+        inputMorada.value = estabVal;
+      }
+      if (inputLocalidade && !inputLocalidade.value) {
+        inputLocalidade.focus();
+      }
+    });
+  }
+
+  if (btnNao) {
+    btnNao.addEventListener('click', function() {
+      mapContainer.style.borderColor = '#dc3545';
+      caixaConfirmacao.style.background = '#ffebee';
+      textoConfirmacao.textContent = '✏ Por favor, ajuste ou complete os campos de morada manualmente.';
+      if (inputMorada) inputMorada.focus();
+    });
+  }
+
+  const selectOperacao = document.getElementById('select-operacao');
+  const fieldDataPretendida = document.getElementById('field-data-pretendida');
+  const labelDataPretendida = document.getElementById('label-data-pretendida');
+  const fieldDataLevantamento = document.getElementById('field-data-levantamento');
+  
+  const wrapMetrosColRef = document.getElementById('wrap-metros-col-ref');
+  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
+  const resumoBoxMColRef = document.getElementById('resumo-box-m-col-ref');
+  const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+
+  function atualizarExibicaoDatas() {
+    const valor = selectOperacao ? selectOperacao.value : '';
+    
+    if (valor === 'Nova instalação') {
+      if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
+      if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+    } else {
+      if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
+      if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+      if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
+      if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
+    }
+
+    if (valor === 'Nova instalação') {
+      fieldDataPretendida.style.display = 'flex';
+      labelDataPretendida.textContent = 'Data da instalação *';
+      fieldDataLevantamento.style.display = 'none';
+    } else if (valor === 'Levantamento') {
+      fieldDataPretendida.style.display = 'none';
+      fieldDataLevantamento.style.display = 'flex';
+    } else if (valor === 'Evento') {
+      fieldDataPretendida.style.display = 'flex';
+      labelDataPretendida.textContent = 'Data pretendida *';
+      fieldDataLevantamento.style.display = 'flex';
+    } else {
+      fieldDataPretendida.style.display = 'flex';
+      labelDataPretendida.textContent = 'Data pretendida';
+      fieldDataLevantamento.style.display = 'flex';
+    }
+  }
+
+  if (selectOperacao) {
+    selectOperacao.addEventListener('change', atualizarExibicaoDatas);
+    atualizarExibicaoDatas();
+  }
+
+  const inputDepartamento = document.getElementById('input-departamento');
+  if (inputDepartamento) {
+    inputDepartamento.addEventListener('input', function(e) {
+      e.target.value = e.target.value.toUpperCase();
+    });
+  }
+
+  const inputContacto = document.getElementById('input-contacto');
+  const avisoContacto = document.getElementById('aviso-contacto');
+  if (inputContacto && avisoContacto) {
+    inputContacto.addEventListener('input', function(e) {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 9) val = val.substring(0, 9);
+      e.target.value = val;
+      const phoneRegex = /^\d{9}$/;
+      if (val.length > 0 && !phoneRegex.test(val)) {
+        avisoContacto.style.display = 'block';
+        inputContacto.classList.add('invalid');
+      } else {
+        avisoContacto.style.display = 'none';
+        inputContacto.classList.remove('invalid');
+      }
+    });
+  }
+
+  const inputTelComercial = document.getElementById('input-tel-comercial');
+  const avisoTelComercial = document.getElementById('aviso-tel-comercial');
+  if (inputTelComercial && avisoTelComercial) {
+    inputTelComercial.addEventListener('input', function(e) {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 9) val = val.substring(0, 9);
+      e.target.value = val;
+      const phoneRegex = /^\d{9}$/;
+      if (val.length > 0 && !phoneRegex.test(val)) {
+        avisoTelComercial.style.display = 'block';
+        inputTelComercial.classList.add('invalid');
+      } else {
+        avisoTelComercial.style.display = 'none';
+        inputTelComercial.classList.remove('invalid');
+      }
+    });
+  }
+})();
+
+document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
+  const inputContacto = document.getElementById('input-contacto');
+  if (inputContacto && inputContacto.value.length !== 9) {
+    alert('O número de telemóvel do local tem de ter exatamente 9 dígitos.');
+    inputContacto.focus();
+    return;
+  }
+
+  const inputTelComercial = document.getElementById('input-tel-comercial');
+  if (inputTelComercial && inputTelComercial.value.length !== 9) {
+    alert('O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
+    inputTelComercial.focus();
+    return;
+  }
+
+  const codCliente = document.getElementById('input-codigo-cliente').value || 'N/D';
+  const departamento = document.getElementById('input-departamento').value || 'N/D';
+  const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
+  const morada = document.getElementById('input-morada').value || 'N/D';
+  const cp = document.getElementById('input-cp').value || '';
+  const localidade = document.getElementById('input-localidade').value || 'N/D';
+  const respLocal = document.getElementById('input-resp-local').value || 'N/D';
+  const telLocal = document.getElementById('input-contacto').value || 'N/D';
+  const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
+  const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
+  const operacao = document.getElementById('select-operacao').value || 'N/D';
+  const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
+  const obs = document.querySelector('textarea[name="observacoes"]').value || 'Nenhuma';
+
+  const linkManualMaps = document.getElementById('input-link-maps') ? document.getElementById('input-link-maps').value.trim() : '';
+  const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
+  const linkGoogleMaps = linkManualMaps !== '' ? linkManualMaps : `https://www.google.com/maps/search/?api=1&query=${queryMapa}`;
+
+  const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
+
+  const colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
+    const choiceBox = c.closest('.choice');
+    const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
+    return `- ${c.value} (Fixação: ${fixacao})`;
+  }).join('\n') || 'Nenhuma coluna selecionada';
+
+  const metrosColunaRef = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value : 'N/D';
+
+  let refrigeradoresTxt = '';
+  document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
+    const tipo = box.querySelector('.select-ref-tipo').value;
+    const portatil = box.querySelector('.select-ref-portatil') ? box.querySelector('.select-ref-portatil').value : '';
+    const qtd = box.querySelector('.input-ref-qtd').value || '1';
+    if (tipo) {
+      const modelo = (tipo === 'Refrigerador portátil' && portatil) ? portatil : tipo;
+      refrigeradoresTxt += `- ${modelo} (Quantidade: ${qtd})\n`;
+    }
+  });
+  if (!refrigeradoresTxt) refrigeradoresTxt = 'Nenhum refrigerador selecionado';
+
+  const metrosRefBarril = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D';
+
+  const emailDestino = "ricardo.anselmo@gruponabeiro.com";
+  const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
+  
+  const corpo = encodeURIComponent(
+    "Olá,\n\n" +
+    "Foi submetido um novo pedido de equipamentos através do portal AT Cervejas com os seguintes detalhes:\n\n" +
+    "--- 1. DADOS DO CLIENTE ---\n" +
+    `• Estabelecimento: ${estabelecimento}\n` +
+    `• Código de Cliente: ${codCliente}\n` +
+    `• Departamento: ${departamento}\n` +
+    `• Morada: ${morada}, ${cp} ${localidade}\n` +
+    `• Link Google Maps: ${linkGoogleMaps}\n` +
+    `• Responsável Local: ${respLocal} (${telLocal})\n` +
+    `• Comercial / GD: ${comercial} (${telComercial})\n\n` +
+    "--- 2. TIPO DE PEDIDO ---\n" +
+    `• Operação: ${operacao}\n` +
+    `• Data pretendida: ${dataPretendida}\n\n` +
+    "--- 3. CERVEJA E COLUNAS ---\n" +
+    `• Marcas pretendidas: ${cervejas}\n` +
+    `• Colunas:\n${colunas}\n` +
+    `• Metros da coluna ao refrigerador: ${metrosColunaRef}\n\n` +
+    "--- 4. REFRIGERADORES E EQUIPAMENTOS ---\n" +
+    `${refrigeradoresTxt}` +
+    `• Metros do refrigerador ao barril: ${metrosRefBarril}\n\n` +
+    "--- 5. OBSERVAÇÕES ---\n" +
+    `${obs}\n\n` +
+    "Com os melhores cumprimentos,\n" +
+    "Portal AT Cervejas"
+  );
+
+  window.location.href = `mailto:${emailDestino}?subject=${assunto}&body=${corpo}`;
+});
+</script>
+</body>
+</html>
+EOF
