@@ -186,7 +186,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -875,13 +875,11 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️ Por favor, insira primeiro um link válido do Google Maps.');
+        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
-      
-      // Validação amigável do link inserido e foco no mapa com tratamento de erro visual
-      alert('✅ Link validado com sucesso! Confirme os dados abaixo.');
+      alert('✅ Link validado com sucesso!');
       mapContainer.style.borderColor = '#28a745';
     });
   }
@@ -1166,7 +1164,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "--- 1. DADOS DO CLIENTE ---\n" +
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
-    `• Departamento: **${departamento}**\n` +
+    `• Departamento: ${departamento}\n` +
     `• Morada: ${morada}, ${cp} ${localidade}\n` +
     `• Link Google Maps: ${linkGoogleMaps}\n` +
     `• Responsável Local: ${respLocal} (${telLocal})\n` +
