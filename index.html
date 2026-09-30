@@ -117,16 +117,16 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>📮 Código Postal *</label>
   <div style="display: flex; gap: 8px;">
-    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 2952-025)" maxlength="8" style="border:2px solid var(--gold);">
+    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 4350-157)" maxlength="8" style="border:2px solid var(--gold);">
     <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
   </div>
-  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 2952-025.</small>
+  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
 </div>
 
-<!-- Nome do Estabelecimento com Autocomplete Inteligente -->
+<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) e Autocomplete Restrito ao CP -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Brasão Antas..." autocomplete="off" style="border:2px solid var(--gold);">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Brasão antas..." autocomplete="off" style="border:2px solid var(--gold);">
   <div id="sugestoesEspacos"></div>
 </div>
 
@@ -179,14 +179,14 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Contacto (Telemóvel) *</label>
   <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-contacto" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="O seu nome completo"></div>
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -845,6 +845,70 @@ function fecharZoom() {
     });
   }
 
+  // Nome do espaço: apenas a primeira palavra com a letra inicial maiúscula
+  if (inputEstabelecimento) {
+    inputEstabelecimento.addEventListener('input', function(e) {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      let val = this.value;
+      if (val.length > 0) {
+        this.value = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+      }
+      this.setSelectionRange(start, end);
+
+      let query = this.value.trim();
+      let codigoPostal = inputCP ? inputCP.value.trim() : '';
+      let sugestoesBox = document.getElementById('sugestoesEspacos');
+      
+      if (query.length < 3) {
+        sugestoesBox.innerHTML = '';
+        return;
+      }
+
+      // Restringe obrigatoriamente a pesquisa ao código postal introduzido
+      let zonaFiltro = codigoPostal || 'Portugal';
+      let termoPesquisa = `${query} ${zonaFiltro}`;
+      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            sugestoesBox.innerHTML = '';
+            data.forEach(local => {
+                let item = document.createElement('div');
+                item.className = 'sugestao-item';
+                item.innerText = local.display_name;
+                
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    let partes = local.display_name.split(',');
+                    let nomeEspaco = partes[0].trim();
+                    // Capitaliza apenas a primeira palavra do nome sugerido
+                    nomeEspaco = nomeEspaco.charAt(0).toUpperCase() + nomeEspaco.slice(1).toLowerCase();
+                    let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
+
+                    inputEstabelecimento.value = nomeEspaco;
+                    if (inputMorada) {
+                        inputMorada.value = ruaLimpa;
+                    }
+
+                    if (codigoPostal.length >= 4) {
+                        let locAuto = obterLocalidadePorCP(codigoPostal);
+                        if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
+                    }
+
+                    sugestoesBox.innerHTML = '';
+                    processarCodigoPostal();
+                });
+                
+                sugestoesBox.appendChild(item);
+            });
+        })
+        .catch(err => console.error('Erro ao procurar moradas:', err));
+    });
+  }
+
   function obterLocalidadePorCP(cp) {
     if (!cp || cp.length < 4) return '';
     const prefixo = parseInt(cp.substring(0, 4), 10);
@@ -887,7 +951,6 @@ function fecharZoom() {
   }
 
   function processarCodigoPostal() {
-    // Se houver um link manual inserido, não mexe no mapa automaticamente para não sobrepor
     const linkVal = inputLinkMaps ? inputLinkMaps.value.trim() : '';
     if (linkVal) return;
 
@@ -954,7 +1017,6 @@ function fecharZoom() {
     });
   }
 
-  // Validação segura do link do Google Maps (apenas atualiza o iframe do mapa sem alterar campos já preenchidos)
   if (btnProcessarLink && inputLinkMaps) {
     btnProcessarLink.addEventListener('click', function() {
       let linkVal = inputLinkMaps.value.trim();
@@ -964,7 +1026,6 @@ function fecharZoom() {
         return;
       }
 
-      // Se o utilizador colou um iframe completo, extrai apenas o URL do src
       if (linkVal.includes('<iframe')) {
         const match = linkVal.match(/src="([^"]+)"/);
         if (match && match[1]) {
@@ -972,68 +1033,9 @@ function fecharZoom() {
         }
       }
 
-      // Se for um link normal de partilha do Google Maps, tenta extrair coordenadas ou termo de pesquisa para o embed
-      if (linkVal.startsWith('http')) {
-        mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-      } else {
-        mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-      }
-
+      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
       alert('✅ Link do Google Maps aplicado ao mapa com sucesso!');
       mapContainer.style.borderColor = '#28a745';
-    });
-  }
-
-  if (inputEstabelecimento) {
-    inputEstabelecimento.addEventListener('input', function() {
-      let query = this.value.trim();
-      let codigoPostal = inputCP ? inputCP.value.trim() : '';
-      let localidadeAtual = inputLocalidade ? inputLocalidade.value.trim() : '';
-      let sugestoesBox = document.getElementById('sugestoesEspacos');
-      
-      if (query.length < 3) {
-        sugestoesBox.innerHTML = '';
-        return;
-      }
-
-      let zonaFiltro = codigoPostal || localidadeAtual || 'Portugal';
-      let termoPesquisa = `${query} ${zonaFiltro}`;
-      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
-
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            sugestoesBox.innerHTML = '';
-            data.forEach(local => {
-                let item = document.createElement('div');
-                item.className = 'sugestao-item';
-                item.innerText = local.display_name;
-                
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    let partes = local.display_name.split(',');
-                    let nomeEspaco = partes[0].trim();
-                    let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
-
-                    inputEstabelecimento.value = nomeEspaco;
-                    if (inputMorada) {
-                        inputMorada.value = ruaLimpa;
-                    }
-
-                    if (codigoPostal.length >= 4) {
-                        let locAuto = obterLocalidadePorCP(codigoPostal);
-                        if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
-                    }
-
-                    sugestoesBox.innerHTML = '';
-                    processarCodigoPostal();
-                });
-                
-                sugestoesBox.appendChild(item);
-            });
-        })
-        .catch(err => console.error('Erro ao procurar moradas:', err));
     });
   }
 
@@ -1319,7 +1321,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputNomeEvento = document.getElementById('input-nome-evento');
   if (operacao === 'Evento' && (!inputNomeEvento || !inputNomeEvento.value.trim())) {
-    alert('⚠️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
+    alert('⚠️️ O campo "Nome do Evento" é obrigatório e tem de ser preenchido!');
     if (inputNomeEvento) inputNomeEvento.focus();
     return;
   }
