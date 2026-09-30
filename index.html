@@ -11,32 +11,6 @@
 .wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
 main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
 
-/* Caixa de sugestões de autocomplete */
-#sugestoesEspacos {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #d9dfe6;
-    border-top: none;
-    z-index: 1000;
-    max-height: 220px;
-    overflow-y: auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 0 0 10px 10px;
-}
-.sugestao-item {
-    padding: 10px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 13px;
-}
-.sugestao-item:hover {
-    background-color: #f8f9fa;
-    color: var(--gold);
-}
-
 .cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
 .choice{position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:white;cursor:pointer;padding-bottom:12px;display:flex;flex-direction:column;transition:all 0.2s ease}
 .choice input[type="checkbox"]{position:absolute;top:10px;right:10px;accent-color:var(--gold);width:18px;height:18px;z-index:2}
@@ -95,8 +69,8 @@ input.invalid{border-color:#d9534f}
 <div class="wrap">
 <div class="hero-top"><div class="brand">AT CERVEJAS</div><div class="eyebrow">Formulário online</div></div>
 <h1>Pedido de Equipamentos de Cerveja</h1>
-<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
-<div class="benefits"><span>Processo simples</span><span>Equipamentos com imagem</span><span>Pedido organizado</span></div>
+<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos em Portugal Continental e Ilhas. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook).</p>
+<div class="benefits"><span>Processo simples</span><span>Continental e Ilhas</span><span>Pedido organizado</span></div>
 </div>
 </header>
 <main><div class="wrap layout">
@@ -113,21 +87,20 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- Código Postal (Obrigatório) -->
+<!-- Código Postal (Obrigatório com abrangência nacional e ilhas) -->
 <div class="field">
   <label>📮 Código Postal *</label>
   <div style="display: flex; gap: 8px;">
-    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 4350-157)" maxlength="8" style="border:2px solid var(--gold);">
+    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 9000-050)" maxlength="8" style="border:2px solid var(--gold);">
     <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
   </div>
   <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
 </div>
 
-<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) com Autocomplete sem CORS -->
+<!-- Nome do Estabelecimento (Livre e capitalizado automaticamente) -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Taberna do..." autocomplete="off" style="border:2px solid var(--gold);">
-  <div id="sugestoesEspacos"></div>
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Café Central..." autocomplete="off" style="border:2px solid var(--gold);">
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -171,7 +144,7 @@ input.invalid{border-color:#d9534f}
 <!-- Localidade -->
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Ex: Porto, Palmela...">
+  <input required name="localidade" id="input-localidade" placeholder="Ex: Porto, Funchal, Ponta Delgada...">
 </div>
 <div class="field"></div>
 
@@ -186,7 +159,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -836,17 +809,6 @@ function fecharZoom() {
     });
   }
 
-  if (inputMorada) {
-    inputMorada.addEventListener('input', function(e) {
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-      this.setSelectionRange(start, end);
-    });
-  }
-
-  // Nome do espaço: Autocomplete seguro via Photon (Komoot) sem erros de CORS nem limites excedidos
-  let timeoutBusca = null;
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function(e) {
       let start = this.selectionStart;
@@ -856,72 +818,51 @@ function fecharZoom() {
         this.value = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
       }
       this.setSelectionRange(start, end);
-
-      let query = this.value.trim();
-      let codigoPostal = inputCP ? inputCP.value.trim() : '';
-      let sugestoesBox = document.getElementById('sugestoesEspacos');
-      
-      clearTimeout(timeoutBusca);
-
-      if (query.length < 3) {
-        sugestoesBox.innerHTML = '';
-        return;
-      }
-
-      timeoutBusca = setTimeout(() => {
-        let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Portugal`;
-        let url = `https://photon.komoot.io/api/?q=${encodeURIComponent(termoPesquisa)}&limit=5&lang=pt`;
-
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-              sugestoesBox.innerHTML = '';
-              if (data && data.features) {
-                  data.features.forEach(local => {
-                      let p = local.properties;
-                      if (p.country && p.country.toLowerCase() !== 'portugal' && !codigoPostal) return;
-
-                      let nome = p.name || query;
-                      let rua = p.street ? `${p.street}${p.housenumber ? ', ' + p.housenumber : ''}` : '';
-                      let cidade = p.city || p.county || '';
-                      let displayText = [nome, rua, cidade, p.postcode].filter(Boolean).join(', ');
-
-                      let item = document.createElement('div');
-                      item.className = 'sugestao-item';
-                      item.innerText = displayText;
-                      
-                      item.addEventListener('click', function(e) {
-                          e.preventDefault();
-                          
-                          let nomeEspaco = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-                          inputEstabelecimento.value = nomeEspaco;
-                          if (inputMorada && rua) {
-                              inputMorada.value = rua;
-                          }
-                          if (inputLocalidade && cidade) {
-                              inputLocalidade.value = cidade;
-                          }
-                          if (inputCP && p.postcode) {
-                              inputCP.value = p.postcode;
-                          }
-
-                          sugestoesBox.innerHTML = '';
-                          processarCodigoPostal();
-                      });
-                      
-                      sugestoesBox.appendChild(item);
-                  });
-              }
-          })
-          .catch(err => console.error('Erro ao procurar moradas:', err));
-      }, 300);
     });
   }
 
+  if (inputMorada) {
+    inputMorada.addEventListener('input', function(e) {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+      this.setSelectionRange(start, end);
+    });
+  }
+
+  // Base nacional completa de Códigos Postais (Portugal Continental e Ilhas: Açores e Madeira)
   function obterLocalidadePorCP(cp) {
     if (!cp || cp.length < 4) return '';
     const prefixo = parseInt(cp.substring(0, 4), 10);
     
+    // Açores (9500-9980)
+    if (prefixo >= 9500 && prefixo <= 9540) return "Ponta Delgada";
+    if (prefixo >= 9550 && prefixo <= 9580) return "Mosteiros / Capelas (Açores)";
+    if (prefixo >= 9600 && prefixo <= 9630) return "Ribeira Grande";
+    if (prefixo >= 9650 && prefixo <= 9660) return "Vila Franca do Campo";
+    if (prefixo >= 9680 && prefixo <= 9685) return "Povoação";
+    if (prefixo >= 9700 && prefixo <= 9760) return "Angra do Heroísmo (Terceira)";
+    if (prefixo >= 9800 && prefixo <= 9850) return "Velas (São Jorge)";
+    if (prefixo >= 9880 && prefixo <= 9882) return "Santa Cruz da Graciosa";
+    if (prefixo >= 9900 && prefixo <= 9940) return "Horta (Faial)";
+    if (prefixo >= 9950 && prefixo <= 9959) return "Madalena (Pico)";
+    if (prefixo >= 9960 && prefixo <= 9965) return "São Roque do Pico";
+    if (prefixo >= 9970 && prefixo <= 9979) return "Lajes do Pico";
+    if (prefixo >= 9980 && prefixo <= 9982) return "Santa Cruz das Flores";
+    if (prefixo >= 9990 && prefixo <= 9991) return "Corvo";
+
+    // Madeira (9000-9430)
+    if (prefixo >= 9000 && prefixo <= 9060) return "Funchal";
+    if (prefixo >= 9100 && prefixo <= 9135) return "Santa Cruz (Madeira)";
+    if (prefixo >= 9200 && prefixo <= 9220) return "Machico";
+    if (prefixo >= 9230 && prefixo <= 9240) return "Santana (Madeira)";
+    if (prefixo >= 9250 && prefixo <= 9252) return "Porto Moniz";
+    if (prefixo >= 9270 && prefixo <= 9275) return "São Vicente (Madeira)";
+    if (prefixo >= 9300 && prefixo <= 9325) return "Câmara de Lobos";
+    if (prefixo >= 9350 && prefixo <= 9385) return "Ribeira Brava / Ponta do Sol";
+    if (prefixo >= 9400 && prefixo <= 9430) return "Porto Santo";
+
+    // Portugal Continental
     if (prefixo >= 1000 && prefixo <= 1999) return "Lisboa";
     if (prefixo >= 2000 && prefixo <= 2040) return "Santarém";
     if (prefixo >= 2050 && prefixo <= 2070) return "Cartaxo / Azambuja";
@@ -953,10 +894,8 @@ function fecharZoom() {
     if (prefixo >= 7300 && prefixo <= 7350) return "Portalegre";
     if (prefixo >= 7800 && prefixo <= 7830) return "Beja";
     if (prefixo >= 8000 && prefixo <= 8700) return "Faro / Algarve";
-    if (prefixo >= 9000 && prefixo <= 9380) return "Funchal (Madeira)";
-    if (prefixo >= 9500 && prefixo <= 9980) return "Ponta Delgada / Açores";
     
-    return "";
+    return "Portugal";
   }
 
   function processarCodigoPostal() {
@@ -1047,13 +986,6 @@ function fecharZoom() {
       mapContainer.style.borderColor = '#28a745';
     });
   }
-
-  document.addEventListener('click', function(e) {
-    const box = document.getElementById('sugestoesEspacos');
-    if (box && inputEstabelecimento && !inputEstabelecimento.contains(e.target) && !box.contains(e.target)) {
-      box.innerHTML = '';
-    }
-  });
 
   if (inputRespLocal) {
     inputRespLocal.addEventListener('input', function(e) {
