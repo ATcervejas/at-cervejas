@@ -270,7 +270,7 @@ input.invalid{border-color:#d9534f}
 </div>
 
 <!-- Botão de alternância para mostrar colunas no Evento se não for refrigerador portátil -->
-<div id="wrap-btn-mostrar-colunas" class="field full" style="display:none; margin-bottom: 15px;">
+<div id="wrap-btn-mostrar-colunas" style="display:none; margin-bottom: 18px;">
   <button type="button" id="btn-toggle-colunas-evento" style="background: #f8f9fa; border: 2px dashed var(--gold); color: var(--navy); font-weight: 700; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; transition: all 0.2s;">
     🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas
   </button>
@@ -893,7 +893,7 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
+        alert('⚠️️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
