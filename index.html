@@ -168,7 +168,7 @@ input.invalid{border-color:#d9534f}
   <input required name="morada" id="input-morada" placeholder="Morada completa...">
 </div>
 
-<!-- Localidade -->
+<!-- Localidade (Agora Obrigatória) -->
 <div class="field">
   <label>🌍 Localidade *</label>
   <input required name="localidade" id="input-localidade" placeholder="Ex: Palmela, Setúbal...">
@@ -1098,6 +1098,13 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
+  const inputLocalidade = document.getElementById('input-localidade');
+  if (!inputLocalidade || !inputLocalidade.value.trim()) {
+    alert('⚠️ O campo "Localidade" é obrigatório e tem de ser preenchido!');
+    if (inputLocalidade) inputLocalidade.focus();
+    return;
+  }
+
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
     alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
@@ -1117,7 +1124,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
   const morada = document.getElementById('input-morada').value || 'N/D';
   const cp = document.getElementById('input-cp').value || '';
-  const localidade = document.getElementById('input-localidade').value || 'N/D';
+  const localidade = inputLocalidade.value.trim();
   const respLocal = document.getElementById('input-resp-local').value || 'N/D';
   const telLocal = document.getElementById('input-contacto').value || 'N/D';
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
