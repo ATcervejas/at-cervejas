@@ -116,7 +116,7 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- BARRA DE PESQUISA COM BOTÃO DEDICADO -->
+<!-- BARRA DE PESQUISA COM BOTÃO DEDICADO E MÚLTIPLOS SERVIDORES -->
 <div class="field full" style="position: relative; margin-top: 4px;">
   <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Google Maps) *</label>
   <div style="display: flex; gap: 8px;">
@@ -770,6 +770,21 @@ function fecharZoom() {
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
 
+  function preencherMoradaAutomaticamente(nome, morada, cp, localidade, rawName) {
+    inputPesquisaMaps.value = rawName;
+    inputEstabelecimento.value = nome;
+    inputMorada.value = morada;
+    inputCP.value = cp;
+    inputLocalidade.value = localidade;
+    
+    sugestoesBox.innerHTML = '';
+    
+    mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(rawName + ', Portugal')}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+    mapContainer.style.borderColor = '#b78a45';
+    caixaConfirmacao.style.background = '#f8f9fa';
+    textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
+  }
+
   function realizarPesquisaNoMaps() {
     let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
     if (query.length < 3) {
@@ -780,54 +795,88 @@ function fecharZoom() {
 
     sugestoesBox.innerHTML = '<div class="sugestao-item" style="justify-content:center; color:var(--gold); font-weight:bold;">A procurar locais...</div>';
 
-    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&countrycodes=pt&addressdetails=1`;
+    // API Principal: Photon (Komoot) - Tolerante a Firewalls de empresa e livre de erros CORS 403
+    let urlPhoton = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=8`;
 
-    fetch(url)
-      .then(response => response.json())
+    fetch(urlPhoton)
+      .then(response => {
+        if (!response.ok) throw new Error('Erro Photon');
+        return response.json();
+      })
       .then(data => {
         sugestoesBox.innerHTML = '';
-        if (data.length === 0) {
-          sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f;">Nenhum local encontrado. Tente refinar a pesquisa.</div>';
-          return;
+        let resultados = data.features ? data.features.filter(f => f.properties.countrycode === 'PT') : [];
+        
+        if (resultados.length === 0) {
+            // Se o Photon não encontrar, tenta Nominatim em Fallback
+            tentarFallbackNominatim(query);
+            return;
         }
 
-        data.forEach(local => {
-          let item = document.createElement('div');
-          item.className = 'sugestao-item';
-          item.innerHTML = `<span>📍</span> <div><strong>${local.display_name}</strong></div>`;
-          
-          item.addEventListener('click', function(e) {
-            e.preventDefault();
+        resultados.forEach(feature => {
+            let p = feature.properties;
+            let nomeLocal = p.name || '';
+            let rua = [p.street, p.housenumber].filter(Boolean).join(', ') || p.district || '';
+            let cp = p.postcode || '';
+            let loc = p.city || p.town || p.village || p.county || '';
+            let displayFullName = [nomeLocal, rua, loc].filter(Boolean).join(', ');
             
-            let addr = local.address || {};
-            let nomeLocal = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
-            let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
-            let cp = addr.postcode || '';
-            let localidade = addr.city || addr.town || addr.village || addr.municipality || '';
+            if (!nomeLocal) nomeLocal = rua;
 
-            // Preenchimento automático dos campos
-            inputPesquisaMaps.value = local.display_name;
-            inputEstabelecimento.value = nomeLocal;
-            inputMorada.value = rua || local.display_name;
-            inputCP.value = cp;
-            inputLocalidade.value = localidade;
-
-            sugestoesBox.innerHTML = '';
-
-            // Atualizar Mapa dinamicamente
-            mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(local.display_name)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-            mapContainer.style.borderColor = '#b78a45';
-            caixaConfirmacao.style.background = '#f8f9fa';
-            textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
-          });
-          
-          sugestoesBox.appendChild(item);
+            let item = document.createElement('div');
+            item.className = 'sugestao-item';
+            item.innerHTML = `<span>📍</span> <div style="display:flex; flex-direction:column;"><strong>${nomeLocal || 'Localização'}</strong><span style="font-size:11px; color:var(--muted);">${displayFullName}</span></div>`;
+            
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                preencherMoradaAutomaticamente(nomeLocal, rua || displayFullName, cp, loc, displayFullName);
+            });
+            sugestoesBox.appendChild(item);
         });
       })
       .catch(err => {
-        console.error('Erro na pesquisa:', err);
-        sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f;">Erro ao ligar ao servidor de mapas.</div>';
+        console.warn('Erro na API Principal. A tentar servidor secundário...', err);
+        tentarFallbackNominatim(query);
       });
+  }
+
+  function tentarFallbackNominatim(query) {
+      // Uso de email no Nominatim é obrigatório para não ser bloqueado em redes de empresas
+      let urlNominatim = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=6&countrycodes=pt&addressdetails=1&email=ricardo.anselmo@gruponabeiro.com`;
+      
+      fetch(urlNominatim)
+        .then(res => {
+            if (!res.ok) throw new Error('Erro Nominatim');
+            return res.json();
+        })
+        .then(data => {
+            sugestoesBox.innerHTML = '';
+            if (data.length === 0) {
+                sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">Nenhum local encontrado. Verifique o nome ou preencha os dados manualmente.</div>';
+                return;
+            }
+            
+            data.forEach(local => {
+                let addr = local.address || {};
+                let nome = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
+                let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
+                let cp = addr.postcode || '';
+                let loc = addr.city || addr.town || addr.village || addr.municipality || '';
+
+                let item = document.createElement('div');
+                item.className = 'sugestao-item';
+                item.innerHTML = `<span>📍</span> <div><strong>${local.display_name}</strong></div>`;
+                
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    preencherMoradaAutomaticamente(nome, rua || local.display_name, cp, loc, local.display_name);
+                });
+                sugestoesBox.appendChild(item);
+            });
+        })
+        .catch(finalErr => {
+            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">A rede da empresa pode estar a bloquear o serviço. Por favor, preencha a morada manualmente em baixo.</div>';
+        });
   }
 
   if (btnExecutarPesquisa) {
@@ -992,14 +1041,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
-    alert('⚠️️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
+    alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
     inputContacto.focus();
     return;
   }
 
   const inputTelComercial = document.getElementById('input-tel-comercial');
   if (inputTelComercial && inputTelComercial.value.length !== 9) {
-    alert('⚠️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
+    alert('⚠️️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
     inputTelComercial.focus();
     return;
   }
