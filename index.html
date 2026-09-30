@@ -123,10 +123,10 @@ input.invalid{border-color:#d9534f}
   <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
 </div>
 
-<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) com Autocomplete Restrito ao CP -->
+<!-- Nome do Estabelecimento (Apenas primeira letra maiúscula) com Autocomplete sem CORS -->
 <div class="field">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Brasão antas..." autocomplete="off" style="border:2px solid var(--gold);">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Taberna do..." autocomplete="off" style="border:2px solid var(--gold);">
   <div id="sugestoesEspacos"></div>
 </div>
 
@@ -845,7 +845,7 @@ function fecharZoom() {
     });
   }
 
-  // Nome do espaço: apenas a primeira letra maiúscula e autocomplete restrito ao Código Postal validado
+  // Nome do espaço: Autocomplete otimizado usando Photon (Komoot) sem bloqueios de CORS
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function(e) {
       let start = this.selectionStart;
@@ -865,44 +865,49 @@ function fecharZoom() {
         return;
       }
 
-      // Restringe obrigatoriamente a pesquisa ao código postal introduzido e validado
-      let zonaFiltro = codigoPostal || 'Portugal';
-      let termoPesquisa = `${query} ${zonaFiltro}`;
-      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
+      let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Portugal`;
+      let url = `https://photon.komoot.io/api/?q=${encodeURIComponent(termoPesquisa)}&limit=5&lang=pt`;
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
             sugestoesBox.innerHTML = '';
-            data.forEach(local => {
-                let item = document.createElement('div');
-                item.className = 'sugestao-item';
-                item.innerText = local.display_name;
-                
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
+            if (data && data.features) {
+                data.features.forEach(local => {
+                    let p = local.properties;
+                    if (p.country && p.country.toLowerCase() !== 'portugal' && !codigoPostal) return;
+
+                    let nome = p.name || query;
+                    let rua = p.street ? `${p.street}${p.housenumber ? ', ' + p.housenumber : ''}` : '';
+                    let cidade = p.city || p.county || '';
+                    let displayText = [nome, rua, cidade, p.postcode].filter(Boolean).join(', ');
+
+                    let item = document.createElement('div');
+                    item.className = 'sugestao-item';
+                    item.innerText = displayText;
                     
-                    let partes = local.display_name.split(',');
-                    let nomeEspaco = partes[0].trim();
-                    nomeEspaco = nomeEspaco.charAt(0).toUpperCase() + nomeEspaco.slice(1).toLowerCase();
-                    let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        let nomeEspaco = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+                        inputEstabelecimento.value = nomeEspaco;
+                        if (inputMorada && rua) {
+                            inputMorada.value = rua;
+                        }
+                        if (inputLocalidade && cidade) {
+                            inputLocalidade.value = cidade;
+                        }
+                        if (inputCP && p.postcode) {
+                            inputCP.value = p.postcode;
+                        }
 
-                    inputEstabelecimento.value = nomeEspaco;
-                    if (inputMorada) {
-                        inputMorada.value = ruaLimpa;
-                    }
-
-                    if (codigoPostal.length >= 4) {
-                        let locAuto = obterLocalidadePorCP(codigoPostal);
-                        if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
-                    }
-
-                    sugestoesBox.innerHTML = '';
-                    processarCodigoPostal();
+                        sugestoesBox.innerHTML = '';
+                        processarCodigoPostal();
+                    });
+                    
+                    sugestoesBox.appendChild(item);
                 });
-                
-                sugestoesBox.appendChild(item);
-            });
+            }
         })
         .catch(err => console.error('Erro ao procurar moradas:', err));
     });
@@ -1305,7 +1310,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   
   if (operacao === 'Nova instalação' || operacao === 'Evento') {
     if (!inputDataPretendida || !inputDataPretendida.value.trim()) {
-      alert('⚠️️ O campo da data da instalação / pretendida é obrigatório!');
+      alert('⚠️ O campo da data da instalação / pretendida é obrigatório!');
       if (inputDataPretendida) inputDataPretendida.focus();
       return;
     }
