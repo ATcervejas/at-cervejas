@@ -21,9 +21,9 @@ main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,
     border: 1px solid #d9dfe6;
     border-top: none;
     z-index: 1000;
-    max-height: 250px;
+    max-height: 260px;
     overflow-y: auto;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.15);
     border-radius: 0 0 12px 12px;
 }
 .sugestao-item {
@@ -117,17 +117,17 @@ input.invalid{border-color:#d9534f}
 </div>
 
 <!-- BARRA DE PESQUISA INTELIGENTE (ESTILO GOOGLE MAPS) -->
-<div class="field full" style="position: relative; margin-bottom: 6px;">
-  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisa Inteligente de Estabelecimento / Local (Google Maps) *</label>
+<div class="field full" style="position: relative; margin-top: 4px;">
+  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Estilo Google Maps) *</label>
   <div style="display: flex; gap: 8px;">
-    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500;">
+    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 14px;">
   </div>
   <div id="sugestoesEspacos"></div>
-  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do estabelecimento ou local e selecione na lista para preencher tudo automaticamente.</small>
+  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço e selecione na lista para preencher tudo automaticamente.</small>
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
-<div class="field full map-field" style="margin-top: 5px; margin-bottom: 10px;">
+<div class="field full map-field" style="margin-top: 8px; margin-bottom: 10px;">
   <div id="map-container" style="width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.12); border: 1px solid #ccc;">
     <iframe 
       id="mapa-frame"
@@ -155,6 +155,7 @@ input.invalid{border-color:#d9534f}
   <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
 </div>
 
+<!-- Campos Preenchidos Automaticamente pela Pesquisa -->
 <div class="field full">
   <label>🏢 Nome do espaço / estabelecimento *</label>
   <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente pela pesquisa..." autocomplete="off">
@@ -790,14 +791,13 @@ function fecharZoom() {
             item.addEventListener('click', function(e) {
               e.preventDefault();
               
-              // Extração inteligente de dados do endereço
               let addr = local.address || {};
               let nomeLocal = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
               let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
               let cp = addr.postcode || '';
               let localidade = addr.city || addr.town || addr.village || addr.municipality || '';
 
-              // Preencher os campos automaticamente
+              // Preenchimento automático dos campos
               inputPesquisaMaps.value = local.display_name;
               inputEstabelecimento.value = nomeLocal;
               inputMorada.value = rua || local.display_name;
@@ -806,11 +806,11 @@ function fecharZoom() {
 
               sugestoesBox.innerHTML = '';
 
-              // Atualizar Mapa
+              // Atualizar Mapa dinamicamente
               mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(local.display_name)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
               mapContainer.style.borderColor = '#b78a45';
               caixaConfirmacao.style.background = '#f8f9fa';
-              textoConfirmacao.textContent = '📍 Local selecionado! Confirme se está correto:';
+              textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
             });
             
             sugestoesBox.appendChild(item);
@@ -857,7 +857,7 @@ function fecharZoom() {
     btnNao.addEventListener('click', function() {
       mapContainer.style.borderColor = '#dc3545';
       caixaConfirmacao.style.background = '#ffebee';
-      textoConfirmacao.textContent = '✏ Podes ajustar os campos de morada ou nome manualmente em baixo.';
+      textoConfirmacao.textContent = '✏ Podes ajustar os campos em baixo manualmente.';
       if (inputMorada) inputMorada.focus();
     });
   }
