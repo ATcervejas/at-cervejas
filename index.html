@@ -815,6 +815,14 @@ function fecharZoom() {
       let val = e.target.value.replace(/\D/g, '');
       if (val.length > 4) val = val.substring(0, 4) + '-' + val.substring(4, 7);
       e.target.value = val;
+
+      // Preenche automaticamente a localidade ao digitar os primeiros 4 dígitos
+      if (val.length >= 4) {
+        const prefixo = val.substring(0, 4);
+        if (baseLocalidadesCP[prefixo] && inputLocalidade) {
+          inputLocalidade.value = baseLocalidadesCP[prefixo];
+        }
+      }
     });
   }
 
@@ -831,7 +839,7 @@ function fecharZoom() {
     });
   }
 
-  // NOVA FUNCIONALIDADE: Autocomplete via API Nominatim filtrado por Código Postal
+  // AUTOCOMPLETE DO ESTABELECIMENTO VIA NOMINATIM (Focado por Código Postal)
   if (inputEstabelecimento) {
     inputEstabelecimento.addEventListener('input', function() {
       let start = this.selectionStart;
