@@ -413,10 +413,17 @@ input.invalid{border-color:#d9534f}
 <!-- 4. Equipamentos -->
 <div class="panel"><h2>4. Equipamentos</h2><p class="sub">Especifique as caraterísticas técnicas do refrigerador e distâncias.</p>
 
+<!-- Botão de alternância para refrigeradores no Evento -->
+<div id="wrap-btn-mostrar-refrigerador" style="display:none; margin-bottom: 18px;">
+  <button type="button" id="btn-toggle-refrigerador-evento" style="background: #f8f9fa; border: 2px dashed var(--gold); color: var(--navy); font-weight: 700; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; transition: all 0.2s;">
+    ❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador
+  </button>
+</div>
+
 <div id="container-refrigeradores-lista">
   <div class="refrigerador-item-box" id="ref-item-1">
     <div class="grid">
-      <div class="field">
+      <div class="field field-select-ref-container">
         <label>Tipo de refrigerador *</label>
         <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
           <option value="">Selecionar</option>
@@ -530,6 +537,7 @@ input.invalid{border-color:#d9534f}
 <script>
 let refItemCounter = 1;
 let eventoForcarColunas = false;
+let eventoForcarRefrigerador = false;
 
 function adicionarNovoRefrigerador() {
   refItemCounter++;
@@ -541,7 +549,7 @@ function adicionarNovoRefrigerador() {
   div.innerHTML = `
     <button type="button" class="btn-remove-ref" onclick="removerRefrigerador('${div.id}')">✕ Remover</button>
     <div class="grid">
-      <div class="field">
+      <div class="field field-select-ref-container">
         <label>Tipo de refrigerador *</label>
         <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
           <option value="">Selecionar</option>
@@ -570,6 +578,12 @@ function adicionarNovoRefrigerador() {
     </div>
   `;
   container.appendChild(div);
+  
+  const operacaoVal = document.getElementById('select-operacao').value;
+  if (operacaoVal === 'Evento' && !eventoForcarRefrigerador) {
+    aplicarModoPortatilUnico(div);
+  }
+  
   atualizarResumoInstalacao();
 }
 
@@ -579,6 +593,38 @@ function removerRefrigerador(id) {
     elem.remove();
     atualizarResumoInstalacao();
   }
+}
+
+function aplicarModoPortatilUnico(box) {
+  const selectRef = box.querySelector('.select-ref-tipo');
+  selectRef.value = 'Refrigerador portátil';
+  const portatilWrap = box.querySelector('.field-ref-portatil-wrap');
+  const qtdWrap = box.querySelector('.field-ref-qtd-wrap');
+  portatilWrap.style.display = 'flex';
+  qtdWrap.style.display = 'flex';
+}
+
+function aplicarModoEventoRefrigeradores() {
+  const operacaoVal = document.getElementById('select-operacao').value;
+  const boxes = document.querySelectorAll('.refrigerador-item-box');
+  
+  boxes.forEach(box => {
+    const selectRef = box.querySelector('.select-ref-tipo');
+    const options = selectRef.querySelectorAll('option');
+    
+    if (operacaoVal === 'Evento' && !eventoForcarRefrigerador) {
+      aplicarModoPortatilUnico(box);
+      options.forEach(opt => {
+        if (opt.value && opt.value !== 'Refrigerador portátil') {
+          opt.style.display = 'none';
+        }
+      });
+    } else {
+      options.forEach(opt => {
+        opt.style.display = 'block';
+      });
+    }
+  });
 }
 
 function processarMudancaRefrigerador(selectElem) {
@@ -679,27 +725,27 @@ function atualizarResumoInstalacao() {
     boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
   }
 
-  if (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && eventoForcarColunas)) {
-    const mColRef = document.getElementById('input-metros-col-ref').value.trim();
-    const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
+  const mostrarDistanciasCol = (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && eventoForcarColunas));
+  const mostrarDistanciasRef = (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && eventoForcarRefrigerador));
 
-    const boxMColRef = document.getElementById('resumo-box-m-col-ref');
-    const txtMColRef = document.getElementById('txt-resumo-m-col-ref');
-    if (mColRef) {
-      txtMColRef.textContent = mColRef;
-      boxMColRef.style.display = 'flex';
-    } else {
-      boxMColRef.style.display = 'none';
-    }
+  const boxMColRef = document.getElementById('resumo-box-m-col-ref');
+  const txtMColRef = document.getElementById('txt-resumo-m-col-ref');
+  const mColRef = document.getElementById('input-metros-col-ref').value.trim();
+  if (mostrarDistanciasCol && mColRef) {
+    txtMColRef.textContent = mColRef;
+    boxMColRef.style.display = 'flex';
+  } else {
+    boxMColRef.style.display = 'none';
+  }
 
-    const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
-    const txtMRefBar = document.getElementById('txt-resumo-m-ref-bar');
-    if (mRefBar) {
-      txtMRefBar.textContent = mRefBar;
-      boxMRefBar.style.display = 'flex';
-    } else {
-      boxMRefBar.style.display = 'none';
-    }
+  const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+  const txtMRefBar = document.getElementById('txt-resumo-m-ref-bar');
+  const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
+  if (mostrarDistanciasRef && mRefBar) {
+    txtMRefBar.textContent = mRefBar;
+    boxMRefBar.style.display = 'flex';
+  } else {
+    boxMRefBar.style.display = 'none';
   }
 
   const boxesRef = Array.from(document.querySelectorAll('.refrigerador-item-box'));
@@ -893,7 +939,7 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️️ Por favor, insira primeiro um link do Google Maps.');
+        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
@@ -1020,10 +1066,11 @@ function fecharZoom() {
   
   const wrapBtnMostrarColunas = document.getElementById('wrap-btn-mostrar-colunas');
   const btnToggleColunasEvento = document.getElementById('btn-toggle-colunas-evento');
+  const wrapBtnMostrarRefrigerador = document.getElementById('wrap-btn-mostrar-refrigerador');
+  const btnToggleRefrigeradorEvento = document.getElementById('btn-toggle-refrigerador-evento');
+
   const wrapMetrosColRef = document.getElementById('wrap-metros-col-ref');
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
-  const resumoBoxMColRef = document.getElementById('resumo-box-m-col-ref');
-  const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
 
   if (btnToggleColunasEvento) {
     btnToggleColunasEvento.addEventListener('click', function() {
@@ -1033,17 +1080,33 @@ function fecharZoom() {
         this.style.borderColor = '#28a745';
         this.innerHTML = '✅ Colunas atidas (clique para ocultar)';
         if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
-        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
       } else {
         this.style.background = '#f8f9fa';
         this.style.borderColor = 'var(--gold)';
         this.innerHTML = '🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas';
         if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
-        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-        if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
-        if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
       }
       atualizarSelecaoCervejas();
+      atualizarResumoInstalacao();
+    });
+  }
+
+  if (btnToggleRefrigeradorEvento) {
+    btnToggleRefrigeradorEvento.addEventListener('click', function() {
+      eventoForcarRefrigerador = !eventoForcarRefrigerador;
+      if (eventoForcarRefrigerador) {
+        this.style.background = '#e8f5e9';
+        this.style.borderColor = '#28a745';
+        this.innerHTML = '✅ Refrigeradores ativados (clique para ocultar)';
+        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+      } else {
+        this.style.background = '#f8f9fa';
+        this.style.borderColor = 'var(--gold)';
+        this.innerHTML = '❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
+        if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+      }
+      aplicarModoEventoRefrigeradores();
+      atualizarResumoInstalacao();
     });
   }
 
@@ -1052,20 +1115,24 @@ function fecharZoom() {
     
     if (valor === 'Nova instalação') {
       if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'none';
+      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'none';
       if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
       if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
     } else if (valor === 'Evento') {
       if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'block';
+      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'block';
+
       if (!eventoForcarColunas) {
         if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
+      }
+      if (!eventoForcarRefrigerador) {
         if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
       }
     } else {
       if (wrapBtnMostrarColunas) wrapBtnMostrarColunas.style.display = 'none';
+      if (wrapBtnMostrarRefrigerador) wrapBtnMostrarRefrigerador.style.display = 'none';
       if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
       if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-      if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
-      if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
     }
 
     if (valor === 'Evento') {
@@ -1076,10 +1143,16 @@ function fecharZoom() {
       inputNomeEvento.removeAttribute('required');
       inputNomeEvento.value = '';
       eventoForcarColunas = false;
+      eventoForcarRefrigerador = false;
       if (btnToggleColunasEvento) {
         btnToggleColunasEvento.style.background = '#f8f9fa';
         btnToggleColunasEvento.style.borderColor = 'var(--gold)';
         btnToggleColunasEvento.innerHTML = '🍺 Se não for refrigerador portátil, clicar aqui para selecionar colunas';
+      }
+      if (btnToggleRefrigeradorEvento) {
+        btnToggleRefrigeradorEvento.style.background = '#f8f9fa';
+        btnToggleRefrigeradorEvento.style.borderColor = 'var(--gold)';
+        btnToggleRefrigeradorEvento.innerHTML = '❄️ Se não for refrigerador portátil, clicar aqui para selecionar o refrigerador';
       }
     }
 
@@ -1100,6 +1173,7 @@ function fecharZoom() {
       fieldDataLevantamento.style.display = 'flex';
     }
 
+    aplicarModoEventoRefrigeradores();
     atualizarSelecaoCervejas();
   }
 
@@ -1239,7 +1313,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = 'Nenhum refrigerador selecionado';
 
-  const metrosRefBarril = (operacao === 'Evento' && !eventoForcarColunas) ? 'N/D' : (document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D');
+  const metrosRefBarril = (operacao === 'Evento' && !eventoForcarRefrigerador) ? 'N/D' : (document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D');
 
   let fraseIntro = "";
   if (operacao === 'Levantamento') {
