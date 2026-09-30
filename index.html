@@ -1,61 +1,201 @@
-<!-- Campo de Código Postal para filtrar a zona -->
-<div class="mb-3">
-    <label for="codigoPostal" class="form-label">Código Postal *</label>
-    <input type="text" class="form-control" id="codigoPostal" placeholder="Ex: 2900-474" required>
-</div>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AT Cervejas - Pedido de Equipamentos de Cerveja</title>
+    <!-- Estilos gerais do portal -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #f39c12;
+            letter-spacing: 1px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #f39c12;
+            outline: none;
+            box-shadow: 0 0 5px rgba(243, 156, 18, 0.3);
+        }
+        .btn-submit {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #d68910;
+        }
+        /* Caixa de sugestões de moradas */
+        #sugestoesEspacos {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 0 0 4px 4px;
+        }
+        .sugestao-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .sugestao-item:hover {
+            background-color: #f8f9fa;
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
 
-<!-- Campo do Nome do Espaço / Estabelecimento com Autocomplete -->
-<div class="mb-3 position-relative">
-    <label for="nomeEspaco" class="form-label">Nome do espaço / estabelecimento *</label>
-    <input type="text" class="form-control" id="nomeEspaco" placeholder="Comece a escrever o nome do espaço..." autocomplete="off" required>
-    <!-- Caixa onde vão aparecer as sugestões em tempo real -->
-    <div id="sugestoesEspacos" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1000; max-height: 200px; overflow-y: auto;"></div>
-</div>
+    <header>
+        <h1>AT CERVEJAS</h1>
+        <span style="color: #f39c12; font-weight: bold;">Formulário Online</span>
+    </header>
 
-<!-- Script JavaScript para interagir com a API do Nominatim em tempo real -->
-<script>
-document.getElementById('nomeEspaco').addEventListener('input', function() {
-    let query = this.value;
-    let codigoPostal = document.getElementById('codigoPostal').value;
-    let sugestoesBox = document.getElementById('sugestoesEspacos');
-    
-    // Só pesquisa se o utilizador escrever pelo menos 3 letras
-    if (query.length < 3) {
-        sugestoesBox.innerHTML = '';
-        return;
-    }
+    <div class="container">
+        <h2>Pedido de Equipamentos de Cerveja</h2>
+        <form id="formEquipamentos">
+            
+            <div class="form-group">
+                <label for="codigoPostal">Código Postal *</label>
+                <input type="text" id="codigoPostal" placeholder="Ex: 2900-474" required>
+            </div>
 
-    // Combina o termo de pesquisa com o código postal (se preenchido) para afunilar a zona
-    let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Setubal Portugal`;
-    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
+            <div class="form-group">
+                <label for="nomeEspaco">Nome do espaço / estabelecimento *</label>
+                <input type="text" id="nomeEspaco" placeholder="Comece a escrever o nome do espaço..." autocomplete="off" required>
+                <!-- Caixa de sugestões em tempo real -->
+                <div id="sugestoesEspacos"></div>
+            </div>
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
+            <div class="form-group">
+                <label for="tipoEquipamento">Tipo de Equipamento Pretendido *</label>
+                <select id="tipoEquipamento" required>
+                    <option value="">Selecione uma opção...</option>
+                    <option value="coluna">Coluna de Pressão</option>
+                    <option value="barril">Barril / Extração</option>
+                    <option value="refrigerador">Refrigerador / Dispensador Portátil</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="observacoes">Observações ou Detalhes do Pedido</label>
+                <textarea id="observacoes" rows="4" placeholder="Indique quantidades ou detalhes adicionais..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Submeter Pedido</button>
+        </form>
+    </div>
+
+    <!-- Script JavaScript para sugestões inteligentes de estabelecimentos -->
+    <script>
+    document.getElementById('nomeEspaco').addEventListener('input', function() {
+        let query = this.value;
+        let codigoPostal = document.getElementById('codigoPostal').value;
+        let sugestoesBox = document.getElementById('sugestoesEspacos');
+        
+        if (query.length < 3) {
             sugestoesBox.innerHTML = '';
-            data.forEach(local => {
-                let item = document.createElement('a');
-                item.href = '#';
-                item.className = 'list-group-item list-group-item-action';
-                item.innerText = local.display_name;
-                
-                // Ao clicar numa sugestão, preenche o campo automaticamente
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.getElementById('nomeEspaco').value = local.display_name;
-                    sugestoesBox.innerHTML = '';
-                });
-                
-                sugestoesBox.appendChild(item);
-            });
-        })
-        .catch(err => console.error('Erro ao procurar moradas:', err));
-});
+            return;
+        }
 
-// Fecha a caixa de sugestões se clicar fora
-document.addEventListener('click', function(e) {
-    if (!document.getElementById('nomeEspaco').contains(e.target)) {
-        document.getElementById('sugestoesEspacos').innerHTML = '';
-    }
-});
-</script>
+        let termoPesquisa = codigoPostal ? `${query} ${codigoPostal}` : `${query} Setubal Portugal`;
+        let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                sugestoesBox.innerHTML = '';
+                data.forEach(local => {
+                    let item = document.createElement('div');
+                    item.className = 'sugestao-item';
+                    item.innerText = local.display_name;
+                    
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.getElementById('nomeEspaco').value = local.display_name;
+                        sugestoesBox.innerHTML = '';
+                    });
+                    
+                    sugestoesBox.appendChild(item);
+                });
+            })
+            .catch(err => console.error('Erro ao procurar moradas:', err));
+    });
+
+    // Fecha a lista se clicar fora do campo
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('nomeEspaco').contains(e.target)) {
+            document.getElementById('sugestoesEspacos').innerHTML = '';
+        }
+    });
+
+    document.getElementById('formEquipamentos').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Pedido registado com sucesso!');
+    });
+    </script>
+
+</body>
+</html>
