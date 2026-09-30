@@ -120,11 +120,11 @@ input.invalid{border-color:#d9534f}
 <div class="field full" style="position: relative; margin-top: 4px;">
   <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Google Maps) *</label>
   <div style="display: flex; gap: 8px;">
-    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 12px;">
-    <button type="button" id="btn-executar-pesquisa" style="background: var(--gold); color: white; border: 0; border-radius: 10px; padding: 0 20px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 14px;">Pesquisar</button>
+    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 12px; flex: 1;">
+    <button type="button" id="btn-executar-pesquisa" style="background: var(--gold); color: white; border: 0; border-radius: 10px; padding: 0 24px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 14px;">Pesquisar</button>
   </div>
   <div id="sugestoesEspacos"></div>
-  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço, clique em <strong>Pesquisar</strong> e escolha o local correto na lista.</small>
+  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço, clique em <strong>Pesquisar</strong> e escolha o local correto na lista para preencher tudo automaticamente.</small>
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -992,7 +992,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
-    alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
+    alert('⚠️️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
     inputContacto.focus();
     return;
   }
