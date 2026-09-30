@@ -69,8 +69,8 @@ input.invalid{border-color:#d9534f}
 <div class="wrap">
 <div class="hero-top"><div class="brand">AT CERVEJAS</div><div class="eyebrow">Formulário online</div></div>
 <h1>Pedido de Equipamentos de Cerveja</h1>
-<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos em Portugal Continental e Ilhas. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook).</p>
-<div class="benefits"><span>Processo simples</span><span>Continental e Ilhas</span><span>Pedido organizado</span></div>
+<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
+<div class="benefits"><span>Processo simples</span><span>Equipamentos com imagem</span><span>Pedido organizado</span></div>
 </div>
 </header>
 <main><div class="wrap layout">
@@ -87,11 +87,11 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- Código Postal (Obrigatório com abrangência nacional e ilhas) -->
+<!-- Código Postal (Obrigatório) -->
 <div class="field">
   <label>📮 Código Postal *</label>
   <div style="display: flex; gap: 8px;">
-    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 9000-050)" maxlength="8" style="border:2px solid var(--gold);">
+    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 4350-157)" maxlength="8" style="border:2px solid var(--gold);">
     <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
   </div>
   <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 4350-157.</small>
@@ -144,7 +144,7 @@ input.invalid{border-color:#d9534f}
 <!-- Localidade -->
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Ex: Porto, Funchal, Ponta Delgada...">
+  <input required name="localidade" id="input-localidade" placeholder="Ex: Porto, Palmela...">
 </div>
 <div class="field"></div>
 
