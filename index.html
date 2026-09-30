@@ -113,7 +113,7 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- LINK DO GOOGLE MAPS NO TOPO (AGORA POR CIMA DO CÓDIGO POSTAL) -->
+<!-- LINK DO GOOGLE MAPS NO TOPO -->
 <div class="field full" style="background: #fffdf9; border: 2px dashed var(--gold); padding: 14px; border-radius: 10px;">
   <label style="color: var(--gold); font-size: 13px;">🔗 Link de Partilha do Google Maps (Opcional)</label>
   <div style="display: flex; gap: 8px; margin-top: 6px;">
@@ -879,6 +879,8 @@ function fecharZoom() {
         inputLinkMaps.focus();
         return;
       }
+      
+      // Correção para abrir o link curto ou completo corretamente no iframe do maps
       mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(linkVal) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
     });
   }
@@ -1107,7 +1109,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputTelComercial = document.getElementById('input-tel-comercial');
   if (inputTelComercial && inputTelComercial.value.length !== 9) {
-    alert('⚠️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
+    alert('⚠️️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
     inputTelComercial.focus();
     return;
   }
