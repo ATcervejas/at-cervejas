@@ -116,15 +116,15 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- BARRA DE PESQUISA COM BOTÃO DEDICADO E MÚLTIPLOS SERVIDORES -->
+<!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
 <div class="field full" style="position: relative; margin-top: 4px;">
-  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Google Maps) *</label>
+  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local *</label>
   <div style="display: flex; gap: 8px;">
     <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 12px; flex: 1;">
     <button type="button" id="btn-executar-pesquisa" style="background: var(--gold); color: white; border: 0; border-radius: 10px; padding: 0 24px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 14px;">Pesquisar</button>
   </div>
   <div id="sugestoesEspacos"></div>
-  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço, clique em <strong>Pesquisar</strong> e escolha o local correto na lista para preencher tudo automaticamente.</small>
+  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço e clique em <strong>Pesquisar</strong> para preencher a morada automaticamente.</small>
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -793,56 +793,56 @@ function fecharZoom() {
       return;
     }
 
-    sugestoesBox.innerHTML = '<div class="sugestao-item" style="justify-content:center; color:var(--gold); font-weight:bold;">A procurar locais...</div>';
+    sugestoesBox.innerHTML = '<div class="sugestao-item" style="justify-content:center; color:var(--gold); font-weight:bold;">A procurar locais... ⏳</div>';
 
-    // API Principal: Photon (Komoot) - Tolerante a Firewalls de empresa e livre de erros CORS 403
-    let urlPhoton = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=8`;
+    // API Principal: ArcGIS (Esri) - Servidor Empresarial tolerante a Firewalls
+    let urlArcGIS = `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=${encodeURIComponent(query + ', Portugal')}&f=json&maxLocations=8&outFields=PlaceName,StAddr,Postal,City,Region`;
 
-    fetch(urlPhoton)
+    fetch(urlArcGIS)
       .then(response => {
-        if (!response.ok) throw new Error('Erro Photon');
+        if (!response.ok) throw new Error('Falha na rede (ArcGIS)');
         return response.json();
       })
       .then(data => {
         sugestoesBox.innerHTML = '';
-        let resultados = data.features ? data.features.filter(f => f.properties.countrycode === 'PT') : [];
         
-        if (resultados.length === 0) {
-            // Se o Photon não encontrar, tenta Nominatim em Fallback
-            tentarFallbackNominatim(query);
+        if (!data.candidates || data.candidates.length === 0) {
+            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">Nenhum local encontrado. Verifique o nome ou preencha a morada manualmente em baixo.</div>';
             return;
         }
 
-        resultados.forEach(feature => {
-            let p = feature.properties;
-            let nomeLocal = p.name || '';
-            let rua = [p.street, p.housenumber].filter(Boolean).join(', ') || p.district || '';
-            let cp = p.postcode || '';
-            let loc = p.city || p.town || p.village || p.county || '';
-            let displayFullName = [nomeLocal, rua, loc].filter(Boolean).join(', ');
-            
-            if (!nomeLocal) nomeLocal = rua;
+        data.candidates.forEach(local => {
+            let attr = local.attributes || {};
+            let nomeLocal = attr.PlaceName || query;
+            let moradaCompleta = local.address || '';
+            let rua = attr.StAddr || moradaCompleta.split(',')[0] || '';
+            let cp = attr.Postal || '';
+            let loc = attr.City || attr.Region || '';
+
+            let displayName = nomeLocal;
+            if (moradaCompleta && moradaCompleta !== nomeLocal) {
+               displayName += ` - ${moradaCompleta}`;
+            }
 
             let item = document.createElement('div');
             item.className = 'sugestao-item';
-            item.innerHTML = `<span>📍</span> <div style="display:flex; flex-direction:column;"><strong>${nomeLocal || 'Localização'}</strong><span style="font-size:11px; color:var(--muted);">${displayFullName}</span></div>`;
+            item.innerHTML = `<span>📍</span> <div style="display:flex; flex-direction:column;"><strong>${nomeLocal}</strong><span style="font-size:11px; color:var(--muted);">${moradaCompleta}</span></div>`;
             
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                preencherMoradaAutomaticamente(nomeLocal, rua || displayFullName, cp, loc, displayFullName);
+                preencherMoradaAutomaticamente(nomeLocal, rua || moradaCompleta, cp, loc, moradaCompleta);
             });
             sugestoesBox.appendChild(item);
         });
       })
       .catch(err => {
-        console.warn('Erro na API Principal. A tentar servidor secundário...', err);
+        console.warn('Erro na API Principal. A tentar servidor secundário (Nominatim)...', err);
         tentarFallbackNominatim(query);
       });
   }
 
   function tentarFallbackNominatim(query) {
-      // Uso de email no Nominatim é obrigatório para não ser bloqueado em redes de empresas
-      let urlNominatim = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=6&countrycodes=pt&addressdetails=1&email=ricardo.anselmo@gruponabeiro.com`;
+      let urlNominatim = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=6&countrycodes=pt&addressdetails=1`;
       
       fetch(urlNominatim)
         .then(res => {
@@ -852,7 +852,7 @@ function fecharZoom() {
         .then(data => {
             sugestoesBox.innerHTML = '';
             if (data.length === 0) {
-                sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">Nenhum local encontrado. Verifique o nome ou preencha os dados manualmente.</div>';
+                sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">Nenhum local encontrado. Tente outro nome ou preencha os dados manualmente.</div>';
                 return;
             }
             
@@ -875,7 +875,7 @@ function fecharZoom() {
             });
         })
         .catch(finalErr => {
-            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">A rede da empresa pode estar a bloquear o serviço. Por favor, preencha a morada manualmente em baixo.</div>';
+            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">⚠️ A firewall/rede bloqueou a pesquisa automática. Por favor, preencha a morada manualmente nos campos em baixo.</div>';
         });
   }
 
@@ -1048,7 +1048,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const inputTelComercial = document.getElementById('input-tel-comercial');
   if (inputTelComercial && inputTelComercial.value.length !== 9) {
-    alert('⚠️️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
+    alert('⚠️ O número de telemóvel do comercial tem de ter exatamente 9 dígitos.');
     inputTelComercial.focus();
     return;
   }
