@@ -11,7 +11,7 @@
 .wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
 main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
 
-/* Caixa de sugestões de autocomplete */
+/* Caixa de sugestões estilo Google Maps */
 #sugestoesEspacos {
     position: absolute;
     top: 100%;
@@ -21,16 +21,19 @@ main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,
     border: 1px solid #d9dfe6;
     border-top: none;
     z-index: 1000;
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 0 0 10px 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border-radius: 0 0 12px 12px;
 }
 .sugestao-item {
-    padding: 10px 12px;
+    padding: 12px 14px;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f0;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .sugestao-item:hover {
     background-color: #f8f9fa;
@@ -113,21 +116,14 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- Código Postal com Pesquisa Automática e Preenchimento de Localidade -->
-<div class="field">
-  <label>📮 Código Postal *</label>
+<!-- BARRA DE PESQUISA INTELIGENTE (ESTILO GOOGLE MAPS) -->
+<div class="field full" style="position: relative; margin-bottom: 6px;">
+  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisa Inteligente de Estabelecimento / Local (Google Maps) *</label>
   <div style="display: flex; gap: 8px;">
-    <input required name="codigo_postal" id="input-cp" placeholder="xxxx-xxx (ex: 2952-025)" maxlength="8" style="border:2px solid var(--gold);">
-    <button type="button" id="btn-pesquisar-cp" style="background: var(--gold); color: white; border: 0; border-radius: 8px; padding: 0 14px; font-weight: bold; cursor: pointer; white-space: nowrap;">OK</button>
+    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500;">
   </div>
-  <small id="cp-aviso" class="error-msg">⚠️ Formato inválido! Usa o formato 2952-025.</small>
-</div>
-
-<!-- Nome do Estabelecimento com Autocomplete de sugestões -->
-<div class="field">
-  <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Ex: Marisqueira Modesto..." autocomplete="off" style="border:2px solid var(--gold);">
   <div id="sugestoesEspacos"></div>
+  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do estabelecimento ou local e selecione na lista para preencher tudo automaticamente.</small>
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -160,16 +156,24 @@ input.invalid{border-color:#d9534f}
 </div>
 
 <div class="field full">
-  <label>Morada de instalação *</label>
-  <input required name="morada" id="input-morada" placeholder="Morada completa...">
+  <label>🏢 Nome do espaço / estabelecimento *</label>
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente pela pesquisa..." autocomplete="off">
 </div>
 
-<!-- Localidade -->
+<div class="field full">
+  <label>Morada de instalação *</label>
+  <input required name="morada" id="input-morada" placeholder="Preenchido automaticamente...">
+</div>
+
+<div class="field">
+  <label>📮 Código Postal *</label>
+  <input required name="codigo_postal" id="input-cp" placeholder="Preenchido automaticamente...">
+</div>
+
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Ex: Palmela, Setúbal...">
+  <input required name="localidade" id="input-localidade" placeholder="Preenchido automaticamente...">
 </div>
-<div class="field"></div>
 
 <div class="field"><label>Responsável no local *</label><input required name="responsavel_local" id="input-resp-local" placeholder="Nome do responsável"></div>
 <div class="field">
@@ -745,11 +749,14 @@ function fecharZoom() {
 }
 
 (function() {
+  const inputPesquisaMaps = document.getElementById('input-pesquisa-maps');
+  const sugestoesBox = document.getElementById('sugestoesEspacos');
+  
   const inputEstabelecimento = document.getElementById('input-estabelecimento');
   const inputMorada = document.getElementById('input-morada');
-  const inputLocalidade = document.getElementById('input-localidade');
   const inputCP = document.getElementById('input-cp');
-  const btnPesquisarCP = document.getElementById('btn-pesquisar-cp');
+  const inputLocalidade = document.getElementById('input-localidade');
+  
   const mapaFrame = document.getElementById('mapa-frame');
   const mapContainer = document.getElementById('map-container');
   const caixaConfirmacao = document.getElementById('caixa-confirmacao');
@@ -760,175 +767,63 @@ function fecharZoom() {
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
 
-  function obterLocalidadePorCP(cp) {
-    if (!cp || cp.length < 4) return '';
-    const prefixo = parseInt(cp.substring(0, 4), 10);
-    
-    if (prefixo >= 1000 && prefixo <= 1999) return "Lisboa";
-    if (prefixo >= 2000 && prefixo <= 2040) return "Santarém";
-    if (prefixo >= 2050 && prefixo <= 2070) return "Cartaxo / Azambuja";
-    if (prefixo >= 2100 && prefixo <= 2130) return "Coruche / Benavente";
-    if (prefixo >= 2200 && prefixo <= 2230) return "Abrantes";
-    if (prefixo >= 2300 && prefixo <= 2350) return "Tomar / Torres Novas";
-    if (prefixo >= 2400 && prefixo <= 2490) return "Leiria / Fátima";
-    if (prefixo >= 2500 && prefixo <= 2560) return "Caldas da Rainha / Peniche / Torres Vedras";
-    if (prefixo >= 2600 && prefixo <= 2670) return "Vila Franca de Xira / Loures";
-    if (prefixo >= 2700 && prefixo <= 2790) return "Amadora / Sintra / Cascais";
-    if (prefixo >= 2800 && prefixo <= 2840) return "Almada / Seixal / Barreiro";
-    if (prefixo >= 2850 && prefixo <= 2855) return "Setúbal (Margem Sul)";
-    if (prefixo >= 2870 && prefixo <= 2875) return "Montijo";
-    if (prefixo >= 2890 && prefixo <= 2895) return "Alcochete";
-    if (prefixo >= 2900 && prefixo <= 2910) return "Setúbal";
-    if (prefixo >= 2925 && prefixo <= 2925) return "Azeitão";
-    if (prefixo >= 2950 && prefixo <= 2955) return "Palmela";
-    if (prefixo >= 3000 && prefixo <= 3060) return "Coimbra";
-    if (prefixo >= 3500 && prefixo <= 3530) return "Viseu";
-    if (prefixo >= 3800 && prefixo <= 3860) return "Aveiro";
-    if (prefixo >= 4000 && prefixo <= 4490) return "Porto";
-    if (prefixo >= 4700 && prefixo <= 4760) return "Braga / Barcelos";
-    if (prefixo >= 4800 && prefixo <= 4850) return "Guimarães";
-    if (prefixo >= 5000 && prefixo <= 5050) return "Vila Real";
-    if (prefixo >= 5300 && prefixo <= 5370) return "Bragança";
-    if (prefixo >= 6000 && prefixo <= 6060) return "Castelo Branco";
-    if (prefixo >= 6300 && prefixo <= 6350) return "Guarda";
-    if (prefixo >= 7000 && prefixo <= 7005) return "Évora";
-    if (prefixo >= 7300 && prefixo <= 7350) return "Portalegre";
-    if (prefixo >= 7800 && prefixo <= 7830) return "Beja";
-    if (prefixo >= 8000 && prefixo <= 8700) return "Faro / Algarve";
-    if (prefixo >= 9000 && prefixo <= 9380) return "Funchal (Madeira)";
-    if (prefixo >= 9500 && prefixo <= 9980) return "Ponta Delgada / Açores";
-    
-    return "";
-  }
-
-  function processarCodigoPostal() {
-    const cp = inputCP ? inputCP.value.trim() : '';
-    const cpRegex = /^\d{4}-\d{3}$/;
-    const avisoCP = document.getElementById('cp-aviso');
-
-    if (cp.length > 0 && !cpRegex.test(cp)) {
-      if(avisoCP) avisoCP.style.display = 'block';
-      inputCP.classList.add('invalid');
-      return;
-    } else {
-      if(avisoCP) avisoCP.style.display = 'none';
-      inputCP.classList.remove('invalid');
-    }
-
-    if (cp.length >= 4) {
-      const localidadeSugerida = obterLocalidadePorCP(cp);
-      if (localidadeSugerida && inputLocalidade) {
-        inputLocalidade.value = localidadeSugerida;
-      }
-    }
-
-    const estab = inputEstabelecimento ? inputEstabelecimento.value.trim() : '';
-    let query = '';
-    if (estab && cp) {
-      query = `${estab}, ${cp}, Portugal`;
-    } else if (cp) {
-      query = `${cp}, Portugal`;
-    } else if (estab) {
-      query = `${estab}, Portugal`;
-    }
-
-    if (query.length > 3) {
-      mapaFrame.src = 'https://maps.google.com/maps?q=' + encodeURIComponent(query) + '&t=&z=16&ie=UTF8&iwloc=&output=embed';
-    }
-  }
-
-  if (inputCP) {
-    inputCP.addEventListener('input', function(e) {
-      let val = e.target.value.replace(/\D/g, '');
-      if (val.length > 4) val = val.substring(0, 4) + '-' + val.substring(4, 7);
-      e.target.value = val;
-
-      if (val.length >= 4) {
-        const localidadeSugerida = obterLocalidadePorCP(val);
-        if (localidadeSugerida && inputLocalidade) {
-          inputLocalidade.value = localidadeSugerida;
-        }
-      }
-    });
-  }
-
-  if (btnPesquisarCP) {
-    btnPesquisarCP.addEventListener('click', processarCodigoPostal);
-  }
-
-  if (inputCP) {
-    inputCP.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        processarCodigoPostal();
-      }
-    });
-  }
-
-  // AUTOCOMPLETE RESTAURADO (Mostra sugestões ao escrever "restaurante", etc.)
-  if (inputEstabelecimento) {
-    inputEstabelecimento.addEventListener('input', function() {
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-      this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-      this.setSelectionRange(start, end);
-
+  // Sistema de Pesquisa Maps Global
+  if (inputPesquisaMaps) {
+    inputPesquisaMaps.addEventListener('input', function() {
       let query = this.value.trim();
-      let codigoPostal = inputCP ? inputCP.value.trim() : '';
-      let localidadeAtual = inputLocalidade ? inputLocalidade.value.trim() : '';
-      let sugestoesBox = document.getElementById('sugestoesEspacos');
-      
       if (query.length < 3) {
         sugestoesBox.innerHTML = '';
         return;
       }
 
-      let zonaFiltro = codigoPostal || localidadeAtual || 'Portugal';
-      let termoPesquisa = `${query} ${zonaFiltro}`;
-      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(termoPesquisa)}&limit=5&countrycodes=pt`;
+      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=6&countrycodes=pt&addressdetails=1`;
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
-            sugestoesBox.innerHTML = '';
-            data.forEach(local => {
-                let item = document.createElement('div');
-                item.className = 'sugestao-item';
-                item.innerText = local.display_name;
-                
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    let partes = local.display_name.split(',');
-                    let nomeEspaco = partes[0].trim();
-                    nomeEspaco = nomeEspaco.charAt(0).toUpperCase() + nomeEspaco.slice(1).toLowerCase();
-                    let ruaLimpa = partes.length > 1 ? partes[1].trim() : '';
+          sugestoesBox.innerHTML = '';
+          data.forEach(local => {
+            let item = document.createElement('div');
+            item.className = 'sugestao-item';
+            item.innerHTML = `<span>📍</span> <div><strong>${local.display_name}</strong></div>`;
+            
+            item.addEventListener('click', function(e) {
+              e.preventDefault();
+              
+              // Extração inteligente de dados do endereço
+              let addr = local.address || {};
+              let nomeLocal = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
+              let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
+              let cp = addr.postcode || '';
+              let localidade = addr.city || addr.town || addr.village || addr.municipality || '';
 
-                    inputEstabelecimento.value = nomeEspaco;
-                    if (inputMorada) {
-                        inputMorada.value = ruaLimpa;
-                    }
+              // Preencher os campos automaticamente
+              inputPesquisaMaps.value = local.display_name;
+              inputEstabelecimento.value = nomeLocal;
+              inputMorada.value = rua || local.display_name;
+              inputCP.value = cp;
+              inputLocalidade.value = localidade;
 
-                    if (codigoPostal.length >= 4) {
-                        let locAuto = obterLocalidadePorCP(codigoPostal);
-                        if (locAuto && inputLocalidade) inputLocalidade.value = locAuto;
-                    }
+              sugestoesBox.innerHTML = '';
 
-                    sugestoesBox.innerHTML = '';
-                    processarCodigoPostal();
-                });
-                
-                sugestoesBox.appendChild(item);
+              // Atualizar Mapa
+              mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(local.display_name)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+              mapContainer.style.borderColor = '#b78a45';
+              caixaConfirmacao.style.background = '#f8f9fa';
+              textoConfirmacao.textContent = '📍 Local selecionado! Confirme se está correto:';
             });
+            
+            sugestoesBox.appendChild(item);
+          });
         })
-        .catch(err => console.error('Erro ao procurar moradas:', err));
+        .catch(err => console.error('Erro na pesquisa do Maps:', err));
     });
   }
 
-  // Fecha as sugestões se clicar fora
+  // Fechar sugestões ao clicar fora
   document.addEventListener('click', function(e) {
-    const box = document.getElementById('sugestoesEspacos');
-    if (box && inputEstabelecimento && !inputEstabelecimento.contains(e.target) && !box.contains(e.target)) {
-      box.innerHTML = '';
+    if (sugestoesBox && inputPesquisaMaps && !inputPesquisaMaps.contains(e.target) && !sugestoesBox.contains(e.target)) {
+      sugestoesBox.innerHTML = '';
     }
   });
 
@@ -954,15 +849,7 @@ function fecharZoom() {
     btnSim.addEventListener('click', function() {
       mapContainer.style.borderColor = '#28a745';
       caixaConfirmacao.style.background = '#e8f5e9';
-      textoConfirmacao.textContent = '📍 Localização confirmada!';
-      
-      const estabVal = inputEstabelecimento ? inputEstabelecimento.value : '';
-      if (inputMorada && !inputMorada.value && estabVal) {
-        inputMorada.value = estabVal;
-      }
-      if (inputLocalidade && !inputLocalidade.value) {
-        inputLocalidade.focus();
-      }
+      textoConfirmacao.textContent = '📍 Localização confirmada com sucesso!';
     });
   }
 
@@ -970,7 +857,7 @@ function fecharZoom() {
     btnNao.addEventListener('click', function() {
       mapContainer.style.borderColor = '#dc3545';
       caixaConfirmacao.style.background = '#ffebee';
-      textoConfirmacao.textContent = '✏ Por favor, ajuste ou complete os campos de morada manualmente.';
+      textoConfirmacao.textContent = '✏ Podes ajustar os campos de morada ou nome manualmente em baixo.';
       if (inputMorada) inputMorada.focus();
     });
   }
