@@ -180,14 +180,14 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Contacto (Telemóvel) *</label>
   <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-contacto" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="O seu nome completo"></div>
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -951,7 +951,7 @@ function fecharZoom() {
     btnProcessarLink.addEventListener('click', function() {
       const linkVal = inputLinkMaps.value.trim();
       if (!linkVal) {
-        alert('⚠️️ Por favor, insira primeiro um link do Google Maps.');
+        alert('⚠️ Por favor, insira primeiro um link do Google Maps.');
         inputLinkMaps.focus();
         return;
       }
@@ -1341,13 +1341,26 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  const colunas = (operacao === 'Evento' && !eventoForcarColunas) ? '• Colunas: N/A (Refrigerador portátil / Evento)' : (Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
-    const choiceBox = c.closest('.choice');
-    const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
-    return `- ${c.value} (Fixação: ${fixacao})`;
-  }).join('\n') || 'Nenhuma coluna selecionada');
-
-  const metrosColunaRef = (operacao === 'Evento' && !eventoForcarColunas) ? 'N/D' : (document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value : 'N/D');
+  let colunasTxt = '';
+  let metrosColunaRefTxt = '';
+  if (operacao === 'Evento' && !eventoForcarColunas) {
+    colunasTxt = '• Colunas: N/A (Refrigerador portátil / Evento)';
+  } else {
+    const colunasSelecionadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+    if (colunasSelecionadas.length > 0) {
+      colunasTxt = colunasSelecionadas.map(c => {
+        const choiceBox = c.closest('.choice');
+        const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
+        return `- ${c.value} (Fixação: ${fixacao})`;
+      }).join('\n');
+    } else {
+      colunasTxt = 'Nenhuma coluna selecionada';
+    }
+    const mColRefVal = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
+    if (mColRefVal) {
+      metrosColunaRefTxt = `• Metros da coluna ao refrigerador: ${mColRefVal}\n`;
+    }
+  }
 
   let refrigeradoresTxt = '';
   document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
@@ -1361,7 +1374,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = 'Nenhum refrigerador selecionado';
 
-  const metrosRefBarril = (operacao === 'Evento' && !eventoForcarRefrigerador) ? 'N/D' : (document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D');
+  let metrosRefBarrilTxt = '';
+  const mostrarMetrosRefBar = (operacao === 'Nova instalação' || (operacao === 'Evento' && eventoForcarRefrigerador));
+  if (mostrarMetrosRefBar) {
+    const mRefBarVal = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
+    if (mRefBarVal) {
+      metrosRefBarrilTxt = `• Metros do refrigerador ao barril: ${mRefBarVal}\n`;
+    }
+  }
 
   let fraseIntro = "";
   if (operacao === 'Levantamento') {
@@ -1392,11 +1412,13 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `• Data pretendida: ${dataPretendida}\n\n` +
     "--- 3. CERVEJA E COLUNAS ---\n" +
     `• Marcas pretendidas: ${cervejas}\n` +
-    `${colunas}\n` +
-    `• Metros da coluna ao refrigerador: ${metrosColunaRef}\n\n` +
+    `${colunasTxt}\n` +
+    (metrosColunaRefTxt ? `${metrosColunaRefTxt}` : '') +
+    "\n" +
     "--- 4. REFRIGERADORES E EQUIPAMENTOS ---\n" +
     `${refrigeradoresTxt}` +
-    `• Metros do refrigerador ao barril: ${metrosRefBarril}\n\n` +
+    (metrosRefBarrilTxt ? `${metrosRefBarrilTxt}` : '') +
+    "\n" +
     "--- 5. OBSERVAÇÕES ---\n" +
     `${obs}\n\n` +
     "Com os melhores cumprimentos,\n" +
