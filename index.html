@@ -11,7 +11,7 @@
 .wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
 main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
 
-/* Caixa de sugestões estilo Google Maps */
+/* Caixa de sugestões de resultados da pesquisa */
 #sugestoesEspacos {
     position: absolute;
     top: 100%;
@@ -21,7 +21,7 @@ main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,
     border: 1px solid #d9dfe6;
     border-top: none;
     z-index: 1000;
-    max-height: 260px;
+    max-height: 280px;
     overflow-y: auto;
     box-shadow: 0 10px 28px rgba(0,0,0,0.15);
     border-radius: 0 0 12px 12px;
@@ -116,14 +116,15 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
 </div>
 
-<!-- BARRA DE PESQUISA INTELIGENTE (ESTILO GOOGLE MAPS) -->
+<!-- BARRA DE PESQUISA COM BOTÃO DEDICADO -->
 <div class="field full" style="position: relative; margin-top: 4px;">
-  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Estilo Google Maps) *</label>
+  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local (Google Maps) *</label>
   <div style="display: flex; gap: 8px;">
-    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 14px;">
+    <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 12px;">
+    <button type="button" id="btn-executar-pesquisa" style="background: var(--gold); color: white; border: 0; border-radius: 10px; padding: 0 20px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 14px;">Pesquisar</button>
   </div>
   <div id="sugestoesEspacos"></div>
-  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço e selecione na lista para preencher tudo automaticamente.</small>
+  <small style="color: var(--muted); font-size: 11px;">Escreva o nome do espaço, clique em <strong>Pesquisar</strong> e escolha o local correto na lista.</small>
 </div>
 
 <!-- Mapa Dinâmico & Confirmação -->
@@ -155,10 +156,10 @@ input.invalid{border-color:#d9534f}
   <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
 </div>
 
-<!-- Campos Preenchidos Automaticamente pela Pesquisa -->
+<!-- Campos Preenchidos Automaticamente -->
 <div class="field full">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente pela pesquisa..." autocomplete="off">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente..." autocomplete="off">
 </div>
 
 <div class="field full">
@@ -751,6 +752,7 @@ function fecharZoom() {
 
 (function() {
   const inputPesquisaMaps = document.getElementById('input-pesquisa-maps');
+  const btnExecutarPesquisa = document.getElementById('btn-executar-pesquisa');
   const sugestoesBox = document.getElementById('sugestoesEspacos');
   
   const inputEstabelecimento = document.getElementById('input-estabelecimento');
@@ -768,61 +770,82 @@ function fecharZoom() {
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
 
-  // Sistema de Pesquisa Maps Global
-  if (inputPesquisaMaps) {
-    inputPesquisaMaps.addEventListener('input', function() {
-      let query = this.value.trim();
-      if (query.length < 3) {
+  function realizarPesquisaNoMaps() {
+    let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
+    if (query.length < 3) {
+      alert('⚠️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
+      if (inputPesquisaMaps) inputPesquisaMaps.focus();
+      return;
+    }
+
+    sugestoesBox.innerHTML = '<div class="sugestao-item" style="justify-content:center; color:var(--gold); font-weight:bold;">A procurar locais...</div>';
+
+    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&countrycodes=pt&addressdetails=1`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
         sugestoesBox.innerHTML = '';
-        return;
-      }
+        if (data.length === 0) {
+          sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f;">Nenhum local encontrado. Tente refinar a pesquisa.</div>';
+          return;
+        }
 
-      let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=6&countrycodes=pt&addressdetails=1`;
-
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          sugestoesBox.innerHTML = '';
-          data.forEach(local => {
-            let item = document.createElement('div');
-            item.className = 'sugestao-item';
-            item.innerHTML = `<span>📍</span> <div><strong>${local.display_name}</strong></div>`;
+        data.forEach(local => {
+          let item = document.createElement('div');
+          item.className = 'sugestao-item';
+          item.innerHTML = `<span>📍</span> <div><strong>${local.display_name}</strong></div>`;
+          
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            item.addEventListener('click', function(e) {
-              e.preventDefault();
-              
-              let addr = local.address || {};
-              let nomeLocal = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
-              let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
-              let cp = addr.postcode || '';
-              let localidade = addr.city || addr.town || addr.village || addr.municipality || '';
+            let addr = local.address || {};
+            let nomeLocal = addr.amenity || addr.shop || addr.tourism || addr.leisure || addr.building || local.display_name.split(',')[0];
+            let rua = [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.suburb || '';
+            let cp = addr.postcode || '';
+            let localidade = addr.city || addr.town || addr.village || addr.municipality || '';
 
-              // Preenchimento automático dos campos
-              inputPesquisaMaps.value = local.display_name;
-              inputEstabelecimento.value = nomeLocal;
-              inputMorada.value = rua || local.display_name;
-              inputCP.value = cp;
-              inputLocalidade.value = localidade;
+            // Preenchimento automático dos campos
+            inputPesquisaMaps.value = local.display_name;
+            inputEstabelecimento.value = nomeLocal;
+            inputMorada.value = rua || local.display_name;
+            inputCP.value = cp;
+            inputLocalidade.value = localidade;
 
-              sugestoesBox.innerHTML = '';
+            sugestoesBox.innerHTML = '';
 
-              // Atualizar Mapa dinamicamente
-              mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(local.display_name)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-              mapContainer.style.borderColor = '#b78a45';
-              caixaConfirmacao.style.background = '#f8f9fa';
-              textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
-            });
-            
-            sugestoesBox.appendChild(item);
+            // Atualizar Mapa dinamicamente
+            mapaFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(local.display_name)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+            mapContainer.style.borderColor = '#b78a45';
+            caixaConfirmacao.style.background = '#f8f9fa';
+            textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
           });
-        })
-        .catch(err => console.error('Erro na pesquisa do Maps:', err));
+          
+          sugestoesBox.appendChild(item);
+        });
+      })
+      .catch(err => {
+        console.error('Erro na pesquisa:', err);
+        sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f;">Erro ao ligar ao servidor de mapas.</div>';
+      });
+  }
+
+  if (btnExecutarPesquisa) {
+    btnExecutarPesquisa.addEventListener('click', realizarPesquisaNoMaps);
+  }
+
+  if (inputPesquisaMaps) {
+    inputPesquisaMaps.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarPesquisaNoMaps();
+      }
     });
   }
 
   // Fechar sugestões ao clicar fora
   document.addEventListener('click', function(e) {
-    if (sugestoesBox && inputPesquisaMaps && !inputPesquisaMaps.contains(e.target) && !sugestoesBox.contains(e.target)) {
+    if (sugestoesBox && inputPesquisaMaps && !inputPesquisaMaps.contains(e.target) && !sugestoesBox.contains(e.target) && btnExecutarPesquisa && !btnExecutarPesquisa.contains(e.target)) {
       sugestoesBox.innerHTML = '';
     }
   });
