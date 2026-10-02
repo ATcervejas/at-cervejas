@@ -788,7 +788,7 @@ function fecharZoom() {
   function realizarPesquisaNoMaps() {
     let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
     if (query.length < 3) {
-      alert('⚠️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
+      alert('⚠️️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
       if (inputPesquisaMaps) inputPesquisaMaps.focus();
       return;
     }
@@ -1076,8 +1076,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
     const choiceBox = c.closest('.choice');
     const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
-    return `- ${c.value} (Fixação: ${fixacao})`;
-  }).join('\n') || 'Nenhuma coluna selecionada';
+    return `   » ${c.value} (Fixação: ${fixacao})`;
+  }).join('\n') || '   » Nenhuma coluna selecionada';
 
   const metrosColunaRef = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value : 'N/D';
 
@@ -1088,41 +1088,59 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     const qtd = box.querySelector('.input-ref-qtd').value || '1';
     if (tipo) {
       const modelo = (tipo === 'Refrigerador portátil' && portatil) ? portatil : tipo;
-      refrigeradoresTxt += `- ${modelo} (Quantidade: ${qtd})\n`;
+      refrigeradoresTxt += `   » ${modelo} (Quantidade: ${qtd})\n`;
     }
   });
-  if (!refrigeradoresTxt) refrigeradoresTxt = 'Nenhum refrigerador selecionado';
+  if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
 
   const metrosRefBarril = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D';
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
   const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
   
+  const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+  
   const corpo = encodeURIComponent(
     "Olá,\n\n" +
-    "Foi submetido um novo pedido de equipamentos através do portal AT Cervejas com os seguintes detalhes:\n\n" +
-    "--- 1. DADOS DO CLIENTE ---\n" +
+    "Foi submetido um novo pedido de equipamentos. Abaixo encontram-se os detalhes da instalação:\n\n" +
+    
+    divisor +
+    "🏢 1. DADOS DO CLIENTE\n" +
+    divisor +
     `• Estabelecimento: ${estabelecimento}\n` +
     `• Código de Cliente: ${codCliente}\n` +
     `• Departamento: ${departamento}\n` +
     `• Morada: ${morada}, ${cp} ${localidade}\n` +
-    `• Link Google Maps: ${linkGoogleMaps}\n` +
-    `• Responsável Local: ${respLocal} (${telLocal})\n` +
+    `• Mapa: ${linkGoogleMaps}\n` +
+    `• Resp. Local: ${respLocal} (${telLocal})\n` +
     `• Comercial / GD: ${comercial} (${telComercial})\n\n` +
-    "--- 2. TIPO DE PEDIDO ---\n" +
+    
+    divisor +
+    "📝 2. TIPO DE PEDIDO\n" +
+    divisor +
     `• Operação: ${operacao}\n` +
     `• Data pretendida: ${dataPretendida}\n\n` +
-    "--- 3. CERVEJA E COLUNAS ---\n" +
-    `• Marcas pretendidas: ${cervejas}\n` +
-    `${colunas}\n` +
-    `• Metros da coluna ao refrigerador: ${metrosColunaRef}\n\n` +
-    "--- 4. REFRIGERADORES E EQUIPAMENTOS ---\n" +
-    `${refrigeradoresTxt}` +
-    `• Metros do refrigerador ao barril: ${metrosRefBarril}\n\n` +
-    "--- 5. OBSERVAÇÕES ---\n" +
+    
+    divisor +
+    "🍺 3. CERVEJA E COLUNAS\n" +
+    divisor +
+    `• Marcas: ${cervejas}\n` +
+    `• Colunas selecionadas:\n${colunas}\n` +
+    `• Distância (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` +
+    
+    divisor +
+    "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
+    divisor +
+    `• Equipamentos:\n${refrigeradoresTxt}` +
+    `• Distância (Refrigerador ➔ Barril): ${metrosRefBarril}\n\n` +
+    
+    divisor +
+    "💬 5. OBSERVAÇÕES\n" +
+    divisor +
     `${obs}\n\n` +
-    "Com os melhores cumprimentos,\n" +
-    "Portal AT Cervejas"
+    
+    "--\n" +
+    "Com os melhores cumprimentos,"
   );
 
   window.location.href = `mailto:${emailDestino}?subject=${assunto}&body=${corpo}`;
