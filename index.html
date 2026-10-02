@@ -188,7 +188,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -1079,7 +1079,12 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return `   » ${c.value} (Fixação: ${fixacao})`;
   }).join('\n') || '   » Nenhuma coluna selecionada';
 
-  const metrosColunaRef = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value : 'N/D';
+  // Lógica para adicionar a palavra "metros" automaticamente
+  let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
+  const metrosColunaRef = rawMetrosCol ? (rawMetrosCol.toLowerCase().includes('metro') || rawMetrosCol.toLowerCase().endsWith('m') ? rawMetrosCol : rawMetrosCol + ' metros') : 'N/D';
+
+  let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
+  const metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
 
   let refrigeradoresTxt = '';
   document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
@@ -1092,8 +1097,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     }
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
-
-  const metrosRefBarril = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value : 'N/D';
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
   const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
