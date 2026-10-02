@@ -188,7 +188,7 @@ input.invalid{border-color:#d9534f}
 <div class="field">
   <label>Telemóvel do comercial *</label>
   <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
-  <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
+  <small id="aviso-tel-comercial" class="error-msg">⚠️️ Introduza exatamente 9 dígitos!</small>
 </div>
 
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
@@ -788,7 +788,7 @@ function fecharZoom() {
   function realizarPesquisaNoMaps() {
     let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
     if (query.length < 3) {
-      alert('⚠️️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
+      alert('⚠️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
       if (inputPesquisaMaps) inputPesquisaMaps.focus();
       return;
     }
@@ -1107,32 +1107,32 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     divisor +
     "🏢 1. DADOS DO CLIENTE\n" +
     divisor +
-    `• Estabelecimento: ${estabelecimento}\n` +
-    `• Código de Cliente: ${codCliente}\n` +
-    `• Departamento: ${departamento}\n` +
-    `• Morada: ${morada}, ${cp} ${localidade}\n` +
-    `• Mapa: ${linkGoogleMaps}\n` +
-    `• Resp. Local: ${respLocal} (${telLocal})\n` +
-    `• Comercial / GD: ${comercial} (${telComercial})\n\n` +
+    `• ESTABELECIMENTO: ${estabelecimento}\n` +
+    `• CÓDIGO DE CLIENTE: ${codCliente}\n` +
+    `• DEPARTAMENTO: ${departamento}\n` +
+    `• MORADA: ${morada}, ${cp} ${localidade}\n` +
+    `• RESP. LOCAL: ${respLocal} (${telLocal})\n` +
+    `• COMERCIAL / GD: ${comercial} (${telComercial})\n` +
+    `• MAPA DE LOCALIZAÇÃO:\n  ${linkGoogleMaps}\n\n` +
     
     divisor +
     "📝 2. TIPO DE PEDIDO\n" +
     divisor +
-    `• Operação: ${operacao}\n` +
-    `• Data pretendida: ${dataPretendida}\n\n` +
+    `• OPERAÇÃO: ${operacao}\n` +
+    `• DATA PRETENDIDA: ${dataPretendida}\n\n` +
     
     divisor +
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
-    `• Marcas: ${cervejas}\n` +
-    `• Colunas selecionadas:\n${colunas}\n` +
-    `• Distância (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` +
+    `• MARCAS: ${cervejas}\n` +
+    `• COLUNAS SELECIONADAS:\n${colunas}\n` +
+    `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` +
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
-    `• Equipamentos:\n${refrigeradoresTxt}` +
-    `• Distância (Refrigerador ➔ Barril): ${metrosRefBarril}\n\n` +
+    `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
+    `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n\n` +
     
     divisor +
     "💬 5. OBSERVAÇÕES\n" +
