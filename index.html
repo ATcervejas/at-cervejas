@@ -199,7 +199,7 @@ input.invalid{border-color:#d9534f}
 <div class="grid">
 <div class="field">
   <label>Operação *</label>
-  <select required name="operacao" id="select-operacao">
+  <select required name="operacao" id="select-operacao" onchange="atualizarExibicaoDatas()">
     <option value="">Selecionar</option>
     <option value="Nova instalação">Nova instalação</option>
     <option value="Levantamento">Levantamento</option>
@@ -401,7 +401,7 @@ input.invalid{border-color:#d9534f}
 </div>
 
 <!-- 4. Equipamentos -->
-<div class="panel"><h2>4. Equipamentos</h2><p class="sub">Especifique as caraterísticas técnicas do refrigerador e distâncias.</p>
+<div class="panel" id="painel-equipamentos"><h2>4. Equipamentos</h2><p class="sub">Especifique as caraterísticas técnicas do refrigerador e distâncias.</p>
 
 <div id="container-refrigeradores-lista">
   <div class="refrigerador-item-box" id="ref-item-1">
@@ -436,7 +436,7 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<button type="button" class="btn-add-ref" onclick="adicionarNovoRefrigerador()">+ Adicionar outro refrigerador</button>
+<button type="button" class="btn-add-ref" id="btn-add-outro-ref" onclick="adicionarNovoRefrigerador()">+ Adicionar outro refrigerador</button>
 
 <div class="field" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none;">
   <label>Metros do refrigerador ao barril</label>
@@ -593,6 +593,7 @@ function processarMudancaRefrigerador(selectElem) {
 }
 
 function atualizarSelecaoCervejas() {
+  const operacaoVal = document.getElementById('select-operacao').value;
   const selecionadas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value);
   const seccaoColunas = document.getElementById('seccao-colunas');
   const wrapSubLeffe = document.getElementById('wrap-sub-leffe');
@@ -614,10 +615,15 @@ function atualizarSelecaoCervejas() {
     wrapSubLeffe.style.display = 'none';
   }
 
-  if (qtd === 0) {
+  // Se a operação for "Evento", as colunas nunca aparecem, apenas as marcas de cerveja
+  if (operacaoVal === 'Evento') {
     seccaoColunas.style.display = 'none';
   } else {
-    seccaoColunas.style.display = 'block';
+    if (qtd === 0) {
+      seccaoColunas.style.display = 'none';
+    } else {
+      seccaoColunas.style.display = 'block';
+    }
   }
 
   colBud.style.display = selecionadas.includes('Budweiser') ? 'flex' : 'none';
@@ -647,10 +653,13 @@ function obterImagemRefrigerador(nome) {
 }
 
 function atualizarResumoInstalacao() {
+  const operacaoVal = document.getElementById('select-operacao').value;
   const colunasChecadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
   const boxColunas = document.getElementById('box-colunas-content');
   
-  if (colunasChecadas.length > 0) {
+  if (operacaoVal === 'Evento') {
+    boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">N/A (Evento)</p>';
+  } else if (colunasChecadas.length > 0) {
     boxColunas.innerHTML = colunasChecadas.map(c => {
       const imgPath = c.getAttribute('data-img');
       const choiceBox = c.closest('.choice');
@@ -662,7 +671,6 @@ function atualizarResumoInstalacao() {
     boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
   }
 
-  const operacaoVal = document.getElementById('select-operacao').value;
   if (operacaoVal === 'Nova instalação') {
     const mColRef = document.getElementById('input-metros-col-ref').value.trim();
     const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
@@ -795,7 +803,6 @@ function fecharZoom() {
 
     sugestoesBox.innerHTML = '<div class="sugestao-item" style="justify-content:center; color:var(--gold); font-weight:bold;">A procurar locais... ⏳</div>';
 
-    // API Principal: ArcGIS (Esri) - Servidor Empresarial tolerante a Firewalls
     let urlArcGIS = `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=${encodeURIComponent(query + ', Portugal')}&f=json&maxLocations=8&outFields=PlaceName,StAddr,Postal,City,Region`;
 
     fetch(urlArcGIS)
@@ -818,11 +825,6 @@ function fecharZoom() {
             let rua = attr.StAddr || moradaCompleta.split(',')[0] || '';
             let cp = attr.Postal || '';
             let loc = attr.City || attr.Region || '';
-
-            let displayName = nomeLocal;
-            if (moradaCompleta && moradaCompleta !== nomeLocal) {
-               displayName += ` - ${moradaCompleta}`;
-            }
 
             let item = document.createElement('div');
             item.className = 'sugestao-item';
@@ -875,7 +877,7 @@ function fecharZoom() {
             });
         })
         .catch(finalErr => {
-            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">⚠️ A firewall/rede bloqueou a pesquisa automática. Por favor, preencha a morada manualmente nos campos em baixo.</div>';
+            sugestoesBox.innerHTML = '<div class="sugestao-item" style="color:#d9534f; font-weight:bold;">⚠️ A firewall/rede bloqueou a pesquisa automática. Por favor, preencha a morada manualmente em baixo.</div>';
         });
   }
 
@@ -892,7 +894,6 @@ function fecharZoom() {
     });
   }
 
-  // Fechar sugestões ao clicar fora
   document.addEventListener('click', function(e) {
     if (sugestoesBox && inputPesquisaMaps && !inputPesquisaMaps.contains(e.target) && !sugestoesBox.contains(e.target) && btnExecutarPesquisa && !btnExecutarPesquisa.contains(e.target)) {
       sugestoesBox.innerHTML = '';
@@ -933,7 +934,9 @@ function fecharZoom() {
       if (inputMorada) inputMorada.focus();
     });
   }
+})();
 
+function atualizarExibicaoDatas() {
   const selectOperacao = document.getElementById('select-operacao');
   const fieldDataPretendida = document.getElementById('field-data-pretendida');
   const labelDataPretendida = document.getElementById('label-data-pretendida');
@@ -943,86 +946,87 @@ function fecharZoom() {
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMColRef = document.getElementById('resumo-box-m-col-ref');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+  const seccaoColunas = document.getElementById('seccao-colunas');
 
-  function atualizarExibicaoDatas() {
-    const valor = selectOperacao ? selectOperacao.value : '';
-    
-    if (valor === 'Nova instalação') {
-      if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
-      if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+  const valor = selectOperacao ? selectOperacao.value : '';
+  
+  if (valor === 'Nova instalação') {
+    if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+  } else {
+    if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+    if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
+    if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
+  }
+
+  // Se for Evento, esconde as colunas independentemente das cervejas selecionadas
+  if (valor === 'Evento') {
+    if (seccaoColunas) seccaoColunas.style.display = 'none';
+  }
+
+  if (valor === 'Nova instalação') {
+    fieldDataPretendida.style.display = 'flex';
+    labelDataPretendida.textContent = 'Data da instalação *';
+    fieldDataLevantamento.style.display = 'none';
+  } else if (valor === 'Levantamento') {
+    fieldDataPretendida.style.display = 'none';
+    fieldDataLevantamento.style.display = 'flex';
+  } else if (valor === 'Evento') {
+    fieldDataPretendida.style.display = 'flex';
+    labelDataPretendida.textContent = 'Data pretendida *';
+    fieldDataLevantamento.style.display = 'flex';
+  } else {
+    fieldDataPretendida.style.display = 'flex';
+    labelDataPretendida.textContent = 'Data pretendida';
+    fieldDataLevantamento.style.display = 'flex';
+  }
+  
+  atualizarResumoInstalacao();
+}
+
+const inputDepartamento = document.getElementById('input-departamento');
+if (inputDepartamento) {
+  inputDepartamento.addEventListener('input', function(e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+}
+
+const inputContacto = document.getElementById('input-contacto');
+const avisoContacto = document.getElementById('aviso-contacto');
+if (inputContacto && avisoContacto) {
+  inputContacto.addEventListener('input', function(e) {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 9) val = val.substring(0, 9);
+    e.target.value = val;
+    const phoneRegex = /^\d{9}$/;
+    if (val.length > 0 && !phoneRegex.test(val)) {
+      avisoContacto.style.display = 'block';
+      inputContacto.classList.add('invalid');
     } else {
-      if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
-      if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
-      if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
-      if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
+      avisoContacto.style.display = 'none';
+      inputContacto.classList.remove('invalid');
     }
+  });
+}
 
-    if (valor === 'Nova instalação') {
-      fieldDataPretendida.style.display = 'flex';
-      labelDataPretendida.textContent = 'Data da instalação *';
-      fieldDataLevantamento.style.display = 'none';
-    } else if (valor === 'Levantamento') {
-      fieldDataPretendida.style.display = 'none';
-      fieldDataLevantamento.style.display = 'flex';
-    } else if (valor === 'Evento') {
-      fieldDataPretendida.style.display = 'flex';
-      labelDataPretendida.textContent = 'Data pretendida *';
-      fieldDataLevantamento.style.display = 'flex';
+const inputTelComercial = document.getElementById('input-tel-comercial');
+const avisoTelComercial = document.getElementById('aviso-tel-comercial');
+if (inputTelComercial && avisoTelComercial) {
+  inputTelComercial.addEventListener('input', function(e) {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 9) val = val.substring(0, 9);
+    e.target.value = val;
+    const phoneRegex = /^\d{9}$/;
+    if (val.length > 0 && !phoneRegex.test(val)) {
+      avisoTelComercial.style.display = 'block';
+      inputTelComercial.classList.add('invalid');
     } else {
-      fieldDataPretendida.style.display = 'flex';
-      labelDataPretendida.textContent = 'Data pretendida';
-      fieldDataLevantamento.style.display = 'flex';
+      avisoTelComercial.style.display = 'none';
+      inputTelComercial.classList.remove('invalid');
     }
-  }
-
-  if (selectOperacao) {
-    selectOperacao.addEventListener('change', atualizarExibicaoDatas);
-    atualizarExibicaoDatas();
-  }
-
-  const inputDepartamento = document.getElementById('input-departamento');
-  if (inputDepartamento) {
-    inputDepartamento.addEventListener('input', function(e) {
-      e.target.value = e.target.value.toUpperCase();
-    });
-  }
-
-  const inputContacto = document.getElementById('input-contacto');
-  const avisoContacto = document.getElementById('aviso-contacto');
-  if (inputContacto && avisoContacto) {
-    inputContacto.addEventListener('input', function(e) {
-      let val = e.target.value.replace(/\D/g, '');
-      if (val.length > 9) val = val.substring(0, 9);
-      e.target.value = val;
-      const phoneRegex = /^\d{9}$/;
-      if (val.length > 0 && !phoneRegex.test(val)) {
-        avisoContacto.style.display = 'block';
-        inputContacto.classList.add('invalid');
-      } else {
-        avisoContacto.style.display = 'none';
-        inputContacto.classList.remove('invalid');
-      }
-    });
-  }
-
-  const inputTelComercial = document.getElementById('input-tel-comercial');
-  const avisoTelComercial = document.getElementById('aviso-tel-comercial');
-  if (inputTelComercial && avisoTelComercial) {
-    inputTelComercial.addEventListener('input', function(e) {
-      let val = e.target.value.replace(/\D/g, '');
-      if (val.length > 9) val = val.substring(0, 9);
-      e.target.value = val;
-      const phoneRegex = /^\d{9}$/;
-      if (val.length > 0 && !phoneRegex.test(val)) {
-        avisoTelComercial.style.display = 'block';
-        inputTelComercial.classList.add('invalid');
-      } else {
-        avisoTelComercial.style.display = 'none';
-        inputTelComercial.classList.remove('invalid');
-      }
-    });
-  }
-})();
+  });
+}
 
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
   const inputCodCliente = document.getElementById('input-codigo-cliente');
@@ -1073,18 +1077,17 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  const colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
-    const choiceBox = c.closest('.choice');
-    const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
-    return `   » ${c.value} (Fixação: ${fixacao})`;
-  }).join('\n') || '   » Nenhuma coluna selecionada';
+  let colunas = 'N/A (Evento)';
+  if (operacao !== 'Evento') {
+    colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
+      const choiceBox = c.closest('.choice');
+      const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
+      return `   » ${c.value} (Fixação: ${fixacao})`;
+    }).join('\n') || '   » Nenhuma coluna selecionada';
+  }
 
-  // Lógica para adicionar a palavra "metros" automaticamente
   let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
   const metrosColunaRef = rawMetrosCol ? (rawMetrosCol.toLowerCase().includes('metro') || rawMetrosCol.toLowerCase().endsWith('m') ? rawMetrosCol : rawMetrosCol + ' metros') : 'N/D';
-
-  let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
-  const metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
 
   let refrigeradoresTxt = '';
   document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
@@ -1097,6 +1100,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     }
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
+
+  let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
+  const metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
   const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
@@ -1128,8 +1134,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
     `• MARCAS: ${cervejas}\n` +
-    `• COLUNAS SELECIONADAS:\n${colunas}\n` +
-    `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` +
+    (operacao !== 'Evento' ? `• COLUNAS SELECIONADAS:\n${colunas}\n` + `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` : '') +
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
