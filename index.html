@@ -266,6 +266,15 @@ input.invalid{border-color:#d9534f}
   </label>
 </div>
 
+<!-- Pergunta extra para Eventos: Pretende coluna? -->
+<div id="wrap-evento-coluna" class="field full" style="display:none; background:#fffdf9; padding:14px; border:1px solid var(--gold); border-radius:10px; margin-bottom:14px;">
+  <label style="color:var(--gold);">🎪 Para este evento, pretende coluna de cerveja?</label>
+  <select id="select-evento-coluna" onchange="controlarColunaEvento()">
+    <option value="nao">Não, apenas o refrigerador portátil</option>
+    <option value="sim">Sim, pretende coluna</option>
+  </select>
+</div>
+
 <!-- Exibição de Colunas -->
 <div id="seccao-colunas">
   <label id="titulo-colunas">Selecione uma ou várias colunas pretendidas e o respetivo tipo de fixação *</label>
@@ -337,7 +346,7 @@ input.invalid{border-color:#d9534f}
         <img src="fluteleffe.png" alt="Coluna FLUTE">
       </div>
       <div class="title-choice">Coluna FLUTE</div>
-      <span class="badge-stock">⚠️ Consultar stock</span>
+      <span class="badge-stock">⚠️️ Consultar stock</span>
       <div class="fixacao-wrap" style="margin-top:6px;">
         <select name="fixacao_flute" class="select-fixacao" onclick="event.stopPropagation()" onchange="atualizarResumoInstalacao()">
           <option value="Grampo">Grampo</option>
@@ -527,6 +536,10 @@ function adicionarNovoRefrigerador() {
   const div = document.createElement('div');
   div.className = 'refrigerador-item-box';
   div.id = 'ref-item-' + refItemCounter;
+  
+  const operacaoVal = document.getElementById('select-operacao').value;
+  const isEvento = (operacaoVal === 'Evento');
+  
   div.innerHTML = `
     <button type="button" class="btn-remove-ref" onclick="removerRefrigerador('${div.id}')">✕ Remover</button>
     <div class="grid">
@@ -534,15 +547,15 @@ function adicionarNovoRefrigerador() {
         <label>Tipo de refrigerador *</label>
         <select required name="refrigerador_tipo[]" class="select-ref-tipo" onchange="processarMudancaRefrigerador(this)">
           <option value="">Selecionar</option>
-          <option value="V60">V60</option>
+          <option value="V60" ${isEvento ? '' : ''}>V60</option>
           <option value="V100">V100</option>
           <option value="V200">V200</option>
-          <option value="Refrigerador portátil">Refrigerador portátil</option>
+          <option value="Refrigerador portátil" ${isEvento ? 'selected' : ''}>Refrigerador portátil</option>
           <option value="Não aplicável">Não aplicável</option>
         </select>
       </div>
 
-      <div class="field field-ref-portatil-wrap" style="display:none;">
+      <div class="field field-ref-portatil-wrap" style="display:${isEvento ? 'flex' : 'none'};">
         <label>Modelo de refrigerador portátil *</label>
         <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
           <option value="">Selecionar modelo portátil...</option>
@@ -559,6 +572,13 @@ function adicionarNovoRefrigerador() {
     </div>
   `;
   container.appendChild(div);
+  
+  // Se for evento, define por defeito o portátil no select criado
+  if (isEvento) {
+    div.querySelector('.select-ref-tipo').value = 'Refrigerador portátil';
+    div.querySelector('.field-ref-portatil-wrap').style.display = 'flex';
+  }
+  
   atualizarResumoInstalacao();
 }
 
@@ -597,6 +617,8 @@ function atualizarSelecaoCervejas() {
   const selecionadas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value);
   const seccaoColunas = document.getElementById('seccao-colunas');
   const wrapSubLeffe = document.getElementById('wrap-sub-leffe');
+  const wrapEventoColuna = document.getElementById('wrap-evento-coluna');
+  const selectEventoColuna = document.getElementById('select-evento-coluna');
   
   const colBud = document.getElementById('coluna-bud');
   const colStella = document.getElementById('coluna-stella');
@@ -615,10 +637,20 @@ function atualizarSelecaoCervejas() {
     wrapSubLeffe.style.display = 'none';
   }
 
-  // Se a operação for "Evento", as colunas nunca aparecem, apenas as marcas de cerveja
   if (operacaoVal === 'Evento') {
-    seccaoColunas.style.display = 'none';
+    if (qtd > 0) {
+      wrapEventoColuna.style.display = 'block';
+      if (selectEventoColuna.value === 'sim') {
+        seccaoColunas.style.display = 'block';
+      } else {
+        seccaoColunas.style.display = 'none';
+      }
+    } else {
+      wrapEventoColuna.style.display = 'none';
+      seccaoColunas.style.display = 'none';
+    }
   } else {
+    wrapEventoColuna.style.display = 'none';
     if (qtd === 0) {
       seccaoColunas.style.display = 'none';
     } else {
@@ -645,6 +677,20 @@ function atualizarSelecaoCervejas() {
   atualizarResumoInstalacao();
 }
 
+function controlarColunaEvento() {
+  const selectEventoColuna = document.getElementById('select-evento-coluna');
+  const seccaoColunas = document.getElementById('seccao-colunas');
+  
+  if (selectEventoColuna.value === 'sim') {
+    seccaoColunas.style.display = 'block';
+  } else {
+    seccaoColunas.style.display = 'none';
+    // Desmarcar colunas selecionadas para limpar
+    document.querySelectorAll('input[name="coluna_selecionada"]').forEach(cb => cb.checked = false);
+  }
+  atualizarResumoInstalacao();
+}
+
 function obterImagemRefrigerador(nome) {
   if (['V60', 'V100', 'V200'].includes(nome)) return 'refrigerador.png';
   if (['V60 portátil', 'V100 portátil'].includes(nome)) return 'refrigeradorportatil1.png';
@@ -654,11 +700,12 @@ function obterImagemRefrigerador(nome) {
 
 function atualizarResumoInstalacao() {
   const operacaoVal = document.getElementById('select-operacao').value;
+  const selectEventoColuna = document.getElementById('select-evento-coluna');
   const colunasChecadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
   const boxColunas = document.getElementById('box-colunas-content');
   
-  if (operacaoVal === 'Evento') {
-    boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">N/A (Evento)</p>';
+  if (operacaoVal === 'Evento' && selectEventoColuna.value === 'nao') {
+    boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Sem coluna (Apenas portátil)</p>';
   } else if (colunasChecadas.length > 0) {
     boxColunas.innerHTML = colunasChecadas.map(c => {
       const imgPath = c.getAttribute('data-img');
@@ -671,7 +718,7 @@ function atualizarResumoInstalacao() {
     boxColunas.innerHTML = '<p style="font-size:11px; color:var(--muted); margin:15px 0;">Pendente</p>';
   }
 
-  if (operacaoVal === 'Nova instalação') {
+  if (operacaoVal === 'Nova instalação' || (operacaoVal === 'Evento' && selectEventoColuna.value === 'sim')) {
     const mColRef = document.getElementById('input-metros-col-ref').value.trim();
     const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
 
@@ -946,23 +993,33 @@ function atualizarExibicaoDatas() {
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMColRef = document.getElementById('resumo-box-m-col-ref');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
-  const seccaoColunas = document.getElementById('seccao-colunas');
 
   const valor = selectOperacao ? selectOperacao.value : '';
   
-  if (valor === 'Nova instalação') {
+  // Se for Evento ou Nova instalação, permite preencher distâncias de colunas se houver coluna
+  const selectEvCol = document.getElementById('select-evento-coluna');
+  const temColunaAtiva = (valor === 'Nova instalação') || (valor === 'Evento' && selectEvCol && selectEvCol.value === 'sim');
+
+  if (temColunaAtiva) {
     if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
     if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
   } else {
     if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'none';
-    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex'; // Para eventos sem coluna, o ref ao barril costuma existir
     if (resumoBoxMColRef) resumoBoxMColRef.style.display = 'none';
-    if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
   }
 
-  // Se for Evento, esconde as colunas independentemente das cervejas selecionadas
+  // Predefinir refrigerador portátil na 1ª linha se escolher Evento
   if (valor === 'Evento') {
-    if (seccaoColunas) seccaoColunas.style.display = 'none';
+    const primeiroRefTipo = document.querySelector('.select-ref-tipo');
+    if (primeiroRefTipo && !primeiroRefTipo.value) {
+      primeiroRefTipo.value = 'Refrigerador portátil';
+      processarMudancaRefrigerador(primeiroRefTipo);
+      const portatilSelect = document.querySelector('.select-ref-portatil');
+      if (portatilSelect && !portatilSelect.value) {
+        portatilSelect.value = 'V60 portátil';
+      }
+    }
   }
 
   if (valor === 'Nova instalação') {
@@ -982,6 +1039,7 @@ function atualizarExibicaoDatas() {
     fieldDataLevantamento.style.display = 'flex';
   }
   
+  atualizarSelecaoCervejas();
   atualizarResumoInstalacao();
 }
 
@@ -1077,8 +1135,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  let colunas = 'N/A (Evento)';
-  if (operacao !== 'Evento') {
+  const selectEvCol = document.getElementById('select-evento-coluna');
+  let colunas = 'N/A (Apenas Refrigerador Portátil)';
+  if (operacao !== 'Evento' || (selectEvCol && selectEvCol.value === 'sim')) {
     colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
       const choiceBox = c.closest('.choice');
       const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
@@ -1134,7 +1193,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
     `• MARCAS: ${cervejas}\n` +
-    (operacao !== 'Evento' ? `• COLUNAS SELECIONADAS:\n${colunas}\n` + `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` : '') +
+    `• COLUNAS SELECIONADAS:\n${colunas}\n` +
+    (colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` : '\n'),
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
