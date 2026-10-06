@@ -431,7 +431,7 @@ input.invalid{border-color:#d9534f}
         <label>Modelo de refrigerador portátil *</label>
         <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
           <option value="">Selecionar modelo portátil...</option>
-          <option value="V60 portátil">V60 portátil</option>
+          <option value="V60 portátil" class="opt-v60-portatil">V60 portátil</option>
           <option value="V100 portátil">V100 portátil</option>
           <option value="V200 portátil - 2 Saídas">V200 portátil - 2 Saídas</option>
         </select>
@@ -533,6 +533,7 @@ function atualizarOpcoesRefrigeradoresGlobais() {
   const operacaoVal = document.getElementById('select-operacao').value;
   const selectEvCol = document.getElementById('select-evento-coluna');
   const isEventoSemColuna = (operacaoVal === 'Evento' && (!selectEvCol || selectEvCol.value === 'nao'));
+  const isEvento = (operacaoVal === 'Evento');
 
   document.querySelectorAll('.select-ref-tipo').forEach(select => {
     const valorAtual = select.value;
@@ -551,6 +552,23 @@ function atualizarOpcoesRefrigeradoresGlobais() {
     if (isEventoSemColuna && ['V60', 'V100', 'V200'].includes(valorAtual)) {
       select.value = 'Refrigerador portátil';
       processarMudancaRefrigerador(select);
+    }
+  });
+
+  // Ocultar ou mostrar o "V60 portátil" dependendo de ser Evento
+  document.querySelectorAll('.select-ref-portatil').forEach(selectPortatil => {
+    const optV60 = selectPortatil.querySelector('.opt-v60-portatil');
+    if (optV60) {
+      if (isEvento) {
+        optV60.style.display = 'none';
+        optV60.disabled = true;
+        if (selectPortatil.value === 'V60 portátil') {
+          selectPortatil.value = '';
+        }
+      } else {
+        optV60.style.display = 'block';
+        optV60.disabled = false;
+      }
     }
   });
 }
@@ -585,7 +603,7 @@ function adicionarNovoRefrigerador() {
         <label>Modelo de refrigerador portátil *</label>
         <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
           <option value="">Selecionar modelo portátil...</option>
-          <option value="V60 portátil">V60 portátil</option>
+          <option value="V60 portátil" class="opt-v60-portatil" ${isEvento ? 'style="display:none" disabled' : ''}>V60 portátil</option>
           <option value="V100 portátil">V100 portátil</option>
           <option value="V200 portátil - 2 Saídas">V200 portátil - 2 Saídas</option>
         </select>
@@ -1027,8 +1045,10 @@ function atualizarExibicaoDatas() {
       primeiroRefTipo.value = 'Refrigerador portátil';
       processarMudancaRefrigerador(primeiroRefTipo);
       const portatilSelect = document.querySelector('.select-ref-portatil');
-      if (portatilSelect && !portatilSelect.value) {
-        portatilSelect.value = 'V60 portátil';
+      if (portatilSelect) {
+        if (portatilSelect.value === 'V60 portátil' || !portatilSelect.value) {
+          portatilSelect.value = 'V100 portátil';
+        }
       }
     }
   }
