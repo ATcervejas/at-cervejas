@@ -98,7 +98,7 @@ input.invalid{border-color:#d9534f}
 <div class="wrap">
 <div class="hero-top"><div class="brand">AT CERVEJAS</div><div class="eyebrow">Formulário online</div></div>
 <h1>Pedido de Equipamentos de Cerveja</h1>
-<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
+<p>Preencha o formulário para reunir os dados num único pedido, com os equipamentos e respetivas especificações. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
 <div class="benefits"><span>Processo simples</span><span>Equipamentos com imagem</span><span>Pedido organizado</span></div>
 </div>
 </header>
@@ -1277,14 +1277,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `• MARCAS: ${cervejas}\n` +
     `• COLUNAS SELECIONADAS:\n${colunas}\n` +
     (colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n` : '') +
-    (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n'),
+    (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
     `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
     (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n`) +
-    (obsEquipamentos ? `• OBSERVAÇÕES (Equipamentos): ${obsEquipamentos}\n\n` : '\n'),
+    (obsEquipamentos ? `• OBSERVAÇÕES (Equipamentos): ${obsEquipamentos}\n\n` : '\n') +
     
     divisor +
     "💬 5. OBSERVAÇÕES GERAIS\n" +
