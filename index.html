@@ -98,7 +98,7 @@ input.invalid{border-color:#d9534f}
 <div class="wrap">
 <div class="hero-top"><div class="brand">AT CERVEJAS</div><div class="eyebrow">Formulário online</div></div>
 <h1>Pedido de Equipamentos de Cerveja</h1>
-<p>Preencha o formulário para reunir os dados num único pedido, com os equipamentos e respetivas especificações. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
+<p>Preencha os dados necessários para prepararmos a instalação dos equipamentos. O pedido será encaminhado de forma automática para o seu gestor de e-mail (Outlook) com todos os dados técnicos.</p>
 <div class="benefits"><span>Processo simples</span><span>Equipamentos com imagem</span><span>Pedido organizado</span></div>
 </div>
 </header>
@@ -937,7 +937,7 @@ function fecharZoom() {
   function realizarPesquisaNoMaps() {
     let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
     if (query.length < 3) {
-      alert('⚠️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
+      alert('⚠️️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
       if (inputPesquisaMaps) inputPesquisaMaps.focus();
       return;
     }
@@ -1245,8 +1245,17 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
   }
 
+  let prefixoAssunto = "Novo Pedido";
+  if (operacao === 'Evento') {
+    prefixoAssunto = "Novo Evento";
+  } else if (operacao === 'Nova instalação') {
+    prefixoAssunto = "Novo Pedido Instalação";
+  } else if (operacao === 'Levantamento') {
+    prefixoAssunto = "Pedido de Levantamento";
+  }
+
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
-  const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
+  const assunto = encodeURIComponent(`${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`);
   
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
