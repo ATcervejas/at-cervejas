@@ -402,9 +402,10 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<div class="field" id="wrap-metros-col-ref" style="margin-top: 18px; display:none;">
-  <label>Metros da coluna ao refrigerador</label>
-  <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="Ex: 3 metros" oninput="atualizarResumoInstalacao()">
+<div class="field full" id="wrap-metros-col-ref" style="margin-top: 18px; display:none; background:#fffdf9; border:2px solid var(--gold); padding:14px; border-radius:12px;">
+  <label style="color:var(--gold); font-size:14px;">📏 Metros da coluna ao refrigerador *</label>
+  <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
+  <small style="color:var(--muted); font-size:11px;">Indique apenas a distância (ex: 3 metros ou 3m).</small>
 </div>
 
 <div class="field full" style="margin-top: 14px;">
@@ -452,9 +453,10 @@ input.invalid{border-color:#d9534f}
 
 <button type="button" class="btn-add-ref" id="btn-add-outro-ref" onclick="adicionarNovoRefrigerador()">+ Adicionar outro refrigerador</button>
 
-<div class="field" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none;">
-  <label>Metros do refrigerador ao barril</label>
-  <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="Ex: 2 metros" oninput="atualizarResumoInstalacao()">
+<div class="field full" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none; background:#fffdf9; border:2px solid var(--gold); padding:14px; border-radius:12px;">
+  <label style="color:var(--gold); font-size:14px;">📏 Metros do refrigerador ao barril *</label>
+  <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
+  <small style="color:var(--muted); font-size:11px;">Indique apenas a distância (ex: 2 metros ou 2m).</small>
 </div>
 
 <div class="field full" style="margin-top: 14px;">
@@ -607,7 +609,7 @@ function verificarOcultacaoMetrosRefBarril() {
     const inputRefBar = document.getElementById('input-metros-ref-bar');
     if (inputRefBar) inputRefBar.value = '';
   } else {
-    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'block';
   }
 }
 
@@ -637,7 +639,7 @@ function adicionarNovoRefrigerador() {
         </select>
       </div>
 
-      <div class="field field-ref-portatil-wrap" style="display:${isEvento ? 'flex' : 'none'};">
+      <div class="field field-ref-portatil-wrap" style="display:${isEvento ? 'block' : 'none'};">
         <label>Modelo de refrigerador portátil *</label>
         <select name="refrigerador_modelo_portatil[]" class="select-ref-portatil" onchange="atualizarResumoInstalacao()">
           <option value="">Selecionar modelo portátil...</option>
@@ -657,7 +659,7 @@ function adicionarNovoRefrigerador() {
   
   if (isEvento) {
     div.querySelector('.select-ref-tipo').value = 'Refrigerador portátil';
-    div.querySelector('.field-ref-portatil-wrap').style.display = 'flex';
+    div.querySelector('.field-ref-portatil-wrap').style.display = 'block';
   }
 
   atualizarOpcoesRefrigeradoresGlobais();
@@ -680,11 +682,11 @@ function processarMudancaRefrigerador(selectElem) {
   const val = selectElem.value;
 
   if (val === 'Refrigerador portátil') {
-    portatilWrap.style.display = 'flex';
-    qtdWrap.style.display = 'flex';
+    portatilWrap.style.display = 'block';
+    qtdWrap.style.display = 'block';
   } else if (['V60', 'V100', 'V200'].includes(val)) {
     portatilWrap.style.display = 'none';
-    qtdWrap.style.display = 'flex';
+    qtdWrap.style.display = 'block';
     box.querySelector('.select-ref-portatil').value = '';
   } else {
     portatilWrap.style.display = 'none';
@@ -811,7 +813,7 @@ function atualizarResumoInstalacao() {
   const temColunaVisivel = (operacaoVal === 'Nova instalação') || (operacaoVal === 'Evento' && selectEventoColuna.value === 'sim' && colunasChecadas.length > 0);
 
   if (temColunaVisivel) {
-    if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'flex';
+    if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'block';
     const mColRef = document.getElementById('input-metros-col-ref').value.trim();
     if (mColRef) {
       document.getElementById('txt-resumo-m-col-ref').textContent = mColRef;
@@ -937,7 +939,7 @@ function fecharZoom() {
   function realizarPesquisaNoMaps() {
     let query = inputPesquisaMaps ? inputPesquisaMaps.value.trim() : '';
     if (query.length < 3) {
-      alert('⚠️️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
+      alert('⚠️ Por favor, escreva pelo menos 3 caracteres para pesquisar.');
       if (inputPesquisaMaps) inputPesquisaMaps.focus();
       return;
     }
@@ -1255,13 +1257,15 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   }
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
-  const assunto = encodeURIComponent(`${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`);
+  const tituloEmail = `${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`;
+  const assunto = encodeURIComponent(tituloEmail);
   
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
   const corpo = encodeURIComponent(
+    `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
-    "Foi submetido um novo pedido de equipamentos. Abaixo encontram-se os detalhes da instalação:\n\n" +
+    "Abaixo encontram-se os detalhes técnicos do pedido registado:\n\n" +
     
     divisor +
     "🏢 1. DADOS DO CLIENTE\n" +
@@ -1289,7 +1293,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
-    "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
+    "❄️️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
     `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
     (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n`) +
