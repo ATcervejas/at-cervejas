@@ -407,6 +407,11 @@ input.invalid{border-color:#d9534f}
   <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="Ex: 3 metros" oninput="atualizarResumoInstalacao()">
 </div>
 
+<div class="field full" style="margin-top: 14px;">
+  <label>Observações (Cerveja e Colunas)</label>
+  <textarea name="obs_cerveja_colunas" placeholder="Notas específicas sobre marcas, colunas ou fixação..."></textarea>
+</div>
+
 </div>
 
 <!-- 4. Equipamentos -->
@@ -450,6 +455,11 @@ input.invalid{border-color:#d9534f}
 <div class="field" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none;">
   <label>Metros do refrigerador ao barril</label>
   <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="Ex: 2 metros" oninput="atualizarResumoInstalacao()">
+</div>
+
+<div class="field full" style="margin-top: 14px;">
+  <label>Observações (Equipamentos / Refrigeradores)</label>
+  <textarea name="obs_equipamentos" placeholder="Notas específicas sobre os refrigeradores ou distâncias..."></textarea>
 </div>
 
 </div>
@@ -555,7 +565,6 @@ function atualizarOpcoesRefrigeradoresGlobais() {
     }
   });
 
-  // Ocultar ou mostrar o "V60 portátil" dependendo de ser Evento
   document.querySelectorAll('.select-ref-portatil').forEach(selectPortatil => {
     const optV60 = selectPortatil.querySelector('.opt-v60-portatil');
     if (optV60) {
@@ -571,6 +580,35 @@ function atualizarOpcoesRefrigeradoresGlobais() {
       }
     }
   });
+
+  verificarOcultacaoMetrosRefBarril();
+}
+
+function verificarOcultacaoMetrosRefBarril() {
+  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
+  const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
+  
+  let temApenasPortatilOuNaoAplicavel = true;
+  const tiposRef = document.querySelectorAll('.select-ref-tipo');
+  
+  if (tiposRef.length === 0) {
+    temApenasPortatilOuNaoAplicavel = false;
+  } else {
+    tiposRef.forEach(sel => {
+      if (sel.value !== 'Refrigerador portátil' && sel.value !== 'Não aplicável') {
+        temApenasPortatilOuNaoAplicavel = false;
+      }
+    });
+  }
+
+  if (temApenasPortatilOuNaoAplicavel) {
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+    if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
+    const inputRefBar = document.getElementById('input-metros-ref-bar');
+    if (inputRefBar) inputRefBar.value = '';
+  } else {
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
+  }
 }
 
 function adicionarNovoRefrigerador() {
@@ -630,6 +668,7 @@ function removerRefrigerador(id) {
   const elem = document.getElementById(id);
   if (elem) {
     elem.remove();
+    atualizarOpcoesRefrigeradoresGlobais();
     atualizarResumoInstalacao();
   }
 }
@@ -653,6 +692,7 @@ function processarMudancaRefrigerador(selectElem) {
     box.querySelector('.select-ref-portatil').value = '';
   }
 
+  atualizarOpcoesRefrigeradoresGlobais();
   atualizarResumoInstalacao();
 }
 
@@ -765,7 +805,6 @@ function atualizarResumoInstalacao() {
   }
 
   const wrapMetrosColRef = document.getElementById('wrap-metros-col-ref');
-  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const boxMColRef = document.getElementById('resumo-box-m-col-ref');
   const boxMRefBar = document.getElementById('resumo-box-m-ref-bar');
 
@@ -785,11 +824,15 @@ function atualizarResumoInstalacao() {
     boxMColRef.style.display = 'none';
   }
 
-  if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'flex';
-  const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
-  if (mRefBar) {
-    document.getElementById('txt-resumo-m-ref-bar').textContent = mRefBar;
-    boxMRefBar.style.display = 'flex';
+  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
+  if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none') {
+    const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
+    if (mRefBar) {
+      document.getElementById('txt-resumo-m-ref-bar').textContent = mRefBar;
+      boxMRefBar.style.display = 'flex';
+    } else {
+      boxMRefBar.style.display = 'none';
+    }
   } else {
     boxMRefBar.style.display = 'none';
   }
@@ -1159,7 +1202,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
   const operacao = document.getElementById('select-operacao').value || 'N/D';
   const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
-  const obs = document.querySelector('textarea[name="observacoes"]').value || 'Nenhuma';
+  
+  const obsGeral = document.querySelector('textarea[name="observacoes"]').value.trim();
+  const obsCervejaColunas = document.querySelector('textarea[name="obs_cerveja_colunas"]').value.trim();
+  const obsEquipamentos = document.querySelector('textarea[name="obs_equipamentos"]').value.trim();
 
   const linkManualMaps = document.getElementById('input-link-maps') ? document.getElementById('input-link-maps').value.trim() : '';
   const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
@@ -1192,8 +1238,12 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   });
   if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
 
-  let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
-  const metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
+  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
+  let metrosRefBarril = 'N/A (Portátil)';
+  if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none') {
+    let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
+    metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
+  }
 
   const emailDestino = "ricardo.anselmo@gruponabeiro.com";
   const assunto = encodeURIComponent(`Novo Pedido - ${estabelecimento} (${departamento}) - ${codCliente}`);
@@ -1226,18 +1276,20 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     divisor +
     `• MARCAS: ${cervejas}\n` +
     `• COLUNAS SELECIONADAS:\n${colunas}\n` +
-    (colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n\n` : '\n') +
+    (colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n` : '') +
+    (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n'),
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
     `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
-    `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n\n` +
+    (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n`) +
+    (obsEquipamentos ? `• OBSERVAÇÕES (Equipamentos): ${obsEquipamentos}\n\n` : '\n'),
     
     divisor +
-    "💬 5. OBSERVAÇÕES\n" +
+    "💬 5. OBSERVAÇÕES GERAIS\n" +
     divisor +
-    `${obs}\n\n` +
+    `${obsGeral || 'Nenhuma'}\n\n` +
     
     "--\n" +
     "Com os melhores cumprimentos,"
