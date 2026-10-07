@@ -408,8 +408,8 @@ input.invalid{border-color:#d9534f}
 
 <div class="field full" id="wrap-metros-col-ref" style="margin-top: 18px; display:none; background:#fffdf9; border:2px solid var(--gold); padding:14px; border-radius:12px;">
   <label style="color:var(--gold); font-size:14px;">📏 Metros da coluna ao refrigerador *</label>
-  <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
-  <small style="color:var(--muted); font-size:11px;">Indique apenas a distância (ex: 3 metros ou 3m).</small>
+  <input type="text" name="metros_coluna_refrigerador" id="input-metros-col-ref" placeholder="Ex: 2 ou 3" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
+  <small style="color:var(--muted); font-size:11px;">Indique apenas o número (ex: 3). O sulfixo "metros" será adicionado automaticamente.</small>
 </div>
 
 <div class="field full" style="margin-top: 14px;">
@@ -459,8 +459,8 @@ input.invalid{border-color:#d9534f}
 
 <div class="field full" id="wrap-metros-ref-bar" style="margin-top: 18px; display:none; background:#fffdf9; border:2px solid var(--gold); padding:14px; border-radius:12px;">
   <label style="color:var(--gold); font-size:14px;">📏 Metros do refrigerador ao barril *</label>
-  <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
-  <small style="color:var(--muted); font-size:11px;">Indique apenas a distância (ex: 2 metros ou 2m).</small>
+  <input type="text" name="metros_refrigerador_barril" id="input-metros-ref-bar" placeholder="Ex: 2 ou 3" style="border-color:var(--gold); background:#fff;" oninput="atualizarResumoInstalacao()">
+  <small style="color:var(--muted); font-size:11px;">Indique apenas o número (ex: 2). O sulfixo "metros" será adicionado automaticamente.</small>
 </div>
 
 <div class="field full" style="margin-top: 14px;">
@@ -827,8 +827,11 @@ function atualizarResumoInstalacao() {
 
   if (temColunaVisivel) {
     if (wrapMetrosColRef) wrapMetrosColRef.style.display = 'block';
-    const mColRef = document.getElementById('input-metros-col-ref').value.trim();
+    let mColRef = document.getElementById('input-metros-col-ref').value.trim();
     if (mColRef) {
+      if (!mColRef.toLowerCase().includes('metro') && !mColRef.toLowerCase().endsWith('m')) {
+        mColRef += ' metros';
+      }
       document.getElementById('txt-resumo-m-col-ref').textContent = mColRef;
       boxMColRef.style.display = 'flex';
     } else {
@@ -841,8 +844,11 @@ function atualizarResumoInstalacao() {
 
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none') {
-    const mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
+    let mRefBar = document.getElementById('input-metros-ref-bar').value.trim();
     if (mRefBar) {
+      if (!mRefBar.toLowerCase().includes('metro') && !mRefBar.toLowerCase().endsWith('m')) {
+        mRefBar += ' metros';
+      }
       document.getElementById('txt-resumo-m-ref-bar').textContent = mRefBar;
       boxMRefBar.style.display = 'flex';
     } else {
@@ -1088,6 +1094,34 @@ function fecharZoom() {
     });
   }
 })();
+
+// Formatação automática do sufixo "metros" para os campos de distância
+function aplicarFormatacaoMetros(inputId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+
+  el.addEventListener('blur', function() {
+    let val = this.value.trim();
+    if (val !== '') {
+      let num = val.replace(/[^\d.,]/g, '');
+      if (num !== '') {
+        this.value = num + ' metros';
+      }
+    }
+    atualizarResumoInstalacao();
+  });
+
+  el.addEventListener('focus', function() {
+    let val = this.value.trim();
+    if (val.toLowerCase().includes('metro') || val.toLowerCase().endsWith('m')) {
+      let num = val.replace(/[^\d.,]/g, '');
+      this.value = num;
+    }
+  });
+}
+
+aplicarFormatacaoMetros('input-metros-col-ref');
+aplicarFormatacaoMetros('input-metros-ref-bar');
 
 function atualizarExibicaoDatas() {
   const selectOperacao = document.getElementById('select-operacao');
