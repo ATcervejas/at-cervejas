@@ -214,6 +214,10 @@ input.invalid{border-color:#d9534f}
   <label id="label-data-levantamento">Data de levantamento *</label>
   <input type="date" name="data_levantamento" id="input-data-levantamento">
 </div>
+<div class="field full" style="margin-top: 6px;">
+  <label>Observações (Tipo de pedido)</label>
+  <textarea name="obs_tipo_pedido" placeholder="Notas específicas sobre datas ou tipo de operação..."></textarea>
+</div>
 </div></div>
 
 <!-- 3. Cerveja e Colunas -->
@@ -1213,13 +1217,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
   const operacao = document.getElementById('select-operacao').value || 'N/D';
   
-  // Obter a data correta consoante a operação escolhida
-  let dataPedido = 'N/D';
-  if (operacao === 'Levantamento') {
-    dataPedido = document.getElementById('input-data-levantamento').value || 'N/D';
-  } else {
-    dataPedido = document.getElementById('input-data-pretendida').value || 'N/D';
-  }
+  // Obter datas corretas e observações do tipo de pedido
+  const dataPretendidaVal = document.getElementById('input-data-pretendida').value || 'N/D';
+  const dataLevantamentoVal = document.getElementById('input-data-levantamento').value || 'N/D';
+  const obsTipoPedido = document.querySelector('textarea[name="obs_tipo_pedido"]').value.trim();
   
   const obsGeral = document.querySelector('textarea[name="observacoes"]').value.trim();
   const obsCervejaColunas = document.querySelector('textarea[name="obs_cerveja_colunas"]').value.trim();
@@ -1278,6 +1279,19 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
+  // Montar as linhas de datas no bloco 2 de forma dinâmica
+  let linhasDatas = "";
+  if (operacao === 'Nova instalação') {
+    linhasDatas = `• DATA DA INSTALAÇÃO: ${dataPretendidaVal}\n`;
+  } else if (operacao === 'Levantamento') {
+    linhasDatas = `• DATA DE LEVANTAMENTO: ${dataLevantamentoVal}\n`;
+  } else if (operacao === 'Evento') {
+    linhasDatas = `• DATA PRETENDIDA (Início): ${dataPretendidaVal}\n` +
+                  `• DATA DE LEVANTAMENTO (Fim): ${dataLevantamentoVal}\n`;
+  } else {
+    linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
+  }
+
   const corpo = encodeURIComponent(
     `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
@@ -1298,7 +1312,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "📝 2. TIPO DE PEDIDO\n" +
     divisor +
     `• OPERAÇÃO: ${operacao}\n` +
-    (operacao === 'Levantamento' ? `• DATA DE LEVANTAMENTO: ${dataPedido}\n\n` : `• DATA PRETENDIDA: ${dataPedido}\n\n`) +
+    linhasDatas +
+    (obsTipoPedido ? `• OBSERVAÇÕES (Tipo de pedido): ${obsTipoPedido}\n\n` : '\n'),
     
     divisor +
     "🍺 3. CERVEJA E COLUNAS\n" +
