@@ -587,9 +587,18 @@ function atualizarOpcoesRefrigeradoresGlobais() {
 }
 
 function verificarOcultacaoMetrosRefBarril() {
+  const operacaoVal = document.getElementById('select-operacao').value;
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
   
+  if (operacaoVal === 'Evento') {
+    if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
+    if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
+    const inputRefBar = document.getElementById('input-metros-ref-bar');
+    if (inputRefBar) inputRefBar.value = '';
+    return;
+  }
+
   let temApenasPortatilOuNaoAplicavel = true;
   const tiposRef = document.querySelectorAll('.select-ref-tipo');
   
@@ -1293,7 +1302,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
-    "❄️️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
+    "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
     `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
     (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n`) +
