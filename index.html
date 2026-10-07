@@ -1232,13 +1232,17 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
   const selectEvCol = document.getElementById('select-evento-coluna');
-  let colunas = 'N/A (Apenas Refrigerador Portátil)';
-  if (operacao !== 'Evento' || (selectEvCol && selectEvCol.value === 'sim')) {
-    colunas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
+  const pretendeColunaEmEvento = (operacao !== 'Evento' || (selectEvCol && selectEvCol.value === 'sim'));
+  
+  let colunas = '';
+  if (pretendeColunaEmEvento) {
+    const colunasSelecionadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
       const choiceBox = c.closest('.choice');
       const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
       return `   » ${c.value} (Fixação: ${fixacao})`;
-    }).join('\n') || '   » Nenhuma coluna selecionada';
+    }).join('\n');
+
+    colunas = colunasSelecionadas || '   » Nenhuma coluna selecionada';
   }
 
   let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
@@ -1290,6 +1294,12 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
   }
 
+  // Bloco de colunas ajustado para omitir o campo se for evento sem coluna
+  let blocoColunasTxt = `• MARCAS: ${cervejas}\n`;
+  if (pretendeColunaEmEvento) {
+    blocoColunasTxt += `• COLUNAS SELECIONADAS:\n${colunas}\n`;
+  }
+
   let textoCorpo = 
     `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
@@ -1316,9 +1326,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     divisor +
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
-    `• MARCAS: ${cervejas}\n` +
-    `• COLUNAS SELECIONADAS:\n${colunas}\n` +
-    (operacao !== 'Levantamento' && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna -> Refrigerador): ${metrosColunaRef}\n` : '') +
+    blocoColunasTxt +
+    (operacao !== 'Levantamento' && pretendeColunaEmEvento && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna -> Refrigerador): ${metrosColunaRef}\n` : '') +
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
