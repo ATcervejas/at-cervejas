@@ -591,7 +591,6 @@ function verificarOcultacaoMetrosRefBarril() {
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
   
-  // Ocultar sempre se for Evento ou Levantamento
   if (operacaoVal === 'Evento' || operacaoVal === 'Levantamento') {
     if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
     if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
@@ -1213,7 +1212,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
   const operacao = document.getElementById('select-operacao').value || 'N/D';
-  const dataPretendida = document.getElementById('input-data-pretendida').value || 'N/D';
+  
+  // Capturar a data correta conforme a operação selecionada
+  let dataPedido = 'N/D';
+  if (operacao === 'Levantamento') {
+    dataPedido = document.getElementById('input-data-levantamento').value || 'N/D';
+  } else {
+    dataPedido = document.getElementById('input-data-pretendida').value || 'N/D';
+  }
   
   const obsGeral = document.querySelector('textarea[name="observacoes"]').value.trim();
   const obsCervejaColunas = document.querySelector('textarea[name="obs_cerveja_colunas"]').value.trim();
@@ -1292,14 +1298,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "📝 2. TIPO DE PEDIDO\n" +
     divisor +
     `• OPERAÇÃO: ${operacao}\n` +
-    `• DATA PRETENDIDA: ${dataPretendida}\n\n` +
+    (operacao === 'Levantamento' ? `• DATA DE LEVANTAMENTO: ${dataPedido}\n\n` : `• DATA PRETENDIDA: ${dataPedido}\n\n`) +
     
     divisor +
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
     `• MARCAS: ${cervejas}\n` +
     `• COLUNAS SELECIONADAS:\n${colunas}\n` +
-    (colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n` : '') +
+    (operacao !== 'Levantamento' && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n` : '') +
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
