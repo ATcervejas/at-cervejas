@@ -1231,18 +1231,17 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  const selectEvCol = document.getElementById('select-evento-coluna');
-  const pretendeColunaEmEvento = (operacao !== 'Evento' || (selectEvCol && selectEvCol.value === 'sim'));
+  // Obter colunas apenas se existirem caixas marcadas
+  const colunasChecadasList = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+  const temColunasSelecionadas = colunasChecadasList.length > 0;
   
-  let colunas = '';
-  if (pretendeColunaEmEvento) {
-    const colunasSelecionadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked')).map(c => {
+  let colunasTxt = '';
+  if (temColunasSelecionadas) {
+    colunasTxt = colunasChecadasList.map(c => {
       const choiceBox = c.closest('.choice');
       const fixacao = choiceBox ? choiceBox.querySelector('.select-fixacao').value : 'N/D';
       return `   » ${c.value} (Fixação: ${fixacao})`;
     }).join('\n');
-
-    colunas = colunasSelecionadas || '   » Nenhuma coluna selecionada';
   }
 
   let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
@@ -1294,10 +1293,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
   }
 
-  // Bloco de colunas ajustado para omitir o campo se for evento sem coluna
+  // Bloco de colunas ajustado: Só coloca a linha de colunas se realmente existirem colunas selecionadas
   let blocoColunasTxt = `• MARCAS: ${cervejas}\n`;
-  if (pretendeColunaEmEvento) {
-    blocoColunasTxt += `• COLUNAS SELECIONADAS:\n${colunas}\n`;
+  if (temColunasSelecionadas) {
+    blocoColunasTxt += `• COLUNAS SELECIONADAS:\n${colunasTxt}\n`;
   }
 
   let textoCorpo = 
@@ -1327,7 +1326,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     "🍺 3. CERVEJA E COLUNAS\n" +
     divisor +
     blocoColunasTxt +
-    (operacao !== 'Levantamento' && pretendeColunaEmEvento && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna -> Refrigerador): ${metrosColunaRef}\n` : '') +
+    (operacao !== 'Levantamento' && temColunasSelecionadas ? `• DISTÂNCIA (Coluna -> Refrigerador): ${metrosColunaRef}\n` : '') +
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
