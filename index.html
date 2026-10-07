@@ -485,7 +485,7 @@ input.invalid{border-color:#d9534f}
     <span class="tag-step">2. Distância</span>
     <div style="font-size: 20px; margin: 10px 0;">📏</div>
     <div class="desc-label" id="txt-resumo-m-col-ref" style="font-size:11px; color:var(--gold);">--</div>
-    <span class="tag-step" style="font-size:8px; margin-top:2px;">Coluna ➔ Ref.</span>
+    <span class="tag-step" style="font-size:8px; margin-top:2px;">Coluna -> Ref.</span>
   </div>
 
   <div class="resumo-card-box">
@@ -499,7 +499,7 @@ input.invalid{border-color:#d9534f}
     <span class="tag-step">4. Distância</span>
     <div style="font-size: 20px; margin: 10px 0;">📏</div>
     <div class="desc-label" id="txt-resumo-m-ref-bar" style="font-size:11px; color:var(--gold);">--</div>
-    <span class="tag-step" style="font-size:8px; margin-top:2px;">Ref. ➔ Barril</span>
+    <span class="tag-step" style="font-size:8px; margin-top:2px;">Ref. -> Barril</span>
   </div>
 
   <div class="resumo-card-box">
@@ -1290,7 +1290,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
   }
 
-  const corpo = encodeURIComponent(
+  let textoCorpo = 
     `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
     "Abaixo encontram-se os detalhes técnicos do pedido registado:\n\n" +
@@ -1318,14 +1318,14 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     divisor +
     `• MARCAS: ${cervejas}\n` +
     `• COLUNAS SELECIONADAS:\n${colunas}\n` +
-    (operacao !== 'Levantamento' && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna ➔ Refrigerador): ${metrosColunaRef}\n` : '') +
+    (operacao !== 'Levantamento' && colunas.includes('Fixação') ? `• DISTÂNCIA (Coluna -> Refrigerador): ${metrosColunaRef}\n` : '') +
     (obsCervejaColunas ? `• OBSERVAÇÕES (Cerveja/Colunas): ${obsCervejaColunas}\n\n` : '\n') +
     
     divisor +
     "❄️ 4. REFRIGERADORES E EQUIPAMENTOS\n" +
     divisor +
     `• EQUIPAMENTOS:\n${refrigeradoresTxt}` +
-    (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador ➔ Barril): ${metrosRefBarril}\n`) +
+    (metrosRefBarril.includes('N/A') ? '' : `• DISTÂNCIA (Refrigerador -> Barril): ${metrosRefBarril}\n`) +
     (obsEquipamentos ? `• OBSERVAÇÕES (Equipamentos): ${obsEquipamentos}\n\n` : '\n') +
     
     divisor +
@@ -1334,10 +1334,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `${obsGeral || 'Nenhuma'}\n\n` +
     
     "--\n" +
-    "Com os melhores cumprimentos,"
-  );
+    "Com os melhores cumprimentos,";
 
-  window.location.href = `mailto:${emailDestino}?subject=${assunto}&body=${corpo}`;
+  window.location.href = `mailto:${emailDestino}?subject=${assunto}&body=${encodeURIComponent(textoCorpo)}`;
 });
 </script>
 </body>
