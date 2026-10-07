@@ -591,7 +591,7 @@ function verificarOcultacaoMetrosRefBarril() {
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
   
-  if (operacaoVal === 'Evento') {
+  if (operacaoVal === 'Evento' || operacaoVal === 'Levantamento') {
     if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
     if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
     const inputRefBar = document.getElementById('input-metros-ref-bar');
@@ -1250,7 +1250,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
 
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
-  let metrosRefBarril = 'N/A (Portátil)';
+  let metrosRefBarril = 'N/A';
   if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none') {
     let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
     metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
