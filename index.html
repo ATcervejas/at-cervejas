@@ -1217,7 +1217,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
   const operacao = document.getElementById('select-operacao').value || 'N/D';
   
-  // Obter datas corretas e observações do tipo de pedido
   const dataPretendidaVal = document.getElementById('input-data-pretendida').value || 'N/D';
   const dataLevantamentoVal = document.getElementById('input-data-levantamento').value || 'N/D';
   const obsTipoPedido = document.querySelector('textarea[name="obs_tipo_pedido"]').value.trim();
@@ -1279,7 +1278,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
-  // Montar as linhas de datas no bloco 2 de forma dinâmica
   let linhasDatas = "";
   if (operacao === 'Nova instalação') {
     linhasDatas = `• DATA DA INSTALAÇÃO: ${dataPretendidaVal}\n`;
@@ -1313,7 +1311,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     divisor +
     `• OPERAÇÃO: ${operacao}\n` +
     linhasDatas +
-    (obsTipoPedido ? `• OBSERVAÇÕES (Tipo de pedido): ${obsTipoPedido}\n\n` : '\n'),
+    (obsTipoPedido ? `• OBSERVAÇÕES (Tipo de pedido): ${obsTipoPedido}\n\n` : '\n') +
     
     divisor +
     "🍺 3. CERVEJA E COLUNAS\n" +
