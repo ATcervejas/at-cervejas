@@ -591,6 +591,7 @@ function verificarOcultacaoMetrosRefBarril() {
   const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   const resumoBoxMRefBar = document.getElementById('resumo-box-m-ref-bar');
   
+  // Ocultar sempre se for Evento ou Levantamento
   if (operacaoVal === 'Evento' || operacaoVal === 'Levantamento') {
     if (wrapMetrosRefBar) wrapMetrosRefBar.style.display = 'none';
     if (resumoBoxMRefBar) resumoBoxMRefBar.style.display = 'none';
