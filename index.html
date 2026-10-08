@@ -1227,6 +1227,7 @@ function fecharZoom() {
       let end = this.selectionEnd;
       this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
       this.setSelectionRange(start, end);
+      atualizarResumoLateral();
     });
   }
 
@@ -1236,6 +1237,7 @@ function fecharZoom() {
       let end = this.selectionEnd;
       this.value = this.value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
       this.setSelectionRange(start, end);
+      atualizarResumoLateral();
     });
   }
 
@@ -1333,6 +1335,7 @@ const inputDepartamento = document.getElementById('input-departamento');
 if (inputDepartamento) {
   inputDepartamento.addEventListener('input', function(e) {
     e.target.value = e.target.value.toUpperCase();
+    atualizarResumoLateral();
   });
 }
 
@@ -1351,6 +1354,7 @@ if (inputContacto && avisoContacto) {
       avisoContacto.style.display = 'none';
       inputContacto.classList.remove('invalid');
     }
+    atualizarResumoLateral();
   });
 }
 
@@ -1369,8 +1373,14 @@ if (inputTelComercial && avisoTelComercial) {
       avisoTelComercial.style.display = 'none';
       inputTelComercial.classList.remove('invalid');
     }
+    atualizarResumoLateral();
   });
 }
+
+// Inicializar atualização ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+  atualizarResumoLateral();
+});
 
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
   const inputCodCliente = document.getElementById('input-codigo-cliente');
