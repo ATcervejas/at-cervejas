@@ -9,7 +9,7 @@
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#f5f6f8}
 .hero{background:linear-gradient(110deg,rgba(8,17,27,.97),rgba(8,17,27,.72)),url('fundo.png') center/cover;color:white;padding:48px 22px 42px}
 .wrap{max-width:1120px;margin:auto}.eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#e7c78f;font-weight:700}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.03;margin:14px 0;max-width:700px}.hero p{max-width:640px;font-size:16px;line-height:1.6;color:#e6ebf0}.brand{font-weight:800;letter-spacing:1px;font-size:22px}.hero-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.benefits{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.benefits span{border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:9px 13px;font-size:13px}
-main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
+main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(16,27,39,.04);margin-bottom:20px}.panel h2{font-size:21px;margin:0 0 7px}.panel .sub{color:var(--muted);font-size:14px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px;position:relative}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,select,textarea{font:inherit;border:1px solid #d9dfe6;border-radius:10px;padding:12px;background:#fff;color:var(--ink);width:100%}textarea{min-height:100px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid rgba(183,138,69,.2);border-color:var(--gold)}
 
 /* Caixa de sugestões de resultados da pesquisa */
 #sugestoesEspacos {
@@ -79,7 +79,16 @@ main{padding:28px 22px 60px}.layout{display:grid;grid-template-columns:minmax(0,
 .modal-zoom img{max-width:90%;max-height:85vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
 .modal-close{position:absolute;top:20px;right:25px;color:white;font-size:32px;font-weight:bold;cursor:pointer;user-select:none}
 
-.side{position:sticky;top:20px;align-self:start}.summary{background:var(--navy);color:white;border-radius:18px;padding:24px}.summary h3{margin:0 0 14px;font-size:20px}.summary p{color:#dbe3eb;font-size:14px;line-height:1.55}.summary ul{padding-left:18px;color:#dbe3eb;font-size:14px;line-height:1.8}.notice{background:#edf7f1;color:#245b3c;border-radius:12px;padding:14px;font-size:13px;margin-top:15px}.button{border:0;background:var(--gold);color:white;padding:15px 18px;border-radius:11px;font-weight:800;font-size:15px;cursor:pointer;width:100%;margin-top:18px}.button:hover{filter:brightness(.95)}.small{font-size:12px;color:var(--muted);line-height:1.5}.footer{background:var(--navy);color:#dbe3eb;padding:28px 22px;text-align:center;font-size:13px}
+.side{position:sticky;top:20px;align-self:start}
+.summary{background:var(--navy);color:white;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,0.1)}
+.summary h3{margin:0 0 12px;font-size:20px;color:#fff;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:10px;display:flex;align-items:center;gap:8px}
+.summary-sec{margin-bottom:14px;background:rgba(255,255,255,0.05);padding:10px 12px;border-radius:10px;border-left:3px solid var(--gold)}
+.summary-sec-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);font-weight:800;margin-bottom:4px}
+.summary-val{font-size:13px;color:#e6ebf0;line-height:1.4;word-break:break-word}
+.summary-val strong{color:#fff}
+.summary-list{margin:4px 0 0;padding-left:16px;font-size:12px;color:#dbe3eb;line-height:1.5}
+.notice{background:#edf7f1;color:#245b3c;border-radius:12px;padding:12px;font-size:12px;margin-top:15px;line-height:1.4}
+.button{border:0;background:var(--gold);color:white;padding:15px 18px;border-radius:11px;font-weight:800;font-size:15px;cursor:pointer;width:100%;margin-top:18px}.button:hover{filter:brightness(.95)}.small{font-size:12px;color:var(--muted);line-height:1.5}.footer{background:var(--navy);color:#dbe3eb;padding:28px 22px;text-align:center;font-size:13px}
 .error-msg{color:#d9534f;display:none;font-size:12px;font-weight:bold;margin-top:2px}
 input.invalid{border-color:#d9534f}
 
@@ -109,11 +118,11 @@ input.invalid{border-color:#d9534f}
 <div class="grid">
 <div class="field">
   <label>Código de cliente *</label>
-  <input required name="codigo_cliente" id="input-codigo-cliente" placeholder="Código do cliente">
+  <input required name="codigo_cliente" id="input-codigo-cliente" placeholder="Código do cliente" oninput="atualizarResumoLateral()">
 </div>
 <div class="field">
   <label>Departamento de fornecimento *</label>
-  <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE">
+  <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
 <!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
@@ -159,35 +168,35 @@ input.invalid{border-color:#d9534f}
 <!-- Campos Preenchidos Automaticamente -->
 <div class="field full">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente..." autocomplete="off">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente..." autocomplete="off" oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field full">
   <label>Morada de instalação *</label>
-  <input required name="morada" id="input-morada" placeholder="Preenchido automaticamente...">
+  <input required name="morada" id="input-morada" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field">
   <label>📮 Código Postal *</label>
-  <input required name="codigo_postal" id="input-cp" placeholder="Preenchido automaticamente...">
+  <input required name="codigo_postal" id="input-cp" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Preenchido automaticamente...">
+  <input required name="localidade" id="input-localidade" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
 </div>
 
-<div class="field"><label>Responsável no local *</label><input required name="responsavel_local" id="input-resp-local" placeholder="Nome do responsável"></div>
+<div class="field"><label>Responsável no local *</label><input required name="responsavel_local" id="input-resp-local" placeholder="Nome do responsável" oninput="atualizarResumoLateral()"></div>
 <div class="field">
   <label>Contacto (Telemóvel) *</label>
-  <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9">
+  <input required name="contacto" id="input-contacto" type="tel" placeholder="Ex: 912345678" maxlength="9" oninput="atualizarResumoLateral()">
   <small id="aviso-contacto" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
-<div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="Nome do comercial"></div>
+<div class="field"><label>Responsável comercial / GD *</label><input required name="comercial" id="input-resp-comercial" placeholder="Nome do comercial" oninput="atualizarResumoLateral()"></div>
 <div class="field">
   <label>Telemóvel do comercial *</label>
-  <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9">
+  <input required name="telemovel_comercial" id="input-tel-comercial" type="tel" placeholder="Ex: 912345678" maxlength="9" oninput="atualizarResumoLateral()">
   <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
@@ -208,11 +217,11 @@ input.invalid{border-color:#d9534f}
 </div>
 <div class="field" id="field-data-pretendida">
   <label id="label-data-pretendida">Data pretendida</label>
-  <input type="date" name="data_pretendida" id="input-data-pretendida">
+  <input type="date" name="data_pretendida" id="input-data-pretendida" onchange="atualizarResumoLateral()">
 </div>
 <div class="field" id="field-data-levantamento">
   <label id="label-data-levantamento">Data de levantamento *</label>
-  <input type="date" name="data_levantamento" id="input-data-levantamento">
+  <input type="date" name="data_levantamento" id="input-data-levantamento" onchange="atualizarResumoLateral()">
 </div>
 <div class="field full" style="margin-top: 6px;">
   <label>Observações (Tipo de pedido)</label>
@@ -254,7 +263,7 @@ input.invalid{border-color:#d9534f}
     <div class="img-wrapper"><img src="image3.png" alt="Leffe"></div>
     <div class="title-choice">Leffe</div>
     <div class="subchoice-wrap" id="wrap-sub-leffe" style="display:none;">
-      <select name="variedade_leffe" id="select-variedade-leffe" onclick="event.stopPropagation()">
+      <select name="variedade_leffe" id="select-variedade-leffe" onclick="event.stopPropagation()" onchange="atualizarResumoLateral()">
         <option value="">Variedade...</option>
         <option value="Brune">Brune</option>
         <option value="Blonde">Blonde</option>
@@ -531,9 +540,43 @@ input.invalid{border-color:#d9534f}
 
 </form>
 </section>
+
+<!-- CAIXA LATERAL DINÂMICA (RESUMO EM TEMPO REAL) -->
 <aside class="side">
-<div class="summary"><h3>O seu pedido</h3><p>Preencha o formulário para reunir os dados num único pedido, com os equipamentos e respetivas especificações.</p><ul><li>Dados do estabelecimento</li><li>Tipo de operação</li><li>Colunas e refrigeradores</li><li>Resumo visual por cartões</li><li>Registo automático e e-mail</li></ul><div class="notice">O objetivo é reduzir erros e enviar o resumo estruturado de forma automática para o Outlook.</div></div>
+  <div class="summary">
+    <h3>📋 O seu pedido</h3>
+    
+    <div class="summary-sec">
+      <div class="summary-sec-title">Cliente / Estabelecimento</div>
+      <div class="summary-val" id="side-resumo-cliente"><em style="opacity:0.6;">A aguardar preenchimento...</em></div>
+    </div>
+
+    <div class="summary-sec">
+      <div class="summary-sec-title">Operação & Data</div>
+      <div class="summary-val" id="side-resumo-operacao"><em style="opacity:0.6;">A aguardar seleção...</em></div>
+    </div>
+
+    <div class="summary-sec">
+      <div class="summary-sec-title">Marcas Pretendidas</div>
+      <div class="summary-val" id="side-resumo-marcas"><em style="opacity:0.6;">Nenhuma selecionada</em></div>
+    </div>
+
+    <div class="summary-sec">
+      <div class="summary-sec-title">Colunas</div>
+      <div class="summary-val" id="side-resumo-colunas"><em style="opacity:0.6;">Nenhuma selecionada</em></div>
+    </div>
+
+    <div class="summary-sec">
+      <div class="summary-sec-title">Refrigeradores</div>
+      <div class="summary-val" id="side-resumo-refrigeradores"><em style="opacity:0.6;">Nenhum selecionado</em></div>
+    </div>
+
+    <div class="notice">
+      💡 O resumo em cima atualiza-se automaticamente à medida que preenche o formulário.
+    </div>
+  </div>
 </aside>
+
 </div></main>
 <footer class="footer">AT Cervejas · Formulário interno de pedidos de equipamentos</footer>
 
@@ -544,6 +587,122 @@ input.invalid{border-color:#d9534f}
 
 <script>
 let refItemCounter = 1;
+
+function atualizarResumoLateral() {
+  const codCliente = document.getElementById('input-codigo-cliente')?.value.trim();
+  const departamento = document.getElementById('input-departamento')?.value.trim();
+  const estabelecimento = document.getElementById('input-estabelecimento')?.value.trim();
+  const localidade = document.getElementById('input-localidade')?.value.trim();
+
+  const sideCliente = document.getElementById('side-resumo-cliente');
+  if (sideCliente) {
+    if (estabelecimento || codCliente) {
+      let txt = `<strong>${estabelecimento || 'Sem nome'}</strong>`;
+      if (codCliente) txt += `<br><span style="font-size:11px; opacity:0.8;">Cód: ${codCliente} ${departamento ? '(' + departamento + ')' : ''}</span>`;
+      if (localidade) txt += `<br><span style="font-size:11px; opacity:0.8;">📍 ${localidade}</span>`;
+      sideCliente.innerHTML = txt;
+    } else {
+      sideCliente.innerHTML = '<em style="opacity:0.6;">A aguardar preenchimento...</em>';
+    }
+  }
+
+  const operacaoVal = document.getElementById('select-operacao')?.value;
+  const dataPretendida = document.getElementById('input-data-pretendida')?.value;
+  const dataLevantamento = document.getElementById('input-data-levantamento')?.value;
+  const sideOperacao = document.getElementById('side-resumo-operacao');
+
+  if (sideOperacao) {
+    if (operacaoVal) {
+      let txtOp = `<strong>${operacaoVal}</strong>`;
+      if (dataPretendida) txtOp += `<br><span style="font-size:11px; opacity:0.8;">📅 Data: ${dataPretendida}</span>`;
+      if (dataLevantamento) txtOp += `<br><span style="font-size:11px; opacity:0.8;">📤 Fim/Lev.: ${dataLevantamento}</span>`;
+      sideOperacao.innerHTML = txtOp;
+    } else {
+      sideOperacao.innerHTML = '<em style="opacity:0.6;">A aguardar seleção...</em>';
+    }
+  }
+
+  const marcasChecadas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => {
+    if (cb.value === 'Leffe') {
+      const varLeffe = document.getElementById('select-variedade-leffe')?.value;
+      return varLeffe ? `Leffe (${varLeffe})` : 'Leffe';
+    }
+    return cb.value;
+  });
+
+  const sideMarcas = document.getElementById('side-resumo-marcas');
+  if (sideMarcas) {
+    if (marcasChecadas.length > 0) {
+      sideMarcas.innerHTML = `<strong>${marcasChecadas.join(', ')}</strong>`;
+    } else {
+      sideMarcas.innerHTML = '<em style="opacity:0.6;">Nenhuma selecionada</em>';
+    }
+  }
+
+  const colunasChecadas = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+  const sideColunas = document.getElementById('side-resumo-colunas');
+  
+  if (sideColunas) {
+    const selectEvCol = document.getElementById('select-evento-coluna');
+    if (operacaoVal === 'Evento' && selectEvCol && selectEvCol.value === 'nao') {
+      sideColunas.innerHTML = '<strong>Sem coluna</strong> <span style="font-size:11px; opacity:0.8;">(Apenas portátil)</span>';
+    } else if (colunasChecadas.length > 0) {
+      let listHtml = '<ul class="summary-list">';
+      colunasChecadas.forEach(c => {
+        const choiceBox = c.closest('.choice');
+        const fix = choiceBox?.querySelector('.select-fixacao')?.value || 'Grampo';
+        listHtml += `<li>${c.value} <span style="font-size:10px; color:var(--gold);">(${fix})</span></li>`;
+      });
+      listHtml += '</ul>';
+      
+      let mCol = document.getElementById('input-metros-col-ref')?.value.trim();
+      if (mCol) {
+        listHtml += `<div style="font-size:11px; margin-top:4px; color:var(--gold);">📏 ${mCol.includes('metro') || mCol.endsWith('m') ? mCol : mCol + ' metros'} (coluna -> ref)</div>`;
+      }
+      sideColunas.innerHTML = listHtml;
+    } else {
+      sideColunas.innerHTML = '<em style="opacity:0.6;">Nenhuma selecionada</em>';
+    }
+  }
+
+  const boxesRef = Array.from(document.querySelectorAll('.refrigerador-item-box'));
+  const sideRef = document.getElementById('side-resumo-refrigeradores');
+  
+  if (sideRef) {
+    let refsAtivos = [];
+    boxesRef.forEach(box => {
+      const tipo = box.querySelector('.select-ref-tipo')?.value;
+      const portatil = box.querySelector('.select-ref-portatil')?.value;
+      const qtd = box.querySelector('.input-ref-qtd')?.value || 1;
+      
+      let modeloFinal = '';
+      if (tipo === 'Refrigerador portátil' && portatil) modeloFinal = portatil;
+      else if (['V60', 'V100', 'V200'].includes(tipo)) modeloFinal = tipo;
+      else if (tipo === 'Não aplicável') modeloFinal = 'Não aplicável';
+
+      if (modeloFinal) {
+        refsAtivos.push({ modelo: modeloFinal, qtd: qtd });
+      }
+    });
+
+    if (refsAtivos.length > 0) {
+      let listHtml = '<ul class="summary-list">';
+      refsAtivos.forEach(r => {
+        listHtml += `<li>${r.modelo} ${r.modelo !== 'Não aplicável' ? '<strong>(' + r.qtd + ' Uni.)</strong>' : ''}</li>`;
+      });
+      listHtml += '</ul>';
+
+      let mRef = document.getElementById('input-metros-ref-bar')?.value.trim();
+      const wrapMRef = document.getElementById('wrap-metros-ref-bar');
+      if (mRef && wrapMRef && wrapMRef.style.display !== 'none') {
+        listHtml += `<div style="font-size:11px; margin-top:4px; color:var(--gold);">📏 ${mRef.includes('metro') || mRef.endsWith('m') ? mRef : mRef + ' metros'} (ref -> barril)</div>`;
+      }
+      sideRef.innerHTML = listHtml;
+    } else {
+      sideRef.innerHTML = '<em style="opacity:0.6;">Nenhum selecionado</em>';
+    }
+  }
+}
 
 function atualizarOpcoesRefrigeradoresGlobais() {
   const operacaoVal = document.getElementById('select-operacao').value;
@@ -907,6 +1066,8 @@ function atualizarResumoInstalacao() {
   } else {
     boxBarrilLogos.innerHTML = '';
   }
+
+  atualizarResumoLateral();
 }
 
 function abrirZoom(src, event) {
@@ -953,6 +1114,7 @@ function fecharZoom() {
     mapContainer.style.borderColor = '#b78a45';
     caixaConfirmacao.style.background = '#f8f9fa';
     textoConfirmacao.textContent = '📍 Local selecionado com sucesso! Confirme se está correto:';
+    atualizarResumoLateral();
   }
 
   function realizarPesquisaNoMaps() {
