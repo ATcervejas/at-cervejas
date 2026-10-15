@@ -125,6 +125,12 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
+<!-- CAMPO PROCESSO SGC VISÍVEL -->
+<div class="field full">
+  <label>Processo SGC</label>
+  <input name="processo_sgc" id="input-processo-sgc" placeholder="Ex: GN01_003945/2025_AFS" oninput="atualizarResumoLateral()">
+</div>
+
 <!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
 <div class="field full" style="position: relative; margin-top: 4px;">
   <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local *</label>
@@ -591,6 +597,7 @@ let refItemCounter = 1;
 function atualizarResumoLateral() {
   const codCliente = document.getElementById('input-codigo-cliente')?.value.trim();
   const departamento = document.getElementById('input-departamento')?.value.trim();
+  const processoSgc = document.getElementById('input-processo-sgc')?.value.trim();
   const estabelecimento = document.getElementById('input-estabelecimento')?.value.trim();
   const localidade = document.getElementById('input-localidade')?.value.trim();
 
@@ -599,6 +606,7 @@ function atualizarResumoLateral() {
     if (estabelecimento || codCliente) {
       let txt = `<strong>${estabelecimento || 'Sem nome'}</strong>`;
       if (codCliente) txt += `<br><span style="font-size:11px; opacity:0.8;">Cód: ${codCliente} ${departamento ? '(' + departamento + ')' : ''}</span>`;
+      if (processoSgc) txt += `<br><span style="font-size:11px; opacity:0.8;">SGC: ${processoSgc}</span>`;
       if (localidade) txt += `<br><span style="font-size:11px; opacity:0.8;">📍 ${localidade}</span>`;
       sideCliente.innerHTML = txt;
     } else {
@@ -1413,6 +1421,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const codCliente = inputCodCliente.value.trim();
   const departamento = inputDepartamento.value.trim();
+  const processoSgc = document.getElementById('input-processo-sgc')?.value.trim() || 'N/D';
   const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
   const morada = document.getElementById('input-morada').value || 'N/D';
   const cp = document.getElementById('input-cp').value || '';
@@ -1516,6 +1525,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `• ESTABELECIMENTO: ${estabelecimento}\n` +
     `• CÓDIGO DE CLIENTE: ${codCliente}\n` +
     `• DEPARTAMENTO: ${departamento}\n` +
+    `• PROCESSO SGC: ${processoSgc}\n` +
     `• MORADA: ${morada}, ${cp} ${localidade}\n` +
     `• RESP. LOCAL: ${respLocal} (${telLocal})\n` +
     `• COMERCIAL / GD: ${comercial} (${telComercial})\n` +
