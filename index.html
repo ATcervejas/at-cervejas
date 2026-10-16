@@ -125,10 +125,10 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
-<!-- PROCESSO SGC COM AVISO -->
+<!-- PROCESSO SGC COM AVISO E MAIÚSCULAS -->
 <div class="field full">
   <label>Processo SGC</label>
-  <input name="processo_sgc" id="input-processo-sgc" placeholder="Ex: GN01_003945/2025_AFS" oninput="atualizarResumoLateral()">
+  <input name="processo_sgc" id="input-processo-sgc" style="text-transform:uppercase" placeholder="Ex: GN01_003945/2025_AFS" oninput="this.value = this.value.toUpperCase(); atualizarResumoLateral()">
   <div style="background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 6px; border: 1px solid #ffeeba;">
     <strong>⚠️ Aviso de Anexo:</strong> Caso este pedido inclua um anexo SGC (PDF ou Imagem), <u>terá de o anexar manualmente</u> na janela do Outlook que se irá abrir após clicar em "Submeter Pedido".
   </div>
