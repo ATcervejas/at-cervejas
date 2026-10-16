@@ -125,10 +125,15 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
-<!-- CAMPO PROCESSO SGC VISÍVEL -->
-<div class="field full">
+<!-- PROCESSO SGC & ANEXO NA MESMA LINHA -->
+<div class="field">
   <label>Processo SGC</label>
   <input name="processo_sgc" id="input-processo-sgc" placeholder="Ex: GN01_003945/2025_AFS" oninput="atualizarResumoLateral()">
+</div>
+<div class="field">
+  <label>Anexo SGC (PDF/Imagem)</label>
+  <input type="file" id="input-anexo" accept=".pdf, image/*" style="padding: 9px; cursor: pointer;">
+  <small style="color:#d9534f; font-size:11px; font-weight:bold; margin-top: 2px;">⚠️ O ficheiro terá de ser arrastado manualmente para o Outlook.</small>
 </div>
 
 <!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
@@ -1494,6 +1499,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const tituloEmail = `${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`;
   const assunto = encodeURIComponent(tituloEmail);
   
+  // VERIFICAR SE HÁ ANEXO PARA ADICIONAR O LEMBRETE NO E-MAIL
+  const ficheiroAnexado = document.getElementById('input-anexo') && document.getElementById('input-anexo').files.length > 0;
+  const lembreteAnexo = ficheiroAnexado ? "\n⚠️ ATENÇÃO: Tem um ficheiro de anexo SGC! Por favor, lembre-se de arrastar e anexar o ficheiro a este e-mail antes de o enviar.\n" : "";
+
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
   let linhasDatas = "";
@@ -1517,7 +1526,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   let textoCorpo = 
     `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
-    "Abaixo encontram-se os detalhes técnicos do pedido registado:\n\n" +
+    "Abaixo encontram-se os detalhes técnicos do pedido registado:\n" +
+    lembreteAnexo + "\n" +
     
     divisor +
     "🏢 1. DADOS DO CLIENTE\n" +
