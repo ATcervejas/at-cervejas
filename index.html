@@ -1113,7 +1113,7 @@ function fecharZoom() {
 
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
-  const inputProcessoSGC = document.getElementById('input-processo-sgc'); // Adicionado o campo SGC
+  const inputProcessoSGC = document.getElementById('input-processo-sgc');
 
   function preencherMoradaAutomaticamente(nome, morada, cp, localidade, rawName) {
     inputPesquisaMaps.value = rawName;
@@ -1233,7 +1233,6 @@ function fecharZoom() {
     }
   });
 
-  // Forçar Processo SGC sempre em maiúsculas sem o cursor saltar para a frente
   if (inputProcessoSGC) {
     inputProcessoSGC.addEventListener('input', function() {
       let start = this.selectionStart;
@@ -1282,7 +1281,6 @@ function fecharZoom() {
   }
 })();
 
-// Formatação automática do sufixo "metros" para os campos de distância
 function aplicarFormatacaoMetros(inputId) {
   const el = document.getElementById(inputId);
   if (!el) return;
@@ -1400,7 +1398,6 @@ if (inputTelComercial && avisoTelComercial) {
   });
 }
 
-// Inicializar atualização ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
   atualizarResumoLateral();
 });
@@ -1461,7 +1458,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
 
-  // Obter colunas apenas se existirem caixas marcadas
   const colunasChecadasList = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
   const temColunasSelecionadas = colunasChecadasList.length > 0;
   
@@ -1509,9 +1505,11 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const tituloEmail = `${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`;
   const assunto = encodeURIComponent(tituloEmail);
   
-  // ADICIONAR ALERTA NO EMAIL SE HOUVER PROCESSO SGC PREENCHIDO
   const displayProcessoSgc = processoSgc ? processoSgc : 'N/D';
-  const lembreteAnexo = processoSgc ? "\n⚠️ ATENÇÃO: Preencheu um Processo SGC! Lembre-se de anexar manualmente o respetivo ficheiro (PDF/Imagem) a este e-mail antes de o enviar.\n" : "";
+  
+  // Condição: O lembrete de anexo só entra no email se houver Processo SGC E a operação for "Nova instalação"
+  const incluirAvisoAnexoEmail = (processoSgc && operacao === 'Nova instalação');
+  const lembreteAnexo = incluirAvisoAnexoEmail ? "\n⚠️ ATENÇÃO:\nPreencheu um Processo SGC! Lembre-se de anexar manualmente o respetivo ficheiro (PDF/Imagem) a este e-mail antes de o enviar.\n" : "";
 
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
@@ -1527,7 +1525,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
   }
 
-  // Bloco de colunas ajustado: Só coloca a linha de colunas se existirem colunas selecionadas
   let blocoColunasTxt = `• MARCAS: ${cervejas}\n`;
   if (temColunasSelecionadas) {
     blocoColunasTxt += `• COLUNAS SELECIONADAS:\n${colunasTxt}\n`;
