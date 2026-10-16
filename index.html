@@ -125,15 +125,13 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
-<!-- PROCESSO SGC & ANEXO NA MESMA LINHA -->
-<div class="field">
+<!-- PROCESSO SGC COM AVISO -->
+<div class="field full">
   <label>Processo SGC</label>
   <input name="processo_sgc" id="input-processo-sgc" placeholder="Ex: GN01_003945/2025_AFS" oninput="atualizarResumoLateral()">
-</div>
-<div class="field">
-  <label>Anexo SGC (PDF/Imagem)</label>
-  <input type="file" id="input-anexo" accept=".pdf, image/*" style="padding: 9px; cursor: pointer;">
-  <small style="color:#d9534f; font-size:11px; font-weight:bold; margin-top: 2px;">⚠️ O ficheiro terá de ser arrastado manualmente para o Outlook.</small>
+  <div style="background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 6px; border: 1px solid #ffeeba;">
+    <strong>⚠️ Aviso de Anexo:</strong> Caso este pedido inclua um anexo SGC (PDF ou Imagem), <u>terá de o anexar manualmente</u> na janela do Outlook que se irá abrir após clicar em "Submeter Pedido".
+  </div>
 </div>
 
 <!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
@@ -1426,7 +1424,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   const codCliente = inputCodCliente.value.trim();
   const departamento = inputDepartamento.value.trim();
-  const processoSgc = document.getElementById('input-processo-sgc')?.value.trim() || 'N/D';
+  const processoSgc = document.getElementById('input-processo-sgc')?.value.trim();
   const estabelecimento = document.getElementById('input-estabelecimento').value || 'N/D';
   const morada = document.getElementById('input-morada').value || 'N/D';
   const cp = document.getElementById('input-cp').value || '';
@@ -1499,9 +1497,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const tituloEmail = `${prefixoAssunto} - ${estabelecimento} (${departamento}) - ${codCliente}`;
   const assunto = encodeURIComponent(tituloEmail);
   
-  // VERIFICAR SE HÁ ANEXO PARA ADICIONAR O LEMBRETE NO E-MAIL
-  const ficheiroAnexado = document.getElementById('input-anexo') && document.getElementById('input-anexo').files.length > 0;
-  const lembreteAnexo = ficheiroAnexado ? "\n⚠️ ATENÇÃO: Tem um ficheiro de anexo SGC! Por favor, lembre-se de arrastar e anexar o ficheiro a este e-mail antes de o enviar.\n" : "";
+  // ADICIONAR ALERTA NO EMAIL SE HOUVER PROCESSO SGC PREENCHIDO
+  const displayProcessoSgc = processoSgc ? processoSgc : 'N/D';
+  const lembreteAnexo = processoSgc ? "\n⚠️ ATENÇÃO: Preencheu um Processo SGC! Lembre-se de anexar manualmente o respetivo ficheiro (PDF/Imagem) a este e-mail antes de o enviar.\n" : "";
 
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
@@ -1535,7 +1533,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     `• ESTABELECIMENTO: ${estabelecimento}\n` +
     `• CÓDIGO DE CLIENTE: ${codCliente}\n` +
     `• DEPARTAMENTO: ${departamento}\n` +
-    `• PROCESSO SGC: ${processoSgc}\n` +
+    `• PROCESSO SGC: ${displayProcessoSgc}\n` +
     `• MORADA: ${morada}, ${cp} ${localidade}\n` +
     `• RESP. LOCAL: ${respLocal} (${telLocal})\n` +
     `• COMERCIAL / GD: ${comercial} (${telComercial})\n` +
