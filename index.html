@@ -125,10 +125,10 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
-<!-- PROCESSO SGC COM AVISO E MAIÚSCULAS -->
+<!-- PROCESSO SGC COM AVISO -->
 <div class="field full">
   <label>Processo SGC</label>
-  <input name="processo_sgc" id="input-processo-sgc" style="text-transform:uppercase" placeholder="Ex: GN01_003945/2025_AFS" oninput="this.value = this.value.toUpperCase(); atualizarResumoLateral()">
+  <input name="processo_sgc" id="input-processo-sgc" style="text-transform:uppercase;" placeholder="Ex: GN01_003945/2025_AFS">
   <div style="background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 6px; border: 1px solid #ffeeba;">
     <strong>⚠️ Aviso de Anexo:</strong> Caso este pedido inclua um anexo SGC (PDF ou Imagem), <u>terá de o anexar manualmente</u> na janela do Outlook que se irá abrir após clicar em "Submeter Pedido".
   </div>
@@ -1113,6 +1113,7 @@ function fecharZoom() {
 
   const inputRespLocal = document.getElementById('input-resp-local');
   const inputRespComercial = document.getElementById('input-resp-comercial');
+  const inputProcessoSGC = document.getElementById('input-processo-sgc'); // Adicionado o campo SGC
 
   function preencherMoradaAutomaticamente(nome, morada, cp, localidade, rawName) {
     inputPesquisaMaps.value = rawName;
@@ -1231,6 +1232,17 @@ function fecharZoom() {
       sugestoesBox.innerHTML = '';
     }
   });
+
+  // Forçar Processo SGC sempre em maiúsculas sem o cursor saltar para a frente
+  if (inputProcessoSGC) {
+    inputProcessoSGC.addEventListener('input', function() {
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+      this.value = this.value.toUpperCase();
+      this.setSelectionRange(start, end);
+      atualizarResumoLateral();
+    });
+  }
 
   if (inputRespLocal) {
     inputRespLocal.addEventListener('input', function() {
