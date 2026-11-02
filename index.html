@@ -125,7 +125,7 @@ input.invalid{border-color:#d9534f}
   <input required name="departamento" id="input-departamento" style="text-transform:uppercase" placeholder="EX: MRSE" oninput="atualizarResumoLateral()">
 </div>
 
-<!-- PROCESSO SGC COM AVISO -->
+<!-- PROCESSO SGC (NÃO OBRIGATÓRIO) -->
 <div class="field full">
   <label>Processo SGC</label>
   <input name="processo_sgc" id="input-processo-sgc" style="text-transform:uppercase;" placeholder="Ex: GN01_003945/2025_AFS">
@@ -134,9 +134,9 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- BARRA DE PESQUISA (SISTEMA ARCGIS EMPRESARIAL) -->
+<!-- BARRA DE PESQUISA (NÃO OBRIGATÓRIO SUBMETER AQUI) -->
 <div class="field full" style="position: relative; margin-top: 4px;">
-  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local *</label>
+  <label style="color: var(--gold); font-size: 14px;">🔍 Pesquisar Estabelecimento / Local</label>
   <div style="display: flex; gap: 8px;">
     <input type="text" id="input-pesquisa-maps" placeholder="Ex: Restaurante Tasca da Avenida, Setúbal..." autocomplete="off" style="border: 2px solid var(--gold); background: #fffdf9; font-weight: 500; font-size: 14px; padding: 12px; flex: 1;">
     <button type="button" id="btn-executar-pesquisa" style="background: var(--gold); color: white; border: 0; border-radius: 10px; padding: 0 24px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 14px;">Pesquisar</button>
@@ -168,31 +168,31 @@ input.invalid{border-color:#d9534f}
   </div>
 </div>
 
-<!-- Link do Google Maps Opcional -->
+<!-- Link do Google Maps Opcional (NÃO OBRIGATÓRIO) -->
 <div class="field full" style="background: #fffdf9; border: 1px dashed var(--gold); padding: 12px; border-radius: 8px;">
   <label style="color: var(--gold);">🔗 Link de Partilha do Google Maps (Opcional)</label>
   <input type="url" id="input-link-maps" placeholder="Ex: https://share.google/... ou https://maps.app.goo.gl/..." style="margin-top:6px; border-color: var(--gold);">
 </div>
 
-<!-- Campos Preenchidos Automaticamente -->
+<!-- OBRIGATÓRIOS -->
 <div class="field full">
   <label>🏢 Nome do espaço / estabelecimento *</label>
-  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente..." autocomplete="off" oninput="atualizarResumoLateral()">
+  <input required name="estabelecimento" id="input-estabelecimento" placeholder="Preenchido automaticamente ou digitar nome" autocomplete="off" oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field full">
   <label>Morada de instalação *</label>
-  <input required name="morada" id="input-morada" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
+  <input required name="morada" id="input-morada" placeholder="Preenchido automaticamente ou digitar morada" oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field">
   <label>📮 Código Postal *</label>
-  <input required name="codigo_postal" id="input-cp" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
+  <input required name="codigo_postal" id="input-cp" placeholder="Preenchido automaticamente ou digitar CP" oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field">
   <label>🌍 Localidade *</label>
-  <input required name="localidade" id="input-localidade" placeholder="Preenchido automaticamente..." oninput="atualizarResumoLateral()">
+  <input required name="localidade" id="input-localidade" placeholder="Preenchido automaticamente ou digitar localidade" oninput="atualizarResumoLateral()">
 </div>
 
 <div class="field"><label>Responsável no local *</label><input required name="responsavel_local" id="input-resp-local" placeholder="Nome do responsável" oninput="atualizarResumoLateral()"></div>
@@ -209,10 +209,11 @@ input.invalid{border-color:#d9534f}
   <small id="aviso-tel-comercial" class="error-msg">⚠️ Introduza exatamente 9 dígitos!</small>
 </div>
 
+<!-- OBSERVAÇÕES NÃO OBRIGATÓRIAS -->
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
 </div></div>
 
-<!-- 2. Tipo de pedido (COM OBRIGATORIEDADE ADICIONADA) -->
+<!-- 2. Tipo de pedido (OBRIGATÓRIO) -->
 <div class="panel"><h2>2. Tipo de pedido</h2><p class="sub">Selecione a operação pretendida.</p>
 <div class="grid">
 <div class="field">
@@ -532,7 +533,7 @@ input.invalid{border-color:#d9534f}
 
 </div>
 
-<!-- 6. Informações adicionais -->
+<!-- 6. Informações adicionais (NÃO OBRIGATÓRIO) -->
 <div class="panel"><h2>6. Informações adicionais</h2><p class="sub">Indique detalhes importantes para a preparação e entrega.</p>
 <div class="grid">
 <div class="field full"><label>Equipamentos / referências adicionais</label><textarea name="referencias"></textarea></div>
@@ -550,7 +551,7 @@ input.invalid{border-color:#d9534f}
 </form>
 </section>
 
-<!-- CAIXA LATERAL DINÂMICA (RESUMO EM TEMPO REAL) -->
+<!-- CAIXA LATERAL DINÂMICA -->
 <aside class="side">
   <div class="summary">
     <h3>📋 O seu pedido</h3>
@@ -1403,27 +1404,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
-  const inputCodCliente = document.getElementById('input-codigo-cliente');
-  if (!inputCodCliente || !inputCodCliente.value.trim()) {
-    alert('⚠️ O campo "Código de cliente" é obrigatório e tem de ser preenchido!');
-    if (inputCodCliente) inputCodCliente.focus();
-    return;
+  const form = document.getElementById('pedido');
+  
+  // 1. AVALIAÇÃO NATIVA DO NAVEGADOR (Ponto 1 e 2 Campos Base)
+  // Isto faz aparecer os pop-ups a vermelho do próprio browser nos campos obrigatórios em falta.
+  if (!form.reportValidity()) {
+    return; 
   }
 
-  const inputDepartamento = document.getElementById('input-departamento');
-  if (!inputDepartamento || !inputDepartamento.value.trim()) {
-    alert('⚠️ O campo "Departamento de fornecimento" é obrigatório e tem de ser preenchido!');
-    if (inputDepartamento) inputDepartamento.focus();
-    return;
-  }
-
-  const selectOperacao = document.getElementById('select-operacao');
-  if (!selectOperacao || !selectOperacao.value) {
-    alert('⚠️ O campo "Operação" (Tipo de pedido) é obrigatório e tem de ser selecionado!');
-    if (selectOperacao) selectOperacao.focus();
-    return;
-  }
-
+  // 2. VALIDAÇÃO DE TELEMÓVEIS (9 DÍGITOS)
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
     alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
@@ -1438,6 +1427,77 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
+  // 3. VALIDAÇÃO DE DATAS OBRIGATÓRIAS (Ponto 2)
+  const operacao = document.getElementById('select-operacao').value;
+  const dataPretendidaVal = document.getElementById('input-data-pretendida').value;
+  const dataLevantamentoVal = document.getElementById('input-data-levantamento').value;
+
+  if ((operacao === 'Nova instalação' || operacao === 'Evento') && !dataPretendidaVal) {
+    alert('⚠️ A "Data pretendida/instalação" é obrigatória para esta operação.');
+    document.getElementById('input-data-pretendida').focus();
+    return;
+  }
+  if ((operacao === 'Levantamento' || operacao === 'Evento') && !dataLevantamentoVal) {
+    alert('⚠️ A "Data de levantamento" é obrigatória para esta operação.');
+    document.getElementById('input-data-levantamento').focus();
+    return;
+  }
+
+  // 4. VALIDAÇÃO DE CERVEJAS E COLUNAS (Ponto 3)
+  const cervejasSelecionadas = document.querySelectorAll('.chk-cerveja:checked');
+  if (cervejasSelecionadas.length === 0) {
+    alert('⚠️ OBRIGATÓRIO: Tem de selecionar pelo menos uma marca de cerveja.');
+    document.querySelector('.chk-cerveja').focus();
+    return;
+  }
+
+  const seccaoColunas = document.getElementById('seccao-colunas');
+  const colunasChecadasList = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
+  if (seccaoColunas.style.display === 'block' && colunasChecadasList.length === 0) {
+    alert('⚠️ OBRIGATÓRIO: Tem de selecionar a coluna pretendida.');
+    return;
+  }
+
+  const wrapMetrosCol = document.getElementById('wrap-metros-col-ref');
+  let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
+  if (wrapMetrosCol && wrapMetrosCol.style.display !== 'none' && !rawMetrosCol) {
+    alert('⚠️ OBRIGATÓRIO: Indique os metros de distância entre a coluna e o refrigerador.');
+    document.getElementById('input-metros-col-ref').focus();
+    return;
+  }
+
+  // 5. VALIDAÇÃO DE EQUIPAMENTOS (Ponto 4)
+  const boxesRef = document.querySelectorAll('.refrigerador-item-box');
+  for (let i = 0; i < boxesRef.length; i++) {
+    const box = boxesRef[i];
+    const tipo = box.querySelector('.select-ref-tipo');
+    if (!tipo.value) {
+      alert('⚠️ OBRIGATÓRIO: Selecione o tipo de refrigerador (ou "Não aplicável").');
+      tipo.focus();
+      return;
+    }
+    if (tipo.value === 'Refrigerador portátil') {
+      const portatil = box.querySelector('.select-ref-portatil');
+      if (!portatil.value) {
+        alert('⚠️ OBRIGATÓRIO: Selecione o modelo exato do refrigerador portátil.');
+        portatil.focus();
+        return;
+      }
+    }
+  }
+
+  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
+  let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
+  if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none' && !rawMetrosRef) {
+    alert('⚠️ OBRIGATÓRIO: Indique os metros de distância entre o refrigerador e o barril.');
+    document.getElementById('input-metros-ref-bar').focus();
+    return;
+  }
+
+  // SE PASSOU TODAS AS VALIDAÇÕES, GERA O EMAIL:
+  const inputCodCliente = document.getElementById('input-codigo-cliente');
+  const inputDepartamento = document.getElementById('input-departamento');
+  
   const codCliente = inputCodCliente.value.trim();
   const departamento = inputDepartamento.value.trim();
   const processoSgc = document.getElementById('input-processo-sgc')?.value.trim();
@@ -1449,12 +1509,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const telLocal = document.getElementById('input-contacto').value || 'N/D';
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
-  const operacao = selectOperacao.value;
   
-  const dataPretendidaVal = document.getElementById('input-data-pretendida').value || 'N/D';
-  const dataLevantamentoVal = document.getElementById('input-data-levantamento').value || 'N/D';
   const obsTipoPedido = document.querySelector('textarea[name="obs_tipo_pedido"]').value.trim();
-  
   const obsGeral = document.querySelector('textarea[name="observacoes"]').value.trim();
   const obsCervejaColunas = document.querySelector('textarea[name="obs_cerveja_colunas"]').value.trim();
   const obsEquipamentos = document.querySelector('textarea[name="obs_equipamentos"]').value.trim();
@@ -1463,11 +1519,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const queryMapa = encodeURIComponent(`${estabelecimento}, ${morada}, ${cp} ${localidade} Portugal`);
   const linkGoogleMaps = linkManualMaps !== '' ? linkManualMaps : `https://www.google.com/maps/search/?api=1&query=${queryMapa}`;
 
-  const cervejas = Array.from(document.querySelectorAll('.chk-cerveja:checked')).map(cb => cb.value).join(', ') || 'Nenhuma selecionada';
+  const cervejas = Array.from(cervejasSelecionadas).map(cb => cb.value).join(', ');
 
-  const colunasChecadasList = Array.from(document.querySelectorAll('input[name="coluna_selecionada"]:checked'));
   const temColunasSelecionadas = colunasChecadasList.length > 0;
-  
   let colunasTxt = '';
   if (temColunasSelecionadas) {
     colunasTxt = colunasChecadasList.map(c => {
@@ -1477,11 +1531,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     }).join('\n');
   }
 
-  let rawMetrosCol = document.getElementById('input-metros-col-ref') ? document.getElementById('input-metros-col-ref').value.trim() : '';
   const metrosColunaRef = rawMetrosCol ? (rawMetrosCol.toLowerCase().includes('metro') || rawMetrosCol.toLowerCase().endsWith('m') ? rawMetrosCol : rawMetrosCol + ' metros') : 'N/D';
 
   let refrigeradoresTxt = '';
-  document.querySelectorAll('.refrigerador-item-box').forEach((box) => {
+  boxesRef.forEach((box) => {
     const tipo = box.querySelector('.select-ref-tipo').value;
     const portatil = box.querySelector('.select-ref-portatil') ? box.querySelector('.select-ref-portatil').value : '';
     const qtd = box.querySelector('.input-ref-qtd').value || '1';
@@ -1490,12 +1543,9 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
       refrigeradoresTxt += `   » ${modelo} (Quantidade: ${qtd})\n`;
     }
   });
-  if (!refrigeradoresTxt) refrigeradoresTxt = '   » Nenhum refrigerador selecionado\n';
 
-  const wrapMetrosRefBar = document.getElementById('wrap-metros-ref-bar');
   let metrosRefBarril = 'N/A';
   if (wrapMetrosRefBar && wrapMetrosRefBar.style.display !== 'none') {
-    let rawMetrosRef = document.getElementById('input-metros-ref-bar') ? document.getElementById('input-metros-ref-bar').value.trim() : '';
     metrosRefBarril = rawMetrosRef ? (rawMetrosRef.toLowerCase().includes('metro') || rawMetrosRef.toLowerCase().endsWith('m') ? rawMetrosRef : rawMetrosRef + ' metros') : 'N/D';
   }
 
@@ -1527,8 +1577,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   } else if (operacao === 'Evento') {
     linhasDatas = `• DATA PRETENDIDA (Início): ${dataPretendidaVal}\n` +
                   `• DATA DE LEVANTAMENTO (Fim): ${dataLevantamentoVal}\n`;
-  } else {
-    linhasDatas = `• DATA PRETENDIDA: ${dataPretendidaVal}\n`;
   }
 
   let blocoColunasTxt = `• MARCAS: ${cervejas}\n`;
