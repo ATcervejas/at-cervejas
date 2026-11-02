@@ -130,7 +130,7 @@ input.invalid{border-color:#d9534f}
   <label>Processo SGC</label>
   <input name="processo_sgc" id="input-processo-sgc" style="text-transform:uppercase;" placeholder="Ex: GN01_003945/2025_AFS">
   <div style="background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 6px; border: 1px solid #ffeeba;">
-    <strong>⚠️ Aviso de Anexo:</strong> Caso este pedido inclua um anexo SGC (PDF ou Imagem), <u>terá de o anexar manualmente</u> na janela do Outlook que se irá abrir após clicar em "Submeter Pedido".
+    <strong>⚠️ Aviso de Anexo:</strong> Caso este pedido inclua um anexo SGC (PDF ou Imagem), e para garantir que a informação fica sempre acessível, sugiro que os ficheiros sejam colocados em anexo no e-mail de confirmação do negócio.
   </div>
 </div>
 
@@ -212,13 +212,13 @@ input.invalid{border-color:#d9534f}
 <div class="field full"><label>Observações</label><textarea name="observacoes" placeholder="Observações adicionais (opcional)..."></textarea></div>
 </div></div>
 
-<!-- 2. Tipo de pedido -->
+<!-- 2. Tipo de pedido (COM OBRIGATORIEDADE ADICIONADA) -->
 <div class="panel"><h2>2. Tipo de pedido</h2><p class="sub">Selecione a operação pretendida.</p>
 <div class="grid">
 <div class="field">
   <label>Operação *</label>
   <select required name="operacao" id="select-operacao" onchange="atualizarExibicaoDatas()">
-    <option value="">Selecionar</option>
+    <option value="">Selecionar...</option>
     <option value="Nova instalação">Nova instalação</option>
     <option value="Levantamento">Levantamento</option>
     <option value="Evento">Evento</option>
@@ -1417,6 +1417,13 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
+  const selectOperacao = document.getElementById('select-operacao');
+  if (!selectOperacao || !selectOperacao.value) {
+    alert('⚠️ O campo "Operação" (Tipo de pedido) é obrigatório e tem de ser selecionado!');
+    if (selectOperacao) selectOperacao.focus();
+    return;
+  }
+
   const inputContacto = document.getElementById('input-contacto');
   if (inputContacto && inputContacto.value.length !== 9) {
     alert('⚠️ O número de telemóvel do local tem de ter exatamente 9 dígitos.');
@@ -1442,7 +1449,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const telLocal = document.getElementById('input-contacto').value || 'N/D';
   const comercial = document.getElementById('input-resp-comercial').value || 'N/D';
   const telComercial = document.getElementById('input-tel-comercial').value || 'N/D';
-  const operacao = document.getElementById('select-operacao').value || 'N/D';
+  const operacao = selectOperacao.value;
   
   const dataPretendidaVal = document.getElementById('input-data-pretendida').value || 'N/D';
   const dataLevantamentoVal = document.getElementById('input-data-levantamento').value || 'N/D';
@@ -1507,9 +1514,8 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   
   const displayProcessoSgc = processoSgc ? processoSgc : 'N/D';
   
-  // Condição: O lembrete de anexo só entra no email se houver Processo SGC E a operação for "Nova instalação"
   const incluirAvisoAnexoEmail = (processoSgc && operacao === 'Nova instalação');
-  const lembreteAnexo = incluirAvisoAnexoEmail ? "\n⚠️ ATENÇÃO:\nPreencheu um Processo SGC! Lembre-se de anexar manualmente o respetivo ficheiro (PDF/Imagem) a este e-mail antes de o enviar.\n" : "";
+  const lembreteAnexo = incluirAvisoAnexoEmail ? "\n⚠️ ATENÇÃO:\nCaso este pedido inclua um anexo SGC (PDF ou Imagem), e para garantir que a informação fica sempre acessível, sugiro que os ficheiros sejam colocados em anexo no e-mail de confirmação do negócio.\n" : "";
 
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
