@@ -1406,8 +1406,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('btnSubmeterPedido').addEventListener('click', function () {
   const form = document.getElementById('pedido');
   
-  // 1. AVALIAÇÃO NATIVA DO NAVEGADOR (Ponto 1 e 2 Campos Base)
-  // Isto faz aparecer os pop-ups a vermelho do próprio browser nos campos obrigatórios em falta.
+  // 1. AVALIAÇÃO NATIVA DO NAVEGADOR
   if (!form.reportValidity()) {
     return; 
   }
@@ -1427,7 +1426,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
-  // 3. VALIDAÇÃO DE DATAS OBRIGATÓRIAS (Ponto 2)
+  // 3. VALIDAÇÃO DE DATAS OBRIGATÓRIAS
   const operacao = document.getElementById('select-operacao').value;
   const dataPretendidaVal = document.getElementById('input-data-pretendida').value;
   const dataLevantamentoVal = document.getElementById('input-data-levantamento').value;
@@ -1443,7 +1442,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
-  // 4. VALIDAÇÃO DE CERVEJAS E COLUNAS (Ponto 3)
+  // 4. VALIDAÇÃO DE CERVEJAS E COLUNAS
   const cervejasSelecionadas = document.querySelectorAll('.chk-cerveja:checked');
   if (cervejasSelecionadas.length === 0) {
     alert('⚠️ OBRIGATÓRIO: Tem de selecionar pelo menos uma marca de cerveja.');
@@ -1466,7 +1465,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
-  // 5. VALIDAÇÃO DE EQUIPAMENTOS (Ponto 4)
+  // 5. VALIDAÇÃO DE EQUIPAMENTOS
   const boxesRef = document.querySelectorAll('.refrigerador-item-box');
   for (let i = 0; i < boxesRef.length; i++) {
     const box = boxesRef[i];
@@ -1494,7 +1493,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     return;
   }
 
-  // SE PASSOU TODAS AS VALIDAÇÕES, GERA O EMAIL:
+  // GERAÇÃO DO EMAIL:
   const inputCodCliente = document.getElementById('input-codigo-cliente');
   const inputDepartamento = document.getElementById('input-departamento');
   
@@ -1563,9 +1562,6 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   const assunto = encodeURIComponent(tituloEmail);
   
   const displayProcessoSgc = processoSgc ? processoSgc : 'N/D';
-  
-  const incluirAvisoAnexoEmail = (processoSgc && operacao === 'Nova instalação');
-  const lembreteAnexo = incluirAvisoAnexoEmail ? "\n⚠️ ATENÇÃO:\nCaso este pedido inclua um anexo SGC (PDF ou Imagem), e para garantir que a informação fica sempre acessível, sugiro que os ficheiros sejam colocados em anexo no e-mail de confirmação do negócio.\n" : "";
 
   const divisor = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
   
@@ -1587,8 +1583,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
   let textoCorpo = 
     `📌 ${tituloEmail}\n\n` +
     "Olá,\n\n" +
-    "Abaixo encontram-se os detalhes técnicos do pedido registado:\n" +
-    lembreteAnexo + "\n" +
+    "Abaixo encontram-se os detalhes técnicos do pedido registado:\n\n" +
     
     divisor +
     "🏢 1. DADOS DO CLIENTE\n" +
