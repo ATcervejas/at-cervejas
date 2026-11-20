@@ -220,19 +220,15 @@ input.invalid{border-color:#d9534f}
   <label>Operação *</label>
   <select required name="operacao" id="select-operacao" onchange="atualizarExibicaoDatas()">
     <option value="">Selecionar...</option>
+    <option value="Vistoria Técnica">Vistoria Técnica</option>
     <option value="Nova instalação">Nova instalação</option>
     <option value="Levantamento">Levantamento</option>
     <option value="Evento">Evento</option>
-    <option value="Vistoria Técnica">Vistoria Técnica</option>
   </select>
 </div>
 
-<div class="field" id="field-agendamento-vistoria" style="display:none;">
-  <label>Agendamento da vistoria *</label>
-  <select id="select-agendamento-vistoria" onchange="atualizarExibicaoDatas()">
-    <option value="tecnico">Sim, técnico agenda diretamente com o cliente</option>
-    <option value="data">Não, indicar data pretendida</option>
-  </select>
+<div class="field full" id="nota-vistoria-tecnica" style="display:none; background:#fffdf9; border:1px solid var(--gold); padding:13px 15px; border-radius:10px; color:var(--ink); font-size:13px; line-height:1.5;">
+  <strong style="color:var(--gold);">📋 Nota de Agendamento:</strong> O técnico entrará em contacto diretamente com o cliente para agendar a vistoria técnica e a posterior instalação.
 </div>
 
 <div class="field" id="field-data-pretendida">
@@ -629,7 +625,6 @@ function atualizarResumoLateral() {
   }
 
   const operacaoVal = document.getElementById('select-operacao')?.value;
-  const agendamentoVistoria = document.getElementById('select-agendamento-vistoria')?.value;
   const dataPretendida = document.getElementById('input-data-pretendida')?.value;
   const dataLevantamento = document.getElementById('input-data-levantamento')?.value;
   const sideOperacao = document.getElementById('side-resumo-operacao');
@@ -637,8 +632,8 @@ function atualizarResumoLateral() {
   if (sideOperacao) {
     if (operacaoVal) {
       let txtOp = `<strong>${operacaoVal}</strong>`;
-      if (operacaoVal === 'Vistoria Técnica' && agendamentoVistoria === 'tecnico') {
-        txtOp += `<br><span style="font-size:11px; opacity:0.8;">📅 Agendamento direto pelo técnico</span>`;
+      if (operacaoVal === 'Vistoria Técnica') {
+        txtOp += `<br><span style="font-size:11px; opacity:0.8;">📅 Técnico agenda vistoria e instalação com o cliente</span>`;
       } else {
         if (dataPretendida) txtOp += `<br><span style="font-size:11px; opacity:0.8;">📅 Data: ${dataPretendida}</span>`;
         if (dataLevantamento) txtOp += `<br><span style="font-size:11px; opacity:0.8;">📤 Fim/Lev.: ${dataLevantamento}</span>`;
@@ -1327,8 +1322,7 @@ aplicarFormatacaoMetros('input-metros-ref-bar');
 
 function atualizarExibicaoDatas() {
   const selectOperacao = document.getElementById('select-operacao');
-  const fieldAgendamentoVistoria = document.getElementById('field-agendamento-vistoria');
-  const selectAgendamentoVistoria = document.getElementById('select-agendamento-vistoria');
+  const notaVistoriaTecnica = document.getElementById('nota-vistoria-tecnica');
   const fieldDataPretendida = document.getElementById('field-data-pretendida');
   const labelDataPretendida = document.getElementById('label-data-pretendida');
   const fieldDataLevantamento = document.getElementById('field-data-levantamento');
@@ -1350,35 +1344,29 @@ function atualizarExibicaoDatas() {
   }
 
   if (valor === 'Vistoria Técnica') {
-    fieldAgendamentoVistoria.style.display = 'flex';
-  } else {
-    fieldAgendamentoVistoria.style.display = 'none';
-  }
-
-  if (valor === 'Nova instalação') {
-    fieldDataPretendida.style.display = 'flex';
-    labelDataPretendida.textContent = 'Data da instalação *';
-    fieldDataLevantamento.style.display = 'none';
-  } else if (valor === 'Levantamento') {
+    notaVistoriaTecnica.style.display = 'block';
     fieldDataPretendida.style.display = 'none';
-    fieldDataLevantamento.style.display = 'flex';
-  } else if (valor === 'Evento') {
-    fieldDataPretendida.style.display = 'flex';
-    labelDataPretendida.textContent = 'Data pretendida *';
-    fieldDataLevantamento.style.display = 'flex';
-  } else if (valor === 'Vistoria Técnica') {
     fieldDataLevantamento.style.display = 'none';
-    if (selectAgendamentoVistoria && selectAgendamentoVistoria.value === 'tecnico') {
+    document.getElementById('input-data-pretendida').value = '';
+    document.getElementById('input-data-levantamento').value = '';
+  } else {
+    notaVistoriaTecnica.style.display = 'none';
+    if (valor === 'Nova instalação') {
+      fieldDataPretendida.style.display = 'flex';
+      labelDataPretendida.textContent = 'Data da instalação *';
+      fieldDataLevantamento.style.display = 'none';
+    } else if (valor === 'Levantamento') {
       fieldDataPretendida.style.display = 'none';
-      document.getElementById('input-data-pretendida').value = '';
-    } else {
+      fieldDataLevantamento.style.display = 'flex';
+    } else if (valor === 'Evento') {
       fieldDataPretendida.style.display = 'flex';
       labelDataPretendida.textContent = 'Data pretendida *';
+      fieldDataLevantamento.style.display = 'flex';
+    } else {
+      fieldDataPretendida.style.display = 'flex';
+      labelDataPretendida.textContent = 'Data pretendida';
+      fieldDataLevantamento.style.display = 'flex';
     }
-  } else {
-    fieldDataPretendida.style.display = 'flex';
-    labelDataPretendida.textContent = 'Data pretendida';
-    fieldDataLevantamento.style.display = 'flex';
   }
   
   atualizarSelecaoCervejas();
@@ -1461,13 +1449,10 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
 
   // 3. VALIDAÇÃO DE DATAS OBRIGATÓRIAS
   const operacao = document.getElementById('select-operacao').value;
-  const agendamentoVistoria = document.getElementById('select-agendamento-vistoria')?.value;
   const dataPretendidaVal = document.getElementById('input-data-pretendida').value;
   const dataLevantamentoVal = document.getElementById('input-data-levantamento').value;
 
-  const precisaDataPretendida = (operacao === 'Nova instalação' || operacao === 'Evento' || (operacao === 'Vistoria Técnica' && agendamentoVistoria === 'data'));
-
-  if (precisaDataPretendida && !dataPretendidaVal) {
+  if ((operacao === 'Nova instalação' || operacao === 'Evento') && !dataPretendidaVal) {
     alert('⚠️ A "Data pretendida/instalação" é obrigatória para esta operação.');
     document.getElementById('input-data-pretendida').focus();
     return;
@@ -1618,11 +1603,7 @@ document.getElementById('btnSubmeterPedido').addEventListener('click', function 
     linhasDatas = `• DATA PRETENDIDA (Início): ${dataPretendidaVal}\n` +
                   `• DATA DE LEVANTAMENTO (Fim): ${dataLevantamentoVal}\n`;
   } else if (operacao === 'Vistoria Técnica') {
-    if (agendamentoVistoria === 'tecnico') {
-      linhasDatas = `• AGENDAMENTO: Técnico agenda diretamente com o cliente (Sem data definida)\n`;
-    } else {
-      linhasDatas = `• DATA PRETENDIDA PARA VISTORIA: ${dataPretendidaVal}\n`;
-    }
+    linhasDatas = `• AGENDAMENTO: Técnico agenda diretamente com o cliente para a vistoria e posterior instalação\n`;
   }
 
   let blocoColunasTxt = `• MARCAS: ${cervejas}\n`;
